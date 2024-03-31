@@ -17,6 +17,7 @@ class CustomRoundButton extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: Material(
         color: color,
+        elevation: 8,
         borderRadius: isSmall?BorderRadius.circular(12.0):BorderRadius.circular(24.0),
         child: MaterialButton(
           onPressed: onPressed,
