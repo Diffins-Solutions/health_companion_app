@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_companion_app/screens/onboarding/setup_start_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import '../../widgets/custom_input_field.dart';
 import '../../widgets/custom_round_button.dart';
@@ -65,7 +66,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     CustomRoundButton(
                         label: 'Login',
                         color: kLightGreen,
-                        onPressed: () { },
+                        onPressed: () {
+                          Navigator.pushNamed(context, SetupStartScreen.id);
+                        },
                         isSmall: true),
                     SizedBox( width: 20,),
                     CustomRoundButton(
