@@ -16,6 +16,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   String email = '';
   String password = '';
+  double opacity = 1;
 
   @override
   Widget build(BuildContext context) {

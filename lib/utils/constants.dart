@@ -13,6 +13,12 @@ const kAppNameHeading = Text(
   style: TextStyle(fontSize: 50, fontWeight: FontWeight.w900),
 );
 
+const kActiveCardColor = Color(0xFF28403c);
+const kInactiveCardColor = Color(0x3F28403c);
+const kIconSize = 80.0;
+
+const kIconTextStyle = TextStyle(fontSize: 18, color: Colors.white60);
+
 const kInputDecoration = InputDecoration(
   filled: true,
   fillColor: kDarkGreen,
@@ -30,4 +36,14 @@ const kInputDecoration = InputDecoration(
     borderSide: BorderSide(color: kDarkGreen, width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(15.0)),
   ),
+);
+
+const kNumberStyle = TextStyle(
+  fontSize: 90,
+  color: Colors.white,
+  fontWeight: FontWeight.w900,
+);
+
+const kTimePickerTheme = ColorScheme.light(
+  primary: kBackgroundColor,
 );
