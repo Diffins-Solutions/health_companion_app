@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/utils/enums.dart';
 import 'package:arc_progress_bar_new/arc_progress_bar_new.dart';
-import 'package:health_companion_app/widgets/custom_bottom_bar.dart';
 import 'package:intl/intl.dart';
 
 class LandingScreen extends StatefulWidget {
@@ -22,9 +21,7 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackgroundColor,
-      body: SafeArea(
+    return SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -117,11 +114,10 @@ class _LandingScreenState extends State<LandingScreen> {
                   backgroundColor: Colors.white30,
                   foregroundColor: kLightGreen),
             ),
-            CustomBottomBar(),
+
           ],
         ),
-      ),
-    );
+      );
   }
 }
 
