@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
-import 'package:health_companion_app/widgets/custom_round_button.dart';
 
 class DailyMoveGoal extends StatefulWidget {
   static String id = 'daily_move_goal_screen';
