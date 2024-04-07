@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:health_companion_app/screens/onboarding/daily_move_goal.dart';
 import 'package:health_companion_app/screens/onboarding/height_screen.dart';
+import 'package:health_companion_app/screens/onboarding/name_screen.dart';
 import 'package:health_companion_app/screens/onboarding/sleep_schedule_screen.dart';
 import 'package:health_companion_app/screens/onboarding/welcome_screen.dart';
 import 'package:health_companion_app/screens/onboarding/setup_start_screen.dart';
@@ -17,10 +19,12 @@ class MyHealthApp extends StatelessWidget {
         routes: {
           WelcomeScreen.id: (context) => WelcomeScreen(),
           SetupStartScreen.id: (context) => SetupStartScreen(),
+          NameScreen.id: (context) => NameScreen(),
           GenderScreen.id: (context) => GenderScreen(),
           HeightScreen.id: (context) => HeightScreen(),
           WeightScreen.id: (context) => WeightScreen(),
           SleepScheduleScreen.id: (context) => SleepScheduleScreen(),
+          DailyMoveGoal.id: (context) => DailyMoveGoal(),
         });
   }
 }
