@@ -119,10 +119,9 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
               ],
             ),
             CustomFlatButton(
-              label: 'Continue',
+              label: 'Finish Setup',
               color: kLightGreen,
               onPressed: () {},
-              icon: Icons.navigate_next,
             ),
           ],
         ),
