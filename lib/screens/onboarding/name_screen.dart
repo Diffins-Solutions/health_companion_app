@@ -40,7 +40,10 @@ class _NameScreenState extends State<NameScreen> {
               ],
             ),
             Flexible(
-              child: Image.asset('images/name_screen_img.png'),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Image.asset('images/name_screen.png'),
+              ),
             ),
             Padding(
               padding:
@@ -53,7 +56,13 @@ class _NameScreenState extends State<NameScreen> {
                 ),
               ),
             ),
-            CustomInputField(onChange: (value) {}, hint: "Enter your name"),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: CustomInputField(onChange: (value) {}, hint: "Enter your name"),
+            ),
+            SizedBox(
+              height: 50,
+            ),
             CustomFlatButton(
               label: 'Continue',
               color: kLightGreen,
