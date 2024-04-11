@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/screens/onboarding/sleep_schedule_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
-import 'package:health_companion_app/utils/enums.dart';
-import 'package:health_companion_app/widgets/custom_card.dart';
 import 'package:ruler_picker_bn/ruler_picker_bn.dart';
-
+import 'package:health_companion_app/utils/os_utils.dart';
 import '../../widgets/custom_flat_button.dart';
 
 class WeightScreen extends StatefulWidget {
@@ -36,12 +34,11 @@ class _WeightScreenState extends State<WeightScreen> {
                   onTap: () => Navigator.pop(context),
                 ),
                 SizedBox(
-                  width: 30,
+                  width: OSUtils.isAndroid() ? 10 : 30,
                 ),
                 Text(
                   'How much do you weigh ?',
-                  style: TextStyle(
-                      fontSize: 28, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
                 ),
               ],
             ),

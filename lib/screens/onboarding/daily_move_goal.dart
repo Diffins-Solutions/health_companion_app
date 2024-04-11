@@ -120,7 +120,7 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
               ],
             ),
             CustomFlatButton(
-              label: 'Continue',
+              label: 'Finish Setup',
               color: kLightGreen,
               onPressed: () {
                 Navigator.pushNamed(context, LandingScreen.id);

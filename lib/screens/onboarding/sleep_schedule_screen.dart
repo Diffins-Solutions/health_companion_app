@@ -3,6 +3,7 @@ import 'package:health_companion_app/models/weekly_sleep_plan.dart';
 import 'package:health_companion_app/screens/onboarding/daily_move_goal.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
+import 'package:health_companion_app/utils/os_utils.dart';
 
 class SleepScheduleScreen extends StatefulWidget {
   static String id = 'sleep_schedule_screen';
@@ -18,7 +19,11 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
   TimeOfDay? bedTime = TimeOfDay(hour: 00, minute: 00);
 
   String getTimeOfDay(int hours) {
-    return hours - 12 < 0 ? 'AM' : 'PM';
+    return OSUtils.isIOS()
+        ? hours - 12 < 0
+            ? 'AM'
+            : 'PM'
+        : '';
   }
 
   String getSelectedTimeString(TimeOfDay? selectedTime) {
@@ -30,8 +35,10 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
     }
   }
 
-  void updateWeeklyTimePlan(bool isWakeupTime, TimeOfDay? time){
-    isWakeupTime ? weeklySleepPlan.setWakeupTimeForTheDay(selectedDay, time) : weeklySleepPlan.setSleepTimeForTheDay(selectedDay, time);
+  void updateWeeklyTimePlan(bool isWakeupTime, TimeOfDay? time) {
+    isWakeupTime
+        ? weeklySleepPlan.setWakeupTimeForTheDay(selectedDay, time)
+        : weeklySleepPlan.setSleepTimeForTheDay(selectedDay, time);
   }
 
   @override
@@ -163,8 +170,9 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
                               });
                             },
                             child: Text(dailyPlan.day),
-                            color:
-                                selectedDay == dailyPlan.day ? kLightGreen : kDarkGreen,
+                            color: selectedDay == dailyPlan.day
+                                ? kLightGreen
+                                : kDarkGreen,
                             padding: EdgeInsets.all(10),
                             shape: CircleBorder(),
                           ),
@@ -193,19 +201,20 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
               ),
             ),
             SizedBox(
-              height: 80,
+              height: OSUtils.isAndroid() ? 30 : 80,
             ),
             CustomFlatButton(
-              label: 'Finish Setup',
+              label: 'Continue',
               color: kLightGreen,
               onPressed: () {
-                for (var plan in weeklySleepPlan.weeklySleepPlan){
+                for (var plan in weeklySleepPlan.weeklySleepPlan) {
                   print(plan.day);
                   print(plan.getWakeupTime());
                   print(plan.getSleepTime());
                 }
                 Navigator.pushNamed(context, DailyMoveGoal.id);
               },
+              icon: Icons.navigate_next,
             ),
           ],
         ),
