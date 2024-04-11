@@ -74,6 +74,9 @@ flutter:
     - family: NunitoSans
       fonts:
         - asset: fonts/NunitoSans.ttf
+    - family: Hind
+      fonts:
+        - asset: fonts/Hind-Light.ttf
 
   #
   # For details regarding fonts from package dependencies,
