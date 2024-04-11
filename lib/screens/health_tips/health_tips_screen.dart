@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_companion_app/utils/constants.dart';
 
 import '../../models/health_tip.dart';
+import '../../widgets/animated_tile.dart';
 import 'health_tip_widget.dart';
 
 class HealthTipsScreen extends StatefulWidget {
@@ -12,7 +13,9 @@ class HealthTipsScreen extends StatefulWidget {
   State<HealthTipsScreen> createState() => _HealthTipsScreenState();
 }
 
-class _HealthTipsScreenState extends State<HealthTipsScreen> {
+class _HealthTipsScreenState extends State<HealthTipsScreen> with TickerProviderStateMixin {
+
+  List<HealthTip> healthTipsNull = [];
   List<HealthTip> healthTips = [
     HealthTip(
         id: 'id',
@@ -26,6 +29,36 @@ class _HealthTipsScreenState extends State<HealthTipsScreen> {
             "<h4>What is a heart attack?</h4>\r\n\r\n<p>A heart attack happens when blood flow to the heart is suddenly blocked. Part of the heart may die if the person doesn’t get help quickly.&nbsp;</p>\r\n\r\n<p>Some common signs and symptoms of a heart attack include:&nbsp;</p>\r\n\r\n<ul>\r\n\t<li>Pain or discomfort in the center or left side of the chest — or a feeling of pressure, squeezing, or fullness&nbsp;</li>\r\n\t<li>Pain or discomfort in the upper body — like the arms, back, shoulders, neck, jaw, or upper stomach (above the belly button)&nbsp;</li>\r\n\t<li>Shortness of breath or trouble breathing (while resting or being active)&nbsp;</li>\r\n\t<li>Feeling sick to your stomach or throwing up&nbsp;</li>\r\n\t<li>Stomach ache or feeling like you have heartburn &nbsp;</li>\r\n\t<li>Feeling dizzy, light-headed, or unusually tired&nbsp;</li>\r\n\t<li>Breaking out in a cold sweat&nbsp;</li>\r\n</ul>\r\n\r\n<p>Not everyone who has a heart attack will have all the signs or symptoms. <a href=\"https://health.gov/myhealthfinder/api/outlink/topicsearch.json/http/www.nhlbi.nih.gov/health/health-topics/topics/heartattack/?_label_=Learn+more+about+the+signs+of+a+heart+attack\">Learn more about the signs of a heart attack</a>.&nbsp;</p>\r\n\r\n<h4>Don’t ignore changes in how you feel.</h4>\r\n\r\n<p><span><span>Symptoms&nbsp;</span></span>of a heart attack often come on suddenly. But sometimes, they develop slowly — hours, days, or even weeks before a heart attack happens.&nbsp;</p>\r\n\r\n<p>Talk to your doctor if you feel unusually tired for several days, or if you develop any new health problems (like pain or trouble breathing). It's also important to talk to your doctor if existing health issues (like pain) are bothering you more than usual.&nbsp;</p>\r\n\r\n<p>If you’ve had a heart attack in the past, it’s important to know that symptoms of a new heart attack might be different from your last one — so talk with your doctor if you have any concerns about how you feel. &nbsp;</p>\r\n"),
   ];
 
+  //animation
+  late AnimationController animationController;
+  late Animation<double> animation;
+  int slide = 30;//by how much to slide?
+
+  @override
+  void initState() {
+    //animation controller - this sets the timing
+    animationController = AnimationController(
+        duration: const Duration(milliseconds: 1000), vsync: this);
+    //let's give the movement some style, not linear
+    animation = CurvedAnimation(
+        parent: animationController, curve: Curves.fastOutSlowIn);
+
+    startAnimation();
+    super.initState();
+  }
+
+  void startAnimation() {
+    //if you want to call it again, e.g. after pushing and popping
+    //a screen, you will need to reset to 0. Otherwise won't work.
+    animationController.value = 0;
+    animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +72,14 @@ class _HealthTipsScreenState extends State<HealthTipsScreen> {
         child: Column(
           children: [
             Image.asset('images/health_tips.png'),
-            HealthTipCard(icon: Icon(FontAwesomeIcons.asterisk, size: 60,), leftColor: Colors.indigoAccent, rightColor: Colors.indigo, title: 'General Tips', onPressed: (){navigateToHealthTips(healthTips);},),
-            HealthTipCard(icon: Icon(FontAwesomeIcons.heartPulse, color: Colors.red, size: 60), leftColor: Colors.orangeAccent, rightColor: Colors.orange, title: 'Heart Health', onPressed: (){navigateToHealthTips(healthTips);},),
-            HealthTipCard(icon: Icon(FontAwesomeIcons.personBurst, size: 50,), leftColor: Colors.white60, rightColor: Colors.white38, title: 'Depression', onPressed: (){navigateToHealthTips(healthTips);},),
-            HealthTipCard(icon: Icon(FontAwesomeIcons.personCane, size: 60, color: Colors.brown[200],), leftColor: Colors.redAccent, rightColor: Colors.red, title: 'Old Age', onPressed: (){navigateToHealthTips(healthTips);},),
-            HealthTipCard(icon: Icon(FontAwesomeIcons.bed, size: 50,), leftColor: Colors.blueAccent, rightColor: Colors.blue, title: 'Sleep Routine', onPressed: (){navigateToHealthTips(healthTips);},),
-            HealthTipCard(icon: Icon(FontAwesomeIcons.weightScale, size: 60, color: Colors.grey,), leftColor: Colors.yellowAccent, rightColor: Colors.yellow, title: 'Weight Loss', onPressed: (){navigateToHealthTips(healthTips);},),
-            HealthTipCard(icon: Icon(FontAwesomeIcons.headSideVirus, size: 60, color: Colors.brown,), leftColor: Colors.greenAccent, rightColor: Colors.green, title: 'Stress Management', onPressed: (){navigateToHealthTips(healthTips);},),
-            HealthTipCard(icon: Icon(Icons.face_retouching_natural, size: 60,), leftColor: Colors.purpleAccent, rightColor: Colors.purple, title: 'Anxiety', onPressed: (){navigateToHealthTips(healthTips);},),
+            AnimatedTile(slide: 30, animation: animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.asterisk, size: 60,), leftColor: Colors.indigoAccent, rightColor: Colors.indigo, title: 'General Tips', onPressed: (){navigateToHealthTips(healthTips);},),),
+            AnimatedTile(slide:60, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.heartPulse, color: Colors.red, size: 60), leftColor: Colors.orangeAccent, rightColor: Colors.orange, title: 'Heart Health', onPressed: (){navigateToHealthTips(healthTips);},)),
+            AnimatedTile(slide:90, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personBurst, size: 50,), leftColor: Colors.white60, rightColor: Colors.white38, title: 'Depression', onPressed: (){navigateToHealthTips(healthTips);},)),
+            (healthTipsNull.isNotEmpty) ? AnimatedTile(slide:30, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personCane, size: 60, color: Colors.brown[200],), leftColor: Colors.redAccent, rightColor: Colors.red, title: 'Old Age', onPressed: (){navigateToHealthTips(healthTips);},)) : SizedBox(),   //TODO: this is the way you should add only wanted health tip categories
+            AnimatedTile(slide:120, animation:animation, child: HealthTipCard(icon: Icon(FontAwesomeIcons.bed, size: 50,), leftColor: Colors.blueAccent, rightColor: Colors.blue, title: 'Sleep Routine', onPressed: (){navigateToHealthTips(healthTips);},)),
+            AnimatedTile(slide:150, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.weightScale, size: 60, color: Colors.grey,), leftColor: Colors.yellowAccent, rightColor: Colors.yellow, title: 'Weight Loss', onPressed: (){navigateToHealthTips(healthTips);},)),
+            AnimatedTile(slide:180, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.headSideVirus, size: 60, color: Colors.brown,), leftColor: Colors.greenAccent, rightColor: Colors.green, title: 'Stress Management', onPressed: (){navigateToHealthTips(healthTips);},)),
+            AnimatedTile(slide:210, animation:animation,child: HealthTipCard(icon: Icon(Icons.face_retouching_natural, size: 60,), leftColor: Colors.purpleAccent, rightColor: Colors.purple, title: 'Anxiety', onPressed: (){navigateToHealthTips(healthTips);},)),
           ],
         ),
       ),
@@ -102,3 +135,4 @@ class HealthTipCard extends StatelessWidget {
     );
   }
 }
+
