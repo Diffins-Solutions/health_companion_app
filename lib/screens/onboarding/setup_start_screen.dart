@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_round_button.dart';
-import 'package:health_companion_app/screens/onboarding/gender_screen.dart';
+import 'package:health_companion_app/screens/onboarding/name_screen.dart';
 
 class SetupStartScreen extends StatefulWidget {
   static String id = 'setup_start_screen';
@@ -43,7 +43,7 @@ class _SetupStartScreenState extends State<SetupStartScreen> {
             label: "Setup Account",
             color: kDarkGreen,
             onPressed: () {
-              Navigator.pushNamed(context, GenderScreen.id);
+              Navigator.pushNamed(context, NameScreen.id);
             },
             isSmall: false,
           ),
