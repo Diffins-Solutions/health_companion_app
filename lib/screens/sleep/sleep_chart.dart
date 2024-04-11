@@ -74,31 +74,6 @@ class SleepChart extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    "Your schedule",
-                    style: TextStyle(fontSize: 22),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      //TODO: Get the average time
-                      SleepScheduleCard(time: "11.15 pm", isBedTime: true),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      SleepScheduleCard(time: "8.15 am", isBedTime: false),
-                    ],
-                  )
-                ],
-              ),
-            )
           ],
         ),
       ),
@@ -169,46 +144,6 @@ class DailySleepChart extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class SleepScheduleCard extends StatelessWidget {
-  const SleepScheduleCard(
-      {super.key, required this.time, required this.isBedTime});
-
-  final String time;
-  final bool isBedTime;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: kInactiveCardColor,
-          border: Border.all(
-            color: kActiveCardColor,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Icon(Icons.bed),
-            Text(time),
-            Text(
-              isBedTime ? "Bedtime" : "Wake up",
-              style: TextStyle(
-                  fontSize: 17,
-                  color: Color(0xF017736a),
-                  fontWeight: FontWeight.bold),
-            )
-          ],
-        ),
       ),
     );
   }

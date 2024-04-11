@@ -11,7 +11,7 @@ class WelcomeText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-      EdgeInsets.symmetric(vertical: 5.0, horizontal: 30),
+      EdgeInsets.symmetric(vertical: 5.0, horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
