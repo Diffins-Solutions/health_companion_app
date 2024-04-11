@@ -15,35 +15,35 @@ import '../../models/chart_data.dart';
 ///
 
 final List<ChartData> yearlyData = [
-  ChartData('Jan', 10, 8, 7, 12, 24, 8),
-  ChartData('Feb', 11, 8, 7, 12, 24, 19),
-  ChartData('Mar', 14, 8, 7, 12, 10, 8),
-  ChartData('Apr', 3, 8, 3, 12, 24, 3),
-  ChartData('May', 6, 8, 7, 12, 24, 8),
-  ChartData('Jun', 10, 6, 7, 12, 4, 8),
-  ChartData('Jul', 14, 8, 20, 12, 24, 8),
-  ChartData('Aug', 10, 8, 7, 4, 24, 8),
-  ChartData('Sep', 5, 8, 7, 12, 24, 10),
-  ChartData('Oct', 10, 8, 7, 3, 24, 8),
-  ChartData('Nov', 15, 2, 7, 12, 24, 8),
-  ChartData('Dec', 24, 8, 7, 12, 24, 8),
+  ChartData('Jan', 10, y2: 8, y3: 7, y4: 12, y5: 24, y6: 8),
+  ChartData('Feb', 11, y2: 8, y3: 7, y4: 12, y5: 24, y6: 19),
+  ChartData('Mar', 14, y2: 8, y3: 7, y4: 12, y5: 10, y6: 8),
+  ChartData('Apr', 3, y2: 8, y3: 3, y4: 12, y5: 24, y6: 3),
+  ChartData('May', 6, y2: 8, y3: 7, y4: 12, y5: 24, y6: 8),
+  ChartData('Jun', 10, y2: 6, y3: 7, y4: 12, y5: 4, y6: 8),
+  ChartData('Jul', 14, y2: 8, y3: 20, y4: 12, y5: 24, y6: 8),
+  ChartData('Aug', 10, y2: 8, y3: 7, y4: 4, y5: 24, y6: 8),
+  ChartData('Sep', 5, y2: 8, y3: 7, y4: 12, y5: 24, y6: 10),
+  ChartData('Oct', 10, y2: 8, y3: 7, y4: 3, y5: 24, y6: 8),
+  ChartData('Nov', 15, y2: 2, y3: 7, y4: 12, y5: 24, y6: 8),
+  ChartData('Dec', 24, y2: 8, y3: 7, y4: 12, y5: 24, y6: 8),
 ];
 
 final List<ChartData> monthlyData = [
-  ChartData('Week 1', 10, 8, 7, 12, 24, 8),
-  ChartData('Week 2', 11, 8, 7, 12, 24, 19),
-  ChartData('Week 3', 14, 8, 7, 12, 10, 8),
-  ChartData('Week 4', 3, 8, 3, 12, 24, 3),
+  ChartData('Week 1', 10, y2: 8, y3: 7, y4: 12, y5: 24, y6: 8),
+  ChartData('Week 2', 11, y2: 8, y3: 7, y4: 12, y5: 24, y6: 19),
+  ChartData('Week 3', 14, y2: 8, y3: 7, y4: 12, y5: 10, y6: 8),
+  ChartData('Week 4', 3, y2: 8, y3: 3, y4: 12, y5: 24, y6: 3),
 ];
 
 final List<ChartData> weeklyData = [
-  ChartData('Mon', 10, 8, 7, 12, 24, 8),
-  ChartData('Tue', 11, 8, 7, 12, 24, 19),
-  ChartData('Wed', 14, 8, 7, 12, 10, 8),
-  ChartData('Thu', 3, 8, 3, 12, 24, 3),
-  ChartData('Fri', 6, 8, 7, 12, 24, 8),
-  ChartData('Sat', 10, 6, 7, 12, 4, 8),
-  ChartData('Sun', 14, 8, 20, 12, 24, 8),
+  ChartData('Mon', 10, y2: 8, y3: 7, y4: 12, y5: 24, y6: 8),
+  ChartData('Tue', 11, y2: 8, y3: 7, y4: 12, y5: 24, y6: 19),
+  ChartData('Wed', 14, y2: 8, y3: 7, y4: 12, y5: 10, y6: 8),
+  ChartData('Thu', 3, y2: 8, y3: 3, y4: 12, y5: 24, y6: 3),
+  ChartData('Fri', 6, y2: 8, y3: 7, y4: 12, y5: 24, y6: 8),
+  ChartData('Sat', 10, y2: 6, y3: 7, y4: 12, y5: 4, y6: 8),
+  ChartData('Sun', 14, y2: 8, y3: 20, y4: 12, y5: 24, y6: 8),
 ];
 
 class MoodScreen extends StatefulWidget {

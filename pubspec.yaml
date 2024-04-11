@@ -42,6 +42,9 @@ dependencies:
   salomon_bottom_bar: ^3.3.2
   intl: ^0.19.0
   syncfusion_flutter_charts: ^25.1.39+1
+  simple_circular_progress_bar: ^1.0.2
+  sleek_circular_slider: ^2.0.1
+  expandable: ^5.0.1
 
 dev_dependencies:
   flutter_test:
@@ -74,9 +77,12 @@ flutter:
     - family: NunitoSans
       fonts:
         - asset: fonts/NunitoSans.ttf
-    - family: Hind
+    - family: Hind-Light
       fonts:
         - asset: fonts/Hind-Light.ttf
+    - family: Hind-Regular
+      fonts:
+        - asset: fonts/Hind-Regular.ttf
 
   #
   # For details regarding fonts from package dependencies,

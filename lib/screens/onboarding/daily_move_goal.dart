@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
-import 'package:health_companion_app/screens/landing/landing_screen.dart';
+import 'package:health_companion_app/screens/app_shell.dart';
 
 class DailyMoveGoal extends StatefulWidget {
   static String id = 'daily_move_goal_screen';
@@ -123,7 +123,7 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
               label: 'Finish Setup',
               color: kLightGreen,
               onPressed: () {
-                Navigator.pushNamed(context, LandingScreen.id);
+                Navigator.pushNamed(context, AppShell.id);
               },
               icon: Icons.navigate_next,
             ),

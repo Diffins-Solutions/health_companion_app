@@ -48,8 +48,8 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
 
           /// Profile
           SalomonBottomBarItem(
-            icon: Icon(Icons.person),
-            title: Text("Profile"),
+            icon: Image.asset('images/sleep_icon.png'),
+            title: Text("Sleep"),
           ),
         ],
       ),

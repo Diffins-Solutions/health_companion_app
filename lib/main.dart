@@ -17,7 +17,7 @@ class MyHealthApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: ThemeData.dark().copyWith(
-          textTheme: Typography().white.apply(fontFamily: 'fonts/Hind'),
+          textTheme: Typography().white.apply(fontFamily: 'Hind-Regular'),
         ),
         initialRoute: WelcomeScreen.id,
         routes: {
