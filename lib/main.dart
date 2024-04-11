@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_companion_app/screens/app_shell.dart';
 import 'package:health_companion_app/screens/landing/landing_screen.dart';
 import 'package:health_companion_app/screens/onboarding/daily_move_goal.dart';
 import 'package:health_companion_app/screens/onboarding/height_screen.dart';
@@ -29,6 +30,7 @@ class MyHealthApp extends StatelessWidget {
           SleepScheduleScreen.id: (context) => SleepScheduleScreen(),
           LandingScreen.id: (context) => LandingScreen(),
           DailyMoveGoal.id: (context) => DailyMoveGoal(),
+          AppShell.id: (context) => AppShell(currentIndex: 0),
         });
   }
 }

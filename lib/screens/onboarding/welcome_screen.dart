@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_companion_app/screens/app_shell.dart';
 import 'package:health_companion_app/screens/onboarding/setup_start_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import '../../widgets/custom_input_field.dart';
@@ -68,14 +69,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         label: 'Login',
                         color: kLightGreen,
                         onPressed: () {
-                          Navigator.pushNamed(context, SetupStartScreen.id);
+                          Navigator.pushNamed(context, AppShell.id);
                         },
                         isSmall: true),
                     SizedBox( width: 20,),
                     CustomRoundButton(
                         label: 'Sign Up',
                         color: kDarkGreen,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, SetupStartScreen.id);
+                        },
                         isSmall: true),
                   ],
                 ),
