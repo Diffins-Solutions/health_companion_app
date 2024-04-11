@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/utils/enums.dart';
 import 'package:arc_progress_bar_new/arc_progress_bar_new.dart';
+import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:intl/intl.dart';
 
 class LandingScreen extends StatefulWidget {
@@ -25,28 +26,7 @@ class _LandingScreenState extends State<LandingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Hi ${widget.name}',
-                          style: TextStyle(
-                              fontSize: 35, fontWeight: FontWeight.bold)),
-                      Text(
-                        widget.formattedDate,
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ],
-                  ),
-                  Icon(Icons.menu),
-                ],
-              ),
-            ),
+            WelcomeText(name: widget.name, today: widget.formattedDate),
             Row(
               children: [
                 Column(
@@ -120,6 +100,7 @@ class _LandingScreenState extends State<LandingScreen> {
       );
   }
 }
+
 
 class IconContent extends StatelessWidget {
   final IconData iconData;
