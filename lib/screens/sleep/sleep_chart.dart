@@ -22,60 +22,58 @@ class SleepChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  "Time in bed",
-                  style: TextStyle(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                "Time in bed",
+                style: TextStyle(
+                  fontSize: 17,
+                ),
+              ),
+              Text(
+                //TODO: calculate the total time and assign it here
+                "7hr31min",
+                style: TextStyle(
+                    fontSize: 30,
+                    letterSpacing: 1,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Column(
+            children: [
+              Text(
+                titles[tabName]!,
+                style: TextStyle(
                     fontSize: 17,
-                  ),
-                ),
-                Text(
-                  //TODO: calculate the total time and assign it here
-                  "7hr31min",
-                  style: TextStyle(
-                      fontSize: 30,
-                      letterSpacing: 1,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Column(
-              children: [
-                Text(
-                  titles[tabName]!,
-                  style: TextStyle(
-                      fontSize: 17,
-                      color: Color(0xF017736a),
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                isDaily()
-                    ? DailySleepChart(chartData: chartData)
-                    : GeneralSleepChart(
-                        chartData: chartData,
-                        tabName: tabName,
-                      ),
-                SizedBox(
-                  height: 15,
-                ),
-              ],
-            ),
-          ],
-        ),
+                    color: Color(0xF017736a),
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              isDaily()
+                  ? DailySleepChart(chartData: chartData)
+                  : GeneralSleepChart(
+                      chartData: chartData,
+                      tabName: tabName,
+                    ),
+              SizedBox(
+                height: 15,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

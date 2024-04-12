@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/screens/sleep/sleep_chart.dart';
 import 'package:health_companion_app/models/chart_data.dart';
+import 'package:expandable/expandable.dart';
 
 // in mins
 //TODO: But actually times should receive as DateTime and should calculate the sum of hours
@@ -78,42 +81,110 @@ class _SleepScreenState extends State<SleepScreen>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           WelcomeText(name: widget.name, today: widget.formattedDate),
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('images/sleep_screen_backjpeg'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    "Your schedule",
-                    style: TextStyle(fontSize: 22),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      //TODO: Get the average time
-                      SleepScheduleCard(time: "11.15 pm", isBedTime: true),
-                      SizedBox(
-                        width: 20,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('images/sleep_screen_backjpeg'),
+                        fit: BoxFit.cover,
                       ),
-                      SleepScheduleCard(time: "8.15 am", isBedTime: false),
-                    ],
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                            Colors.black.withAlpha(0),
+                            Colors.black45,
+                            Colors.black54
+                          ],
+                          stops: [0, 0, 0],
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              "Your schedule",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              children: [
+                                //TODO: Get the average time
+                                SleepScheduleCard(
+                                    time: "11.15 pm", isBedTime: true),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                SleepScheduleCard(
+                                    time: "8.15 am", isBedTime: false),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ExpandablePanel(
+                        header: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15.0, vertical: 10.0),
+                          child: Text(
+                            "Statistics",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                        collapsed: Text(""),
+                        expanded: SizedBox(
+                          height: 600,
+                          child: Expanded(
+                              flex: 2,
+                              child:
+                                  ChartSection(tabController: _tabController)),
+                        ),
+                        theme: ExpandableThemeData(
+                            tapHeaderToExpand: true,
+                            hasIcon: true,
+                            iconColor: Colors.white)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: const [
+                            kLightGreen,
+                            kInactiveCardColor
+                          ]
+                        )
+                      ),
+                      child: Text(
+                        "Latest Sleep Sounds",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
                   )
                 ],
               ),
             ),
           ),
-          Expanded(flex: 2, child: ChartSection(tabController: _tabController)),
         ],
       ),
     );
@@ -223,7 +294,10 @@ class SleepScheduleCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Icon(Icons.bed),
-            Text(time),
+            Text(
+              time,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             Text(
               isBedTime ? "Bedtime" : "Wake up",
               style: TextStyle(
