@@ -14,7 +14,7 @@ void main() => runApp(MyHealthApp());
 
 class MyHealthApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {  
     return MaterialApp(
         theme: ThemeData.dark().copyWith(
           textTheme: Typography().white.apply(fontFamily: 'Hind-Regular'),

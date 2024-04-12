@@ -5,8 +5,11 @@ import 'package:intl/intl.dart';
 import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/screens/sleep/sleep_chart.dart';
+import 'package:health_companion_app/screens/sleep/audio_player.dart';
 import 'package:health_companion_app/models/chart_data.dart';
 import 'package:expandable/expandable.dart';
+import 'package:health_companion_app/services/api/api_service.dart';
+import 'package:health_companion_app/models/music_response_data.dart';
 
 // in mins
 //TODO: But actually times should receive as DateTime and should calculate the sum of hours
@@ -64,11 +67,20 @@ class _SleepScreenState extends State<SleepScreen>
     with SingleTickerProviderStateMixin {
   final TextEditingController _textController = TextEditingController();
   late final TabController _tabController;
+  List<MusicDataResponse> musicList = [];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    fetchMusicData();
+  }
+
+  Future<void> fetchMusicData() async {
+    final musiclist = await ApiService().getAllFetchMusicData();
+    setState(() {
+      musicList = musiclist;
+    });
   }
 
   @override
@@ -164,21 +176,14 @@ class _SleepScreenState extends State<SleepScreen>
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 25.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: const [
-                            kLightGreen,
-                            kInactiveCardColor
-                          ]
-                        )
-                      ),
-                      child: Text(
-                        "Latest Sleep Sounds",
-                        style: TextStyle(fontSize: 15),
-                      ),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Latest Sleep Sounds",
+                          style: TextStyle(fontSize: 15),
+                        ),
+                        // CustomListCard(musicList: musicList),
+                      ],
                     ),
                   )
                 ],
@@ -308,6 +313,70 @@ class SleepScheduleCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CustomListCard extends StatelessWidget {
+  const CustomListCard({super.key, required this.musicList});
+
+  final List<MusicDataResponse> musicList;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    SingleAudioPlayer(response: musicList[index]),
+              ),
+            );
+          },
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 8, bottom: 8, right: 8, top: 4),
+                  child: SizedBox(
+                    child: FadeInImage.assetNetwork(
+                        height: 60,
+                        width: 60,
+                        placeholder: "lib/assets/images/musicplaceholder.png",
+                        image: musicList[index].image.toString(),
+                        fit: BoxFit.fill),
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      musicList[index].title.toString(),
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      musicList[index].artist.toString(),
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      },
+      itemCount: musicList.length,
     );
   }
 }
