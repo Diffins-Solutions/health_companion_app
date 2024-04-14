@@ -198,6 +198,8 @@ class _InputEmotionState extends State<InputEmotion> {
                     setState(() {
                       print('My thought is ${widget._textController.text}');
                       widget._textController.clear();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Successfully updated!')));
                     });
                   },
                 ),
