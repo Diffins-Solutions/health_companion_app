@@ -45,6 +45,8 @@ dependencies:
   flutter_widget_from_html: ^0.14.11
   animations: ^2.0.11
   flutter_local_notifications: ^17.0.1
+  flutter_timezone: ^1.0.8
+  rxdart: ^0.27.7
 
 dev_dependencies:
   flutter_test:

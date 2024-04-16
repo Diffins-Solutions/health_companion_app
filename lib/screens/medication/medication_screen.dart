@@ -1,9 +1,12 @@
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:health_companion_app/models/local_notifications.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:intl/intl.dart';
-
 import '../../widgets/welcome_text.dart';
+import '../../models/reminder.dart';
 
 class MedicationScreen extends StatefulWidget {
   final String name = 'Nethmi';
@@ -18,8 +21,42 @@ class _MedicationScreenState extends State<MedicationScreen> {
   TimeOfDay? _time;
   DateTime? _date;
   bool _repeat = false;
-  TextEditingController _timeController = TextEditingController();
-  TextEditingController _dateController = TextEditingController();
+  final TextEditingController _medicineController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  List<PendingNotificationRequest> reminders = [];
+
+  Future<void> getPendingRequests() async {
+    List<PendingNotificationRequest> pendingRequests =
+        await LocalNotifications.getPending();
+    setState(() {
+      reminders = pendingRequests;
+    });
+  }
+
+  String getDateForReminder(PendingNotificationRequest reminder) {
+    String dateTime = '';
+    if(reminder?.payload != 'Repeat' && reminder?.body != ''){
+      dateTime = reminder?.body ?? DateTime.now().toString();
+    }else{
+      dateTime = getDateForRepeatReminder(reminder?.body ?? DateTime.now().toString());
+    }
+    return dateTime;
+  }
+
+  String getDateForRepeatReminder(String dateTime) {
+    DateTime _dateTime = DateTime.parse(dateTime);
+    if (DateTime.now().isAfter(_dateTime)) {
+      _dateTime = _dateTime.add(Duration(days: 1));
+    }
+    return _dateTime.toString();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPendingRequests();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +73,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
                   children: [
                     SizedBox(height: 14),
                     TextFormField(
+                      controller: _medicineController,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 16,
@@ -137,7 +175,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Repeat reminder',
+                          'Repeat reminder daily',
                           style: TextStyle(
                             fontSize: kNormalSize,
                           ),
@@ -158,8 +196,60 @@ class _MedicationScreenState extends State<MedicationScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: TextButton(
-                        onPressed: () {
-                          setState(() {});
+                        onPressed: () async {
+                          if (_medicineController.text != '' &&
+                              _time != null &&
+                              _date != null) {
+                            DateTime dateTime = DateTime(
+                                _date!.year,
+                                _date!.month,
+                                _date!.day,
+                                _time!.hour,
+                                _time!.minute);
+                            if(DateTime.now().isAfter(dateTime)){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Input Future time of the day !', style: TextStyle(color: Colors.red),)));
+                              return;
+                            }
+                            Random random = Random();
+                            int randomNumber = random.nextInt(1000) + 1;
+                            final reminder = Reminder(
+                                id: randomNumber,
+                                title: _medicineController.text,
+                                dateTime: dateTime.toString(),
+                                repeat: _repeat);
+
+                            if (_repeat) {
+                              await LocalNotifications
+                                  .showScheduledNotificationDaily(
+                                      title: reminder.title,
+                                      body: dateTime.toString(),
+                                      payload: "Repeat",
+                                      dateTime: dateTime,
+                                      id: reminder.id);
+                            } else {
+                              await LocalNotifications
+                                  .showScheduledNotification(
+                                      title: reminder.title,
+                                      body: dateTime.toString(),
+                                      payload: "No-Repeat",
+                                      dateTime: dateTime,
+                                      id: reminder.id);
+                            }
+                            List<PendingNotificationRequest> pendingReminders =
+                                await LocalNotifications.getPending();
+                            setState(() {
+                              reminders = pendingReminders;
+                              _medicineController.clear();
+                              _timeController.clear();
+                              _dateController.clear();
+                              _repeat = false;
+                            });
+
+                            //await LocalNotifications.getActive();
+                            //await LocalNotifications.cancelAllNotifications();
+                            //print("After");
+                          }
                         },
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.symmetric(
@@ -189,14 +279,27 @@ class _MedicationScreenState extends State<MedicationScreen> {
                     ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: 50,
+                      itemCount: reminders.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 10),
                           child: Dismissible(
                             direction: DismissDirection.endToStart,
-                            key: Key(index.toString()),
-                            onDismissed: (direction) {},
+                            key: Key(reminders[index].id.toString()),
+                            onDismissed: (direction) async {
+                              // Get the id of the dismissed item
+                              final id = reminders[index].id;
+
+                              // Cancel notification and delete reminder using the id
+                              await LocalNotifications.cancelNotification(id);
+                              List<PendingNotificationRequest>
+                                  pendingReminders =
+                                  await LocalNotifications.getPending();
+                              // Update the UI using setState
+                              setState(() {
+                                reminders = pendingReminders;
+                              });
+                            },
                             background: Container(
                               decoration: BoxDecoration(
                                 color: Color(0xff334E4B),
@@ -226,7 +329,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Notification title',
+                                          reminders[index]?.title ?? 'No title',
                                           style: TextStyle(
                                             fontSize: kNormalSize,
                                             fontWeight: FontWeight.w600,
@@ -234,9 +337,12 @@ class _MedicationScreenState extends State<MedicationScreen> {
                                         ),
                                         SizedBox(height: 4),
                                         Text(
-                                          'Notification description',
+                                          reminders[index]?.payload ??
+                                              'Undefined',
                                           style: TextStyle(
-                                            fontSize: 14,
+                                            color: Colors.white54,
+                                            fontStyle: FontStyle.italic,
+                                            fontSize: 12,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -248,7 +354,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
                                     children: [
                                       Text(
                                         DateFormat('dd/MM/yyyy')
-                                            .format(DateTime.now()),
+                                            .format(DateTime.parse(getDateForReminder(reminders[index]))),
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
@@ -257,8 +363,10 @@ class _MedicationScreenState extends State<MedicationScreen> {
                                       ),
                                       SizedBox(height: 4),
                                       Text(
-                                        DateFormat('HH:mm a')
-                                            .format(DateTime.now()),
+                                        DateFormat('HH:mm a').format(
+                                            DateTime.parse(
+                                                reminders[index]?.body ??
+                                                    DateTime.now().toString())),
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,

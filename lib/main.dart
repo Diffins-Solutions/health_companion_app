@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_companion_app/models/local_notifications.dart';
 import 'package:health_companion_app/screens/app_shell.dart';
 import 'package:health_companion_app/screens/onboarding/height_screen.dart';
 import 'package:health_companion_app/screens/onboarding/sleep_schedule_screen.dart';
@@ -7,7 +8,11 @@ import 'package:health_companion_app/screens/onboarding/setup_start_screen.dart'
 import 'package:health_companion_app/screens/onboarding/gender_screen.dart';
 import 'package:health_companion_app/screens/onboarding/weight_screen.dart';
 
-void main() => runApp(MyHealthApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await LocalNotifications.init();
+  runApp(MyHealthApp());
+}
 
 class MyHealthApp extends StatelessWidget {
   @override
