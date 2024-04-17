@@ -51,7 +51,7 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: kBackgroundColor,
+      backgroundColor: kBackgroundColor,
       body: _buildScreen(_selectedIndex),
       bottomNavigationBar: CustomBottomBar(
         currentIndex: _selectedIndex,
@@ -61,4 +61,3 @@ class _AppShellState extends State<AppShell> {
     );
   }
 }
-

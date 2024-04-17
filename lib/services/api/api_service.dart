@@ -6,7 +6,7 @@ import 'dart:developer' as devLog;
 
 class ApiService{
 
-  Future<List<MusicDataResponse>> getAllFetchMusicData()async {
+  Future<List<MusicDataResponse>>   getAllFetchMusicData()async {
     const url = "https://storage.googleapis.com/uamp/catalog.json";
     Uri uri = Uri.parse(url);
     try {

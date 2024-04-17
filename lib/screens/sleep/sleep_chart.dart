@@ -23,7 +23,7 @@ class SleepChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,23 +125,39 @@ class DailySleepChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SimpleCircularProgressBar(
-        valueNotifier: ValueNotifier(chartData[0].y1),
-        mergeMode: true,
-        size: 200,
-        progressColors: [kLightGreen],
-        backColor: kInactiveCardColor,
-        progressStrokeWidth: 25,
-        onGetText: (double value) {
-          return Text(
-            '${value.toInt()} mins',
+      child: Column(
+        children: [
+          SimpleCircularProgressBar(
+            valueNotifier: ValueNotifier(chartData[0].y1),
+            mergeMode: true,
+            size: 200,
+            progressColors: [kLightGreen],
+            backColor: kInactiveCardColor,
+            progressStrokeWidth: 25,
+            onGetText: (double value) {
+              return Text(
+                '${value.toInt()} mins',
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              );
+            },
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          Text(
+            "Achieve optimal wellness by tracking your sleep patterns daily"
+                " and striving for a consistent, quality rest every night.",
             style: const TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+              fontSize: 15,
+              color: Colors.grey,
             ),
-          );
-        },
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
