@@ -47,6 +47,15 @@ dependencies:
   flutter_local_notifications: ^17.0.1
   flutter_timezone: ^1.0.8
   rxdart: ^0.27.7
+  flutter_native_splash: ^2.3.11
+
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  color: "#122121"
+  image: "images/app_icon.png"
 
 dev_dependencies:
   flutter_test:

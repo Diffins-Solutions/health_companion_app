@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+
 import 'package:health_companion_app/models/local_notifications.dart';
 import 'package:health_companion_app/screens/app_shell.dart';
 import 'package:health_companion_app/screens/onboarding/height_screen.dart';
@@ -9,8 +11,14 @@ import 'package:health_companion_app/screens/onboarding/gender_screen.dart';
 import 'package:health_companion_app/screens/onboarding/weight_screen.dart';
 
 void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  //splash screen
+  await Future.delayed(const Duration(seconds: 1));
+  FlutterNativeSplash.remove();
+  //initialize local notifications
   await LocalNotifications.init();
+
   runApp(MyHealthApp());
 }
 
