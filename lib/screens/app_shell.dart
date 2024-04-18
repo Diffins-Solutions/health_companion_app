@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/screens/health_tips/health_tips_screen.dart';
 import 'package:health_companion_app/screens/sleep/sleep_screen.dart';
+import 'package:health_companion_app/screens/medication/medication_screen.dart';
 
 import '../utils/constants.dart';
 import '../widgets/custom_bottom_bar.dart';
@@ -43,6 +44,8 @@ class _AppShellState extends State<AppShell> {
         return HealthTipsScreen();
       case 3:
         return SleepScreen();
+      case 4:
+        return MedicationScreen();
       default:
         return Container(); // Handle invalid index
     }
@@ -51,6 +54,8 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBackgroundColor,
+      resizeToAvoidBottomInset: false,
       backgroundColor: kBackgroundColor,
       body: _buildScreen(_selectedIndex),
       bottomNavigationBar: CustomBottomBar(

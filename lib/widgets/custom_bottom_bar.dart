@@ -46,10 +46,16 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
             title: Text("Health Tips"),
           ),
 
-          /// Profile
+          //Sleep
           SalomonBottomBarItem(
             icon: Image.asset('images/sleep_icon.png'),
             title: Text("Sleep"),
+          ),
+
+          /// Medication
+          SalomonBottomBarItem(
+            icon: Icon(Icons.medical_information),
+            title: Text("Medication"),
           ),
         ],
       ),
