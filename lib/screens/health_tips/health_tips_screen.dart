@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:health_companion_app/models/health_tips_model.dart';
+import 'package:health_companion_app/services/db/fire_store_handler.dart';
 import 'package:health_companion_app/utils/constants.dart';
 
-import '../../models/health_tip.dart';
 import '../../widgets/animated_tile.dart';
 import 'health_tip_widget.dart';
+
+FireStoreHandler fireStoreHandler = FireStoreHandler();
 
 class HealthTipsScreen extends StatefulWidget {
   const HealthTipsScreen({super.key});
@@ -15,19 +20,92 @@ class HealthTipsScreen extends StatefulWidget {
 
 class _HealthTipsScreenState extends State<HealthTipsScreen> with TickerProviderStateMixin {
 
-  List<HealthTip> healthTipsNull = [];
-  List<HealthTip> healthTips = [
-    HealthTip(
-        id: 'id',
-        title: 'The Basics: What Is Heart Disease?',
-        content:
-            "<p>When people talk about heart disease, they’re usually talking about coronary heart disease (CHD). It’s also sometimes called coronary artery disease (CAD). This is the most common type of heart disease.&nbsp;</p>\r\n\r\n<p>When someone has CHD, the coronary arteries (tubes) that take blood to the heart are narrow or blocked. This happens when cholesterol and fatty material, called plaque, build up inside the arteries.&nbsp;</p>\r\n\r\n<p>Several things can lead to plaque building up inside your arteries,&nbsp;including:</p>\r\n\r\n<ul>\r\n\t<li>Too much&nbsp;cholesterol in the blood&nbsp;</li>\r\n\t<li>High blood pressure&nbsp;</li>\r\n\t<li>Smoking&nbsp;</li>\r\n\t<li>Too much sugar in the blood because of diabetes</li>\r\n</ul>\r\n\r\n<p>When plaque blocks an artery, it’s hard for blood to flow to the heart. A blocked artery can cause chest pain or a heart attack. <a href=\"https://health.gov/myhealthfinder/api/outlink/topicsearch.json/http/www.nhlbi.nih.gov/health/health-topics/topics/cad/?_label_=Learn+more+about+CHD\">Learn more about CHD</a>.&nbsp;</p>\r\n"),
-    HealthTip(
-        id: '2345',
-        title: 'Take Action: Signs of a Heart Attack',
-        content:
-            "<h4>What is a heart attack?</h4>\r\n\r\n<p>A heart attack happens when blood flow to the heart is suddenly blocked. Part of the heart may die if the person doesn’t get help quickly.&nbsp;</p>\r\n\r\n<p>Some common signs and symptoms of a heart attack include:&nbsp;</p>\r\n\r\n<ul>\r\n\t<li>Pain or discomfort in the center or left side of the chest — or a feeling of pressure, squeezing, or fullness&nbsp;</li>\r\n\t<li>Pain or discomfort in the upper body — like the arms, back, shoulders, neck, jaw, or upper stomach (above the belly button)&nbsp;</li>\r\n\t<li>Shortness of breath or trouble breathing (while resting or being active)&nbsp;</li>\r\n\t<li>Feeling sick to your stomach or throwing up&nbsp;</li>\r\n\t<li>Stomach ache or feeling like you have heartburn &nbsp;</li>\r\n\t<li>Feeling dizzy, light-headed, or unusually tired&nbsp;</li>\r\n\t<li>Breaking out in a cold sweat&nbsp;</li>\r\n</ul>\r\n\r\n<p>Not everyone who has a heart attack will have all the signs or symptoms. <a href=\"https://health.gov/myhealthfinder/api/outlink/topicsearch.json/http/www.nhlbi.nih.gov/health/health-topics/topics/heartattack/?_label_=Learn+more+about+the+signs+of+a+heart+attack\">Learn more about the signs of a heart attack</a>.&nbsp;</p>\r\n\r\n<h4>Don’t ignore changes in how you feel.</h4>\r\n\r\n<p><span><span>Symptoms&nbsp;</span></span>of a heart attack often come on suddenly. But sometimes, they develop slowly — hours, days, or even weeks before a heart attack happens.&nbsp;</p>\r\n\r\n<p>Talk to your doctor if you feel unusually tired for several days, or if you develop any new health problems (like pain or trouble breathing). It's also important to talk to your doctor if existing health issues (like pain) are bothering you more than usual.&nbsp;</p>\r\n\r\n<p>If you’ve had a heart attack in the past, it’s important to know that symptoms of a new heart attack might be different from your last one — so talk with your doctor if you have any concerns about how you feel. &nbsp;</p>\r\n"),
-  ];
+  List<dynamic> healthTipsGeneral = [];
+  List<dynamic> healthTipsHeart = [];
+  List<dynamic> healthTipsDepression = [];
+  List<dynamic> healthTipsSleep = [];
+  List<dynamic> healthTipsWeight = [];
+  List<dynamic> healthTipsStress = [];
+  List<dynamic> healthTipsOld = [];
+  List<dynamic> healthTipsAnxiety = [];
+
+  bool loading = false;
+  int healthTipsArraysCount = 0 ;
+  bool isOnline = false;
+
+    HealthTipsModel healthTipsModel = HealthTipsModel();
+  Future getHealthTips () async {
+      List<dynamic> result = await fireStoreHandler.fetchDataWithFilter('health_tips', 'key_word', ['general', 'heart', 'weight', 'old']);
+      List<dynamic> healthTips = await healthTipsModel.getHealthTips(result);
+      for(var healthTip in healthTips){
+        healthTipsArraysCount++;
+        categorizeContent(healthTip['key_word'], healthTip['content']);
+      }
+      setState(() {
+        loading = false;
+      });
+
+
+  }
+
+  void categorizeContent (String category, dynamic content){
+    switch (category){
+      case 'general':
+        setState(() {
+          healthTipsGeneral = content;
+        });
+        break;
+      case 'heart':
+        setState(() {
+          healthTipsHeart = content;
+        });
+        break;
+      case 'depression':
+        setState(() {
+          healthTipsDepression = content;
+        });
+        break;
+      case 'sleep':
+        setState(() {
+          healthTipsSleep = content;
+        });
+        break;
+      case 'weight':
+        setState(() {
+          healthTipsWeight = content;
+        });
+        break;
+      case 'stress':
+        setState(() {
+          healthTipsStress = content;
+        });
+        break;
+      case 'old':
+        setState(() {
+          healthTipsOld = content;
+        });
+        break;
+    }
+  }
+
+  Future<void> hasNetwork() async {
+    print('Connection check');
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if(result.isNotEmpty && result[0].rawAddress.isNotEmpty){
+        print('connected');
+        setState(() {
+          isOnline = true;
+        });
+
+      }else{
+        print('Disconnected');
+      }
+    } on SocketException catch (_) {
+      print('error connected');
+
+    }
+  }
 
   //animation
   late AnimationController animationController;
@@ -36,6 +114,9 @@ class _HealthTipsScreenState extends State<HealthTipsScreen> with TickerProvider
 
   @override
   void initState() {
+    setState(() {
+      loading = true;
+    });
     //animation controller - this sets the timing
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
@@ -44,6 +125,7 @@ class _HealthTipsScreenState extends State<HealthTipsScreen> with TickerProvider
         parent: animationController, curve: Curves.fastOutSlowIn);
 
     startAnimation();
+    hasNetwork().then((value) => getHealthTips());
     super.initState();
   }
 
@@ -63,23 +145,42 @@ class _HealthTipsScreenState extends State<HealthTipsScreen> with TickerProvider
   @override
   Widget build(BuildContext context) {
 
-    void navigateToHealthTips(List<HealthTip> healthTips){
+    void navigateToHealthTips(List<dynamic> healthTips){
       Navigator.push(context, MaterialPageRoute(builder: (context)=> HealthTipList(healthTips: healthTips)));
     }
 
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.asset('images/health_tips.png'),
-            AnimatedTile(slide: 30, animation: animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.asterisk, size: 60,), leftColor: Colors.indigoAccent, rightColor: Colors.indigo, title: 'General Tips', onPressed: (){navigateToHealthTips(healthTips);},),),
-            AnimatedTile(slide:60, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.heartPulse, color: Colors.red, size: 60), leftColor: Colors.orangeAccent, rightColor: Colors.orange, title: 'Heart Health', onPressed: (){navigateToHealthTips(healthTips);},)),
-            AnimatedTile(slide:90, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personBurst, size: 50,), leftColor: Colors.white60, rightColor: Colors.white38, title: 'Depression', onPressed: (){navigateToHealthTips(healthTips);},)),
-            (healthTipsNull.isNotEmpty) ? AnimatedTile(slide:30, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personCane, size: 60, color: Colors.brown[200],), leftColor: Colors.redAccent, rightColor: Colors.red, title: 'Old Age', onPressed: (){navigateToHealthTips(healthTips);},)) : SizedBox(),   //TODO: this is the way you should add only wanted health tip categories
-            AnimatedTile(slide:120, animation:animation, child: HealthTipCard(icon: Icon(FontAwesomeIcons.bed, size: 50,), leftColor: Colors.blueAccent, rightColor: Colors.blue, title: 'Sleep Routine', onPressed: (){navigateToHealthTips(healthTips);},)),
-            AnimatedTile(slide:150, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.weightScale, size: 60, color: Colors.grey,), leftColor: Colors.yellowAccent, rightColor: Colors.yellow, title: 'Weight Loss', onPressed: (){navigateToHealthTips(healthTips);},)),
-            AnimatedTile(slide:180, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.headSideVirus, size: 60, color: Colors.brown,), leftColor: Colors.greenAccent, rightColor: Colors.green, title: 'Stress Management', onPressed: (){navigateToHealthTips(healthTips);},)),
-            AnimatedTile(slide:210, animation:animation,child: HealthTipCard(icon: Icon(Icons.face_retouching_natural, size: 60,), leftColor: Colors.purpleAccent, rightColor: Colors.purple, title: 'Anxiety', onPressed: (){navigateToHealthTips(healthTips);},)),
+            Container(margin: EdgeInsets.only(bottom: 10),child: Image.asset('images/health_tips.png'),),
+            loading ? SizedBox(
+              height:300,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    isOnline ? Text('Loading your personalized health tips ...') : Text('Please connect to internet ...'),
+                    SizedBox(height: 30,),
+                    CircularProgressIndicator(color: kLightGreen,strokeAlign: CircularProgressIndicator.strokeAlignCenter,),
+                  ],
+                ),
+              ),
+            ) : ListView(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                (healthTipsGeneral.isNotEmpty) ? AnimatedTile(slide: 30, animation: animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.asterisk, size: 60,), leftColor: Colors.indigoAccent, rightColor: Colors.indigo, title: 'General Tips', onPressed: (){navigateToHealthTips(healthTipsGeneral);},),):SizedBox(),
+                (healthTipsHeart.isNotEmpty) ? AnimatedTile(slide:60, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.heartPulse, color: Colors.red, size: 60), leftColor: Colors.orangeAccent, rightColor: Colors.orange, title: 'Heart Health', onPressed: (){navigateToHealthTips(healthTipsHeart);},)):SizedBox(),
+                (healthTipsDepression.isNotEmpty) ? AnimatedTile(slide:90, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personBurst, size: 50,), leftColor: Colors.white60, rightColor: Colors.white38, title: 'Depression', onPressed: (){navigateToHealthTips(healthTipsDepression);},)):SizedBox(),
+                (healthTipsOld.isNotEmpty) ?  AnimatedTile(slide:30, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personCane, size: 60, color: Colors.brown[200],), leftColor: Colors.redAccent, rightColor: Colors.red, title: 'Old Age', onPressed: (){navigateToHealthTips(healthTipsOld);},)) : SizedBox(),
+                (healthTipsSleep.isNotEmpty) ? AnimatedTile(slide:120, animation:animation, child: HealthTipCard(icon: Icon(FontAwesomeIcons.bed, size: 50,), leftColor: Colors.blueAccent, rightColor: Colors.blue, title: 'Sleep Routine', onPressed: (){navigateToHealthTips(healthTipsSleep);},)):SizedBox(),
+                (healthTipsWeight.isNotEmpty) ? AnimatedTile(slide:150, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.weightScale, size: 60, color: Colors.grey,), leftColor: Colors.yellowAccent, rightColor: Colors.yellow, title: 'Weight Loss', onPressed: (){navigateToHealthTips(healthTipsWeight);},)):SizedBox(),
+                (healthTipsStress.isNotEmpty) ? AnimatedTile(slide:180, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.headSideVirus, size: 60, color: Colors.brown,), leftColor: Colors.greenAccent, rightColor: Colors.green, title: 'Stress Management', onPressed: (){navigateToHealthTips(healthTipsStress);},)):SizedBox(),
+                (healthTipsAnxiety.isNotEmpty) ? AnimatedTile(slide:210, animation:animation,child: HealthTipCard(icon: Icon(Icons.face_retouching_natural, size: 60,), leftColor: Colors.purpleAccent, rightColor: Colors.purple, title: 'Anxiety', onPressed: (){navigateToHealthTips(healthTipsAnxiety);},)):SizedBox(),
+              ],
+            ),
           ],
         ),
       ),
