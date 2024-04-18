@@ -19,7 +19,7 @@ class MusicListCard extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    SingleAudioPlayer(response: musicList[index]),
+                    SingleAudioPlayer(response: musicList[index], playList: musicList),
               ),
             );
           },
