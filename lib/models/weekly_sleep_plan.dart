@@ -13,7 +13,7 @@ class WeeklySleepPlan{
 
   ];
 
-  void setSleepTimeForTheDay(String day, TimeOfDay? time){
+  void setSleepTimeForTheDay(String day, TimeOfDay time){
     int index = weeklySleepPlan.indexWhere((plan) => plan.day == day);
 
     if (index != -1) {
@@ -24,7 +24,7 @@ class WeeklySleepPlan{
     }
   }
 
-  void setWakeupTimeForTheDay(String day, TimeOfDay? time){
+  void setWakeupTimeForTheDay(String day, TimeOfDay time){
     int index = weeklySleepPlan.indexWhere((plan) => plan.day == day);
 
     if (index != -1) {

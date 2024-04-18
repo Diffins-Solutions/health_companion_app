@@ -7,6 +7,9 @@ import '../../widgets/custom_flat_button.dart';
 
 class HeightScreen extends StatefulWidget {
   static String id = 'height_screen';
+  final Map<String, dynamic> previousData;
+
+  HeightScreen({required this.previousData});
 
   @override
   State<HeightScreen> createState() => _HeightScreenState();
@@ -107,7 +110,7 @@ class _HeightScreenState extends State<HeightScreen> {
               label: 'Continue',
               color: kLightGreen,
               onPressed: () {
-                Navigator.pushNamed(context, WeightScreen.id);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> WeightScreen(previousData: {'gender': widget.previousData['gender'], 'height': height})));
               },
               icon: Icons.navigate_next,
             ),

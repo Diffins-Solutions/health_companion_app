@@ -1,8 +1,11 @@
 // AppShell.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:health_companion_app/models/db_models/user.dart';
 import 'package:health_companion_app/screens/health_tips/health_tips_screen.dart';
 import 'package:health_companion_app/screens/medication/medication_screen.dart';
+import 'package:health_companion_app/services/db/sqflite_handler.dart';
+import 'package:health_companion_app/utils/enums.dart';
 
 import '../utils/constants.dart';
 import '../widgets/custom_bottom_bar.dart';
@@ -22,10 +25,26 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0; // Internal state for selected tab
 
+
+  // Future getUser() async{
+  //   var dbHandler = DbHandler();
+  //   User user = await dbHandler.getUser();
+  //   print('get User: ${user.name}');
+  // }
+  //
+  // Future addUser() async{
+  //   var dbHandler = DbHandler();
+  //   int user = (await dbHandler.insert(User(name: 'Nethmi', age: 25, height: 163, weight: 62, gender: Gender.female.toString(), steps: 3000))) ;
+  //   print('User is: $user');
+  // }
+
+
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.currentIndex; // Get initial index
+    //getUser();
+    //addUser();
   }
 
   void navigateToScreen(int index) {

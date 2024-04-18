@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:health_companion_app/contollers/user_controller.dart';
 import 'package:health_companion_app/screens/landing/add_calories_popup.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/utils/enums.dart';
@@ -7,27 +8,50 @@ import 'package:arc_progress_bar_new/arc_progress_bar_new.dart';
 import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:intl/intl.dart';
 
+import '../../models/db_models/user.dart';
+
 class LandingScreen extends StatefulWidget {
   static String id = 'landing_screen';
-
-  final String name = 'Nethmi';
-  final Gender gender = Gender.female;
   String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
-  final int targetSteps = 1000;
-  final int coveredSteps = 200;
-  double stpePercentage = 20.0;
+  final int coveredSteps = 2000;
+
   @override
   State<LandingScreen> createState() => _LandingScreenState();
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+  double stepPercentage = 0.0;
+  String name = 'Default user';
+  Gender gender = Gender.female;
+  int targetSteps = 0;
+  int heart = 0 ;
+  void getUser() async {
+    User user = (await UserController.getUser());
+    if(user != null){
+      setState(() {
+        name = user.name;
+        gender = user.gender == 'Gender.female' ? Gender.female: Gender.male;
+        targetSteps = user.steps;
+        stepPercentage = (widget.coveredSteps/targetSteps)*100;
+        if(user.heart != null){
+          heart = user.heart!;
+        }
+      });
+    }
+  }
+
+@override
+void initState() {
+    super.initState();
+    getUser();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          WelcomeText(name: widget.name, today: widget.formattedDate),
+          WelcomeText(name: name, today: widget.formattedDate),
           Row(
             children: [
               Column(
@@ -35,7 +59,7 @@ class _LandingScreenState extends State<LandingScreen> {
                 children: [
                   IconContent(
                     iconData: FontAwesomeIcons.heartPulse,
-                    value: '80 bpm',
+                    value: heart == 0 ? 'Not configured': heart.toString(),
                     label: 'Heart',
                     color: Colors.red,
                   ),
@@ -63,7 +87,7 @@ class _LandingScreenState extends State<LandingScreen> {
               ),
               Expanded(
                 child: Image.asset(
-                    'images/running${widget.gender == Gender.male ? 'm' : 'w'}.png'),
+                    'images/running${gender == Gender.male ? 'm' : 'w'}.png'),
               ),
               SizedBox(
                 width: 15,
@@ -74,13 +98,13 @@ class _LandingScreenState extends State<LandingScreen> {
             padding:
                 const EdgeInsets.only(top: 40, left: 10, right: 10, bottom: 10),
             child: ArcProgressBar(
-                percentage: widget.stpePercentage,
+                percentage: stepPercentage,
                 bottomLeftWidget: Text(
                   "Begin",
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
                 bottomRightWidget: Text(
-                  '${widget.coveredSteps} / ${widget.targetSteps}',
+                  '${widget.coveredSteps} / $targetSteps',
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
                 bottomCenterWidget: Text(
