@@ -9,7 +9,6 @@ import 'package:health_companion_app/screens/sleep/music_list_card.dart';
 import 'package:expandable/expandable.dart';
 import 'package:health_companion_app/services/api/api_service.dart';
 import 'package:health_companion_app/models/music_response_data.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SleepScreen extends StatefulWidget {
   final String name = 'Nethmi';
