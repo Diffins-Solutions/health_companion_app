@@ -56,7 +56,6 @@ class _AppShellState extends State<AppShell> {
     return Scaffold(
       backgroundColor: kBackgroundColor,
       resizeToAvoidBottomInset: false,
-      backgroundColor: kBackgroundColor,
       body: _buildScreen(_selectedIndex),
       bottomNavigationBar: CustomBottomBar(
         currentIndex: _selectedIndex,

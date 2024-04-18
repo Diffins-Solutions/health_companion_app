@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:health_companion_app/utils/constants.dart';
@@ -14,7 +15,8 @@ class PositionData {
 }
 
 class SingleAudioPlayer extends StatefulWidget {
-  SingleAudioPlayer({Key? key, required this.response, required this.playList}) : super(key: key);
+  SingleAudioPlayer({Key? key, required this.response, required this.playList})
+      : super(key: key);
   final MusicDataResponse response;
   final List<MusicDataResponse> playList;
   @override
@@ -23,6 +25,7 @@ class SingleAudioPlayer extends StatefulWidget {
 
 class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
   late AudioPlayer _audioPlayer;
+  late ConcatenatingAudioSource _playlist;
 
   Stream<PositionData> get _positionDataSream =>
       Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
@@ -36,11 +39,31 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
         ),
       );
 
+  ConcatenatingAudioSource _createPlayList() {
+    List<AudioSource> _songs = [];
+    for (MusicDataResponse response in widget.playList) {
+      _songs.add(AudioSource.uri(Uri.parse("https://storage.googleapis.com/uamp/The_Kyoto_Connection_-_Wake_Up/08_-_Reveal_the_Magic.mp3"),
+          tag: MediaItem(
+              id: response.id.toString(),
+              title: response.title.toString(),
+              artist: response.artist.toString(),
+              artUri: Uri.parse(response.image.toString()))));
+    }
+    return ConcatenatingAudioSource(children: _songs);
+  }
+
   @override
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer()..setAsset("audio/test_audio.mp3");
+    _playlist = _createPlayList();
+    _init();
   }
+
+  Future<void> _init() async {
+    await _audioPlayer.setLoopMode(LoopMode.all);
+    await _audioPlayer.setAudioSource(_playlist);
+}
 
   @override
   void dispose() {
@@ -152,34 +175,55 @@ class Controls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: audioPlayer.playerStateStream,
-      builder: (context, snapshot) {
-        final playerState = snapshot.data;
-        final processingState = playerState?.processingState;
-        final playing = playerState?.playing;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          onPressed:() async => {await audioPlayer.seekToPrevious()},
+          icon: Icon(
+            Icons.skip_previous_outlined,
+            size: 60,
+            color: Colors.white,
+          ),
+        ),
+        StreamBuilder(
+          stream: audioPlayer.playerStateStream,
+          builder: (context, snapshot) {
+            final playerState = snapshot.data;
+            final processingState = playerState?.processingState;
+            final playing = playerState?.playing;
 
-        if (!(playing ?? false)) {
-          return IconButton(
-            onPressed: () async => {await audioPlayer.play() },
-            icon: Icon(Icons.play_arrow_rounded),
-            iconSize: 60,
+            if (!(playing ?? false)) {
+              return IconButton(
+                onPressed: () async => {await audioPlayer.play()},
+                icon: Icon(Icons.play_arrow_rounded),
+                iconSize: 80,
+                color: Colors.white,
+              );
+            } else if (processingState != ProcessingState.completed) {
+              return IconButton(
+                onPressed: () async => {await audioPlayer.pause()},
+                icon: Icon(Icons.pause_rounded),
+                iconSize: 80,
+                color: Colors.white,
+              );
+            }
+            return Icon(
+              Icons.play_arrow_rounded,
+              size: 80,
+              color: Colors.white,
+            );
+          },
+        ),
+        IconButton(
+          onPressed: () async => {await audioPlayer.seekToNext()},
+          icon: Icon(
+            Icons.skip_next_outlined,
+            size: 60,
             color: Colors.white,
-          );
-        } else if (processingState != ProcessingState.completed) {
-          return IconButton(
-            onPressed: () async => {await audioPlayer.pause() },
-            icon: Icon(Icons.pause_rounded),
-            iconSize: 60,
-            color: Colors.white,
-          );
-        }
-        return Icon(
-          Icons.play_arrow_rounded,
-          size: 60,
-          color: Colors.white,
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 }
