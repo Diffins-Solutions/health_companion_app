@@ -7,7 +7,7 @@ import '../../utils/constants.dart';
 
 class HealthTipList extends StatefulWidget {
   const HealthTipList({super.key, required this.healthTips});
-  final List<HealthTip> healthTips;
+  final List<dynamic> healthTips;
 
   @override
   State<HealthTipList> createState() => _HealthTipListState();
@@ -71,7 +71,7 @@ class _HealthTipListState extends State<HealthTipList>  with TickerProviderState
                 );
               },
               child: Hero(
-                tag: healthTip.id, // Unique identifier for the animation
+                tag: index + 1000, // Unique identifier for the animation
                 child: AnimatedTile(slide:30 + 30*index, animation:animation,child: _HealthTipListItem(healthTip: healthTip)),
               ),
             );
@@ -85,7 +85,7 @@ class _HealthTipListState extends State<HealthTipList>  with TickerProviderState
 class _HealthTipListItem extends StatelessWidget {
   const _HealthTipListItem({required this.healthTip});
 
-  final HealthTip healthTip;
+  final dynamic healthTip;
 
   @override
   Widget build(BuildContext context) {
@@ -106,8 +106,7 @@ class _HealthTipListItem extends StatelessWidget {
           Icon(FontAwesomeIcons.featherPointed, size: 15, color: Colors.greenAccent,),
           SizedBox(width: 10,),
           Text(
-
-            healthTip.title,
+            healthTip['Title'] ?? '',
             style: TextStyle(fontWeight: FontWeight.w900,),
           ),
         ],
@@ -119,7 +118,7 @@ class _HealthTipListItem extends StatelessWidget {
 class HealthContentDetail extends StatelessWidget {
   const HealthContentDetail({required this.healthTip});
 
-  final HealthTip healthTip;
+  final dynamic healthTip;
 
   @override
   Widget build(BuildContext context) {
@@ -127,13 +126,13 @@ class HealthContentDetail extends StatelessWidget {
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
         backgroundColor: kBackgroundColor,
-        title: Text(healthTip.title),
+        title: Text(healthTip['Title']),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: HtmlWidget(healthTip.content),
+            child: HtmlWidget(healthTip['Content']),
           ),
         ),
       ),

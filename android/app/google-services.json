@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "310970139323",
+    "project_id": "health-companion-cc7e2",
+    "storage_bucket": "health-companion-cc7e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:310970139323:android:28c578f65ee09a8504df9e",
+        "android_client_info": {
+          "package_name": "com.diffinssolutions.health_companion_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRu2ltsoblrX-RuEcdDag1pw99_LkWpRY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

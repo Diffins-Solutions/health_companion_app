@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+
 import 'package:health_companion_app/models/local_notifications.dart';
 import 'package:health_companion_app/screens/app_shell.dart';
 import 'package:health_companion_app/screens/landing/landing_screen.dart';
@@ -11,12 +15,25 @@ import 'package:health_companion_app/screens/onboarding/setup_start_screen.dart'
 import 'package:health_companion_app/screens/onboarding/gender_screen.dart';
 import 'package:health_companion_app/screens/onboarding/weight_screen.dart';
 
+import 'firebase_options.dart';
+
+final _auth = FirebaseAuth.instance;
+
 void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  //splash screen
+  await Future.delayed(const Duration(seconds: 1));
+  FlutterNativeSplash.remove();
+  //initialize local notifications
   await LocalNotifications.init();
+  //initialize firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(MyHealthApp());
 }
-
 class MyHealthApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -49,7 +66,8 @@ class MyHealthApp extends StatelessWidget {
             fillColor: Color(0xff334E4B),
           ),
         ),
-        initialRoute: WelcomeScreen.id,
+        initialRoute:
+            _auth.currentUser == null ? WelcomeScreen.id : AppShell.id,
         routes: {
           WelcomeScreen.id: (context) => WelcomeScreen(),
           SetupStartScreen.id: (context) => SetupStartScreen(),
