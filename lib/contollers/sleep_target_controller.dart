@@ -6,12 +6,19 @@ import '../services/db/sqflite_handler.dart';
 class SleepTargetController {
   static final _dbHandler = DbHandler();
 
-  static Future getSleepTargets() async {
+  static Future<List<SleepTarget>> getSleepTargets() async {
     try {
       dynamic result = await _dbHandler.fetchAllData('sleep_target');
-      return SleepTarget.fromObject(result);
+      if(result != null){
+        return List.generate(result.length, (i) {
+          return SleepTarget.fromObject(result[i]);
+        });
+      }else{
+        return [];
+      }
+
     } catch (e) {
-      return null;
+      return [];
     }
   }
 

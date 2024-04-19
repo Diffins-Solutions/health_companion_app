@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:health_companion_app/contollers/daily_target_controller.dart';
+import 'package:health_companion_app/contollers/food_calorie_controller.dart';
 import 'package:health_companion_app/contollers/user_controller.dart';
+import 'package:health_companion_app/models/db_models/daily_target.dart';
 import 'package:health_companion_app/screens/landing/add_calories_popup.dart';
+import 'package:health_companion_app/screens/landing/add_water_popup.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/utils/enums.dart';
 import 'package:arc_progress_bar_new/arc_progress_bar_new.dart';
 import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:intl/intl.dart';
 
+import '../../models/db_models/food_calorie.dart';
 import '../../models/db_models/user.dart';
 
 class LandingScreen extends StatefulWidget {
@@ -24,27 +29,52 @@ class _LandingScreenState extends State<LandingScreen> {
   String name = 'Default user';
   Gender gender = Gender.female;
   int targetSteps = 0;
-  int heart = 0 ;
+  int heart = 0;
+  List<String> food = [];
+  List<FoodCalorie> foodCalories = [];
+  DailyTarget? dailyTargets;
+
   void getUser() async {
-    User user = (await UserController.getUser());
-    if(user != null){
+    User user = await UserController.getUser();
+    if (user != null) {
       setState(() {
         name = user.name;
-        gender = user.gender == 'Gender.female' ? Gender.female: Gender.male;
+        gender = user.gender == 'Gender.female' ? Gender.female : Gender.male;
         targetSteps = user.steps;
-        stepPercentage = (widget.coveredSteps/targetSteps)*100;
-        if(user.heart != null){
+        stepPercentage = (widget.coveredSteps / targetSteps) * 100;
+        if (user.heart != null) {
           heart = user.heart!;
         }
       });
     }
   }
 
-@override
-void initState() {
+  void getFoodCalories() async {
+    List<FoodCalorie> result = await FoodCalorieController.getFoodCalories();
+    if (result.isNotEmpty) {
+      print(result.length);
+      setState(() {
+        foodCalories = result;
+        food = List.generate(result.length, (i) => result[i].food);
+      });
+    }
+  }
+
+  void getDailyTargets() async {
+    DailyTarget? result = await DailyTargetController.getDailyTarget();
+    setState(() {
+      dailyTargets = result;
+    });
+  }
+
+  @override
+  void initState() {
     super.initState();
     getUser();
+    getFoodCalories();
+    getDailyTargets();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -59,7 +89,7 @@ void initState() {
                 children: [
                   IconContent(
                     iconData: FontAwesomeIcons.heartPulse,
-                    value: heart == 0 ? 'Not configured': heart.toString(),
+                    value: heart == 0 ? 'Not configured' : heart.toString(),
                     label: 'Heart',
                     color: Colors.red,
                   ),
@@ -70,16 +100,23 @@ void initState() {
                       color: Colors.yellow),
                   IconContent(
                     iconData: Icons.fastfood_rounded,
-                    value: '905 kcal',
+                    value: '${dailyTargets?.calorie == null ? 0: dailyTargets!.calorie} kcal',
                     label: 'Calories',
                     color: Colors.orangeAccent,
-                    onTap: () => addCaloriesPopup(context),
+                    onTap: () => {
+                      addCaloriesPopup(context, food, foodCalories, dailyTargets)
+                          .then((e) => {getDailyTargets()})
+                    },
                   ),
                   IconContent(
                       iconData: Icons.water_drop_rounded,
-                      value: '2 liters',
+                      value: '${dailyTargets?.water == null ? 0: dailyTargets!.water} liters',
                       label: 'Water',
-                      color: Colors.blue),
+                      color: Colors.blue,
+                    onTap: () => {
+                        addWaterPopup(context, dailyTargets).then((e) => {getDailyTargets()})
+                    },
+                  ),
                 ],
               ),
               SizedBox(
