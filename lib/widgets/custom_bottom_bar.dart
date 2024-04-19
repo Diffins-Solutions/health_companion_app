@@ -22,7 +22,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
   Widget build(BuildContext context) {
     return Container(
       color: kDarkGreen,
-      padding: EdgeInsets.all(12.0),
+      padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 12.0),
       child: SalomonBottomBar(
         currentIndex: widget.currentIndex,
         selectedItemColor: widget.color,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/models/music_response_data.dart';
@@ -42,7 +43,7 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
   ConcatenatingAudioSource _createPlayList() {
     List<AudioSource> _songs = [];
     for (MusicDataResponse response in widget.playList) {
-      _songs.add(AudioSource.uri(Uri.parse("https://storage.googleapis.com/uamp/The_Kyoto_Connection_-_Wake_Up/08_-_Reveal_the_Magic.mp3"),
+      _songs.add(AudioSource.uri(Uri.parse(response.source.toString()),
           tag: MediaItem(
               id: response.id.toString(),
               title: response.title.toString(),
@@ -55,7 +56,7 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
   @override
   void initState() {
     super.initState();
-    _audioPlayer = AudioPlayer()..setAsset("audio/test_audio.mp3");
+    _audioPlayer = AudioPlayer();
     _playlist = _createPlayList();
     _init();
   }
@@ -63,7 +64,7 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
   Future<void> _init() async {
     await _audioPlayer.setLoopMode(LoopMode.all);
     await _audioPlayer.setAudioSource(_playlist);
-}
+  }
 
   @override
   void dispose() {
@@ -99,31 +100,20 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                height: MediaQuery.of(context).size.height / 2.75,
-                url,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
-            SizedBox(
-              height: 32,
-            ),
-            Text(
-              widget.response.title.toString(),
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 4,
-            ),
-            Text(
-              widget.response.artist.toString(),
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
+            StreamBuilder<SequenceState?>(
+                stream: _audioPlayer.sequenceStateStream,
+                builder: (context, snapshot) {
+                  final state = snapshot.data;
+                  if (state?.sequence.isEmpty ?? true) {
+                    return const SizedBox();
+                  }
+                  final metadata = state!.currentSource?.tag as MediaItem;
+                  return MediaMetaData(
+                    imageURL: metadata.artUri.toString(),
+                    title: metadata.title.toString(),
+                    artist: metadata.artist.toString(),
+                  );
+                }),
             SizedBox(
               height: 70,
             ),
@@ -179,7 +169,7 @@ class Controls extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-          onPressed:() async => {await audioPlayer.seekToPrevious()},
+          onPressed: () async => {await audioPlayer.seekToPrevious()},
           icon: Icon(
             Icons.skip_previous_outlined,
             size: 60,
@@ -221,6 +211,51 @@ class Controls extends StatelessWidget {
             Icons.skip_next_outlined,
             size: 60,
             color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class MediaMetaData extends StatelessWidget {
+  const MediaMetaData(
+      {super.key,
+      required this.imageURL,
+      required this.title,
+      required this.artist});
+
+  final String imageURL;
+  final String title;
+  final String artist;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: CachedNetworkImage(
+            imageUrl: imageURL,
+            height: 300,
+            width: 300,
+            fit: BoxFit.cover,
+          ),
+        ),
+        SizedBox(
+          height: 32,
+        ),
+        Text(
+          title,
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(
+          height: 4,
+        ),
+        Text(
+          artist,
+          style: TextStyle(
+            fontSize: 20,
           ),
         ),
       ],
