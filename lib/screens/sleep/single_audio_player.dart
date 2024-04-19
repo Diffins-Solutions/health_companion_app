@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/screens/sleep/music_list_card.dart';
+import 'package:health_companion_app/screens/sleep/sleep_screen.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/models/music_response_data.dart';
@@ -44,7 +45,14 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context, _audioPlayer);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SleepScreen(
+                  audioPlayer: _audioPlayer,
+                ),
+              ),
+            );
           },
           icon: Icon(Icons.keyboard_arrow_left_rounded),
         ),

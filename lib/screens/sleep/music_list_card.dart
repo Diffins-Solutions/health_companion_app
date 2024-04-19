@@ -15,8 +15,6 @@ class MusicListCard extends StatefulWidget {
 
 class _MusicListCardState extends State<MusicListCard> {
 
-  late AudioPlayer audioPlayer;
-
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -24,17 +22,14 @@ class _MusicListCardState extends State<MusicListCard> {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return InkWell(
-            onTap: ()  async {
-              var audioPlayer = await Navigator.push(
+            onTap: () {
+             Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SingleAudioPlayer(
                       response: widget.musicList[index], playList: widget.musicList),
                 ),
               );
-              setState(() {
-                audioPlayer = audioPlayer;
-              });
             },
             child: Row(
               children: [
@@ -82,7 +77,7 @@ class _MusicListCardState extends State<MusicListCard> {
         width: double.infinity,
         height: 100,
         color: Colors.red,
-        child: Text("${audioPlayer.currentIndex}"),
+        child: Text("${widget.audioPlayer}"),
       ),
     ]);
   }
