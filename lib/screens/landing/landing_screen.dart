@@ -78,21 +78,16 @@ class _LandingScreenState extends State<LandingScreen> {
       _currentStepCount = stepCount ;
     });
   }
+  
   @override
   void initState() {
     super.initState();
     getUser();
     getFoodCalories();
     getDailyTargets();
-    print('Awwww');
     _stepCounter.startListening();
-    print('Aff');
-    _stepCounter.isMoving().then((value) {
-      print('Moving $value');
-      if(value){
-          updateCounter();
-      }
-    });
+    updateCounter();
+
   }
 
   @override

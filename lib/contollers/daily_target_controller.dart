@@ -44,7 +44,7 @@ class DailyTargetController {
         return Future(() => false);
       }
     } catch (e) {
-      return false;
+      return Future(() => false);
     }
   }
 

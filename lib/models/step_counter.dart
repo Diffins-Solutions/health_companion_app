@@ -35,22 +35,17 @@ class StepCounter {
   }
 
   void _onAccelerometerData(AccelerometerEvent event) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await checkDateAndUpdate(prefs.getString('today')!);
     double currentZ = event.z;
     double currentX = event.x.abs();
     double currentY = event.y.abs();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     int stepCount = prefs.getInt('counter')!;
+    await prefs.setInt('counterP', stepCount);
     if (_isPeak(currentZ)) {
       if (currentX > _xyThreshold || currentY > _xyThreshold) {
-        checkDateAndUpdate(prefs.getString('yesterday')!).then((reset)async {
-          print('Reset $reset');
-          if(!reset){
-            await prefs.setInt('counterP', stepCount);
             stepCount++;
             await prefs.setInt('counter', stepCount);
-          }
-        });
-
       }
     }
     //print("Step count: $stepCount");
@@ -61,15 +56,14 @@ class StepCounter {
       DateTime prefsToday = DateTime.parse(date);
       DateTime today = DateTime.now();
      if(today.difference(prefsToday).inDays != 0){
+       print('today: $today, prefs: $prefsToday');
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        Future result = await DailyTargetController.addOrUpdateSteps(DateFormat.yMMMMd().format(prefsToday), prefs.getInt('counter')!);
+        bool result = await DailyTargetController.addOrUpdateSteps(DateFormat.yMMMMd().format(prefsToday), prefs.getInt('counter')!);
         await prefs.setInt('counter', 0);
         await prefs.setInt('counterP', 0);
         await prefs.setString('today', today.toString());
         await prefs.setString('yesterday', prefsToday.toString());
-        return Future(() => true);
       }
-      return Future(() => false);
     }catch (e){
       rethrow;
     }
@@ -79,6 +73,7 @@ class StepCounter {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int stepCount = prefs.getInt('counter')!;
     int stepCountP = prefs.getInt('counterP')!;
+    print('Moving compRE $stepCountP, $stepCount');
     return Future(() => stepCount != stepCountP);
   }
 
