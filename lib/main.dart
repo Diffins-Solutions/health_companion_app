@@ -9,7 +9,6 @@ import 'package:health_companion_app/screens/onboarding/welcome_screen.dart';
 import 'package:health_companion_app/screens/onboarding/setup_start_screen.dart';
 import 'package:health_companion_app/screens/onboarding/gender_screen.dart';
 
-
 import 'firebase_options.dart';
 
 final _auth = FirebaseAuth.instance;

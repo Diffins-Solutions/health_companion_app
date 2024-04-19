@@ -54,6 +54,7 @@ dependencies:
   cloud_firestore: ^4.15.8
   sqflite: ^2.3.2
   dropdown_button2: ^2.3.9
+  sensors_plus: ^4.0.2
 
 flutter_native_splash:
   android: true

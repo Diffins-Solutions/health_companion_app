@@ -14,11 +14,11 @@ import 'package:intl/intl.dart';
 
 import '../../models/db_models/food_calorie.dart';
 import '../../models/db_models/user.dart';
+import '../../models/step_counter.dart';
 
 class LandingScreen extends StatefulWidget {
   static String id = 'landing_screen';
   String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
-  final int coveredSteps = 2000;
 
   @override
   State<LandingScreen> createState() => _LandingScreenState();
@@ -33,6 +33,8 @@ class _LandingScreenState extends State<LandingScreen> {
   List<String> food = [];
   List<FoodCalorie> foodCalories = [];
   DailyTarget? dailyTargets;
+  final _stepCounter = StepCounter();
+  int _currentStepCount = 0;
 
   void getUser() async {
     User user = await UserController.getUser();
@@ -41,7 +43,7 @@ class _LandingScreenState extends State<LandingScreen> {
         name = user.name;
         gender = user.gender == 'Gender.female' ? Gender.female : Gender.male;
         targetSteps = user.steps;
-        stepPercentage = (widget.coveredSteps / targetSteps) * 100;
+        stepPercentage = (_currentStepCount / targetSteps) * 100;
         if (user.heart != null) {
           heart = user.heart!;
         }
@@ -73,6 +75,12 @@ class _LandingScreenState extends State<LandingScreen> {
     getUser();
     getFoodCalories();
     getDailyTargets();
+    // _stepCounter.startListening();
+    // _stepCounter.stepCountStream.listen((stepCount) {
+    //   setState(() {
+    //     _currentStepCount = stepCount;
+    //   });
+    // });
   }
 
   @override
@@ -141,7 +149,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
                 bottomRightWidget: Text(
-                  '${widget.coveredSteps} / $targetSteps',
+                  '$_currentStepCount / $targetSteps',
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
                 bottomCenterWidget: Text(
