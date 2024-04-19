@@ -155,7 +155,7 @@ class _SleepScreenState extends State<SleepScreen>
                     padding: const EdgeInsets.all(20.0),
                     child: Text(
                       "Embrace the soothing symphony of sleep music and the insightful journey of sleep tracking, for they are the silent whispers "
-                          "that guide you to a realm of tranquil dreams and restful nights.",
+                      "that guide you to a realm of tranquil dreams and restful nights.",
                       style: const TextStyle(
                         fontSize: 15,
                         color: Colors.grey,
