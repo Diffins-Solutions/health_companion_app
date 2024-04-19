@@ -8,7 +8,8 @@ import 'package:health_companion_app/screens/app_shell.dart';
 import 'package:health_companion_app/screens/onboarding/welcome_screen.dart';
 import 'package:health_companion_app/screens/onboarding/setup_start_screen.dart';
 import 'package:health_companion_app/screens/onboarding/gender_screen.dart';
-
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 final _auth = FirebaseAuth.instance;
@@ -25,6 +26,14 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  if(prefs.getInt('counter') == null){
+    await prefs.setInt('counter', 0);
+    await prefs.setInt('counterP', 0);
+    DateTime today = DateTime.now();
+    await prefs.setString('today', today.toString());
+    await prefs.setString('yesterday', today.subtract(Duration(days: 1)).toString());
+  }
 
   runApp(MyHealthApp());
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_companion_app/contollers/daily_target_controller.dart';
@@ -11,6 +12,7 @@ import 'package:health_companion_app/utils/enums.dart';
 import 'package:arc_progress_bar_new/arc_progress_bar_new.dart';
 import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/db_models/food_calorie.dart';
 import '../../models/db_models/user.dart';
@@ -69,18 +71,28 @@ class _LandingScreenState extends State<LandingScreen> {
     });
   }
 
+  void updateCounter() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int stepCount = prefs.getInt('counter')!;
+    setState(() {
+      _currentStepCount = stepCount ;
+    });
+  }
   @override
   void initState() {
     super.initState();
     getUser();
     getFoodCalories();
     getDailyTargets();
-    // _stepCounter.startListening();
-    // _stepCounter.stepCountStream.listen((stepCount) {
-    //   setState(() {
-    //     _currentStepCount = stepCount;
-    //   });
-    // });
+    print('Awwww');
+    _stepCounter.startListening();
+    print('Aff');
+    _stepCounter.isMoving().then((value) {
+      print('Moving $value');
+      if(value){
+          updateCounter();
+      }
+    });
   }
 
   @override

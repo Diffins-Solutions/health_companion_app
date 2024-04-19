@@ -55,6 +55,7 @@ dependencies:
   sqflite: ^2.3.2
   dropdown_button2: ^2.3.9
   sensors_plus: ^4.0.2
+  shared_preferences: ^2.2.3
 
 flutter_native_splash:
   android: true

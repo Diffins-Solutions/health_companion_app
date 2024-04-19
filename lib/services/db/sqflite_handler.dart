@@ -182,6 +182,13 @@ class DbHandler {
     return result;
   }
 
+  Future<int> updateColumn(String table, String constraint, String updateField, dynamic data) async {
+    print('Updating');
+    Database db = await _db;
+    var result = await db.rawUpdate('INSERT OR REPLACE INTO $table ($updateField, $constraint) VALUES (?, ?)', data);
+    print('Updated result $result');
+    return result;
+  }
   // Future<int> delete(int id) async {
   //   Database db = await this.db;
   //   var result = await db.rawDelete("delete from products where id= $id");
