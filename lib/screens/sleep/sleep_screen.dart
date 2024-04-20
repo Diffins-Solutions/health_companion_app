@@ -10,7 +10,7 @@ import 'package:health_companion_app/screens/sleep/sleep_schedule_card.dart';
 import 'package:health_companion_app/screens/sleep/chart_section.dart';
 import 'package:health_companion_app/screens/sleep/music_list_card.dart';
 import 'package:expandable/expandable.dart';
-import 'package:health_companion_app/services/api/api_service.dart';
+import 'package:health_companion_app/services/api/networking.dart';
 import 'package:health_companion_app/models/music_response_data.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -30,6 +30,7 @@ class _SleepScreenState extends State<SleepScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   late AudioStreamer audioStreamer;
+  late NetworkHelper networkHelper = NetworkHelper(Uri.parse("https://storage.googleapis.com/uamp/catalog.json"));
   List<MusicDataResponse> musicList = [];
 
   @override
@@ -44,9 +45,12 @@ class _SleepScreenState extends State<SleepScreen>
   }
 
   Future<void> fetchMusicData() async {
-    final musiclist = await ApiService().getAllFetchMusicData();
+    var response = await networkHelper.getData();
+    var songs = response.data["music"]  as List<dynamic>;
     setState(() {
-      musicList = musiclist;
+      musicList = songs.map( (e) {
+      return MusicDataResponse.fromJson(e);
+      }).toList();
     });
   }
 

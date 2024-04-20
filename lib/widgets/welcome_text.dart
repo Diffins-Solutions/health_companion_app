@@ -18,10 +18,10 @@ class WelcomeText extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Hi ${name}',
-                  style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               Text(
                 today,
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 16),
               ),
             ],
           ),
