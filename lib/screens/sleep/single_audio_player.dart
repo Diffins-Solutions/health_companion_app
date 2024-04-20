@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_companion_app/screens/app_shell.dart';
 import 'package:health_companion_app/screens/sleep/music_list_card.dart';
 import 'package:health_companion_app/screens/sleep/sleep_screen.dart';
 import 'package:just_audio/just_audio.dart';
@@ -48,7 +49,8 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SleepScreen(
+                builder: (context) => AppShell(
+                  currentIndex: 3,
                   audioPlayer: _audioPlayer,
                 ),
               ),

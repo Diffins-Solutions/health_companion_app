@@ -53,128 +53,141 @@ class _SleepScreenState extends State<SleepScreen>
   Widget build(BuildContext context) {
     return Material(
       child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
+          alignment: AlignmentDirectional.bottomCenter,
           children: [
-            WelcomeText(name: widget.name, today: widget.formattedDate),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: ClampingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('images/sleep_screen_backjpeg'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: <Color>[
-                              Colors.black.withAlpha(0),
-                              Colors.black45,
-                              Colors.black54
-                            ],
-                            stops: [0, 0, 0],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                WelcomeText(name: widget.name, today: widget.formattedDate),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: ClampingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('images/sleep_screen_backjpeg'),
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                "Your schedule",
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Row(
-                                children: [
-                                  //TODO: Get the average time
-                                  SleepScheduleCard(
-                                      time: "11.15 pm", isBedTime: true),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  SleepScheduleCard(
-                                      time: "8.15 am", isBedTime: false),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: <Color>[
+                                  Colors.black.withAlpha(0),
+                                  Colors.black45,
+                                  Colors.black54
                                 ],
-                              )
-                            ],
+                                stops: [0, 0, 0],
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    "Your schedule",
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    children: [
+                                      //TODO: Get the average time
+                                      SleepScheduleCard(
+                                          time: "11.15 pm", isBedTime: true),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      SleepScheduleCard(
+                                          time: "8.15 am", isBedTime: false),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 5),
-                      child: ExpandablePanel(
-                          header: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15.0, vertical: 5.0),
-                            child: Text(
-                              "Statistics",
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          ),
-                          collapsed: Text(""),
-                          expanded: SizedBox(
-                            height: 530,
-                            child: ChartSection(tabController: _tabController),
-                          ),
-                          theme: ExpandableThemeData(
-                              tapHeaderToExpand: true,
-                              hasIcon: true,
-                              iconColor: Colors.white)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 0),
-                      child: ExpandablePanel(
-                          header: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15.0, vertical: 5.0),
-                            child: Text(
-                              "Latest Sleep Sounds",
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          ),
-                          collapsed: Text(""),
-                          expanded: SizedBox(
-                            height: 530,
-                            child: MusicListCard(
-                              musicList: musicList,
-                              audioPlayer: widget.audioPlayer,
-                            ),
-                          ),
-                          theme: ExpandableThemeData(
-                              tapHeaderToExpand: true,
-                              hasIcon: true,
-                              iconColor: Colors.white)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Text(
-                        "Embrace the soothing symphony of sleep music and the insightful journey of sleep tracking, for they are the silent whispers "
-                        "that guide you to a realm of tranquil dreams and restful nights.",
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.grey,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 5),
+                          child: ExpandablePanel(
+                              header: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0, vertical: 5.0),
+                                child: Text(
+                                  "Statistics",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              collapsed: Text(""),
+                              expanded: SizedBox(
+                                height: 530,
+                                child:
+                                    ChartSection(tabController: _tabController),
+                              ),
+                              theme: ExpandableThemeData(
+                                  tapHeaderToExpand: true,
+                                  hasIcon: true,
+                                  iconColor: Colors.white)),
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                    )
-                  ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 0),
+                          child: ExpandablePanel(
+                              header: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0, vertical: 5.0),
+                                child: Text(
+                                  "Latest Sleep Sounds",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              collapsed: Text(""),
+                              expanded: SizedBox(
+                                height: 530,
+                                child: MusicListCard(
+                                  musicList: musicList,
+                                  audioPlayer: widget.audioPlayer,
+                                ),
+                              ),
+                              theme: ExpandableThemeData(
+                                  tapHeaderToExpand: true,
+                                  hasIcon: true,
+                                  iconColor: Colors.white)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text(
+                            "Embrace the soothing symphony of sleep music and the insightful journey of sleep tracking, for they are the silent whispers "
+                            "that guide you to a realm of tranquil dreams and restful nights.",
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 200),
+              width: double.infinity,
+              height: 100,
+              color: Colors.red,
+              child: Text("${widget.audioPlayer}"),
             ),
           ],
         ),
