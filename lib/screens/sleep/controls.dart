@@ -15,7 +15,7 @@ class Controls extends StatelessWidget {
         IconButton(
           onPressed: () async => {await audioPlayer!.seekToPrevious()},
           icon: Icon(
-            Icons.skip_previous_outlined,
+            Icons.skip_previous,
             size: isMiniPlayer? 20 : 60,
             color: Colors.white,
           ),
@@ -52,7 +52,7 @@ class Controls extends StatelessWidget {
         IconButton(
           onPressed: () async => {await audioPlayer!.seekToNext()},
           icon: Icon(
-            Icons.skip_next_outlined,
+            Icons.skip_next,
             size: isMiniPlayer? 20 : 60,
             color: Colors.white,
           ),

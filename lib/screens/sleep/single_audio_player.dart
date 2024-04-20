@@ -9,9 +9,9 @@ import 'package:health_companion_app/models/audio_streamer.dart';
 import 'package:health_companion_app/screens/sleep/controls.dart';
 
 class SingleAudioPlayer extends StatefulWidget {
-  SingleAudioPlayer({Key? key, required this.index, required this.playList, this.audioPlayer})
+  SingleAudioPlayer({Key? key, this.index, required this.playList, this.audioPlayer})
       : super(key: key);
-  final int index;
+  final int? index;
   final List<MusicDataResponse> playList;
   final AudioPlayer? audioPlayer;
   @override
@@ -26,6 +26,7 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
   @override
   void initState() {
     super.initState();
+    print(widget.index);
     _audioPlayer = widget.audioPlayer ?? AudioPlayer();
     _audioStreamer = AudioStreamer(
         audioPlayer: _audioPlayer,
@@ -33,11 +34,17 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
         isMiniPlayer: false);
     if (widget.audioPlayer == null) {
       _playlist = _audioStreamer.createPlayList();
-      _audioStreamer.init(_playlist);
+      _audioStreamer.init(_playlist, widget.index);
     }
-    _audioPlayer.seek(Duration.zero, index:widget.index);
-    _audioPlayer.pause();
-
+    if (_audioPlayer.playing) {
+      if (widget.index == _audioPlayer.currentIndex) {
+        _audioPlayer.seek(_audioPlayer.position, index:widget.index);
+      }else{
+        _audioPlayer.seek(Duration.zero, index:widget.index);
+      }
+    } else {
+      _audioPlayer.seek(_audioPlayer.position, index:widget.index);
+    }
   }
 
   @override
@@ -79,16 +86,13 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
           ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _audioStreamer.getAudioMetaData(),
             SizedBox(
               height: 70,
             ),
             _audioStreamer.getProgressBar(),
-            SizedBox(
-              height: 10,
-            ),
             Controls(
               audioPlayer: _audioPlayer,
               isMiniPlayer: false,

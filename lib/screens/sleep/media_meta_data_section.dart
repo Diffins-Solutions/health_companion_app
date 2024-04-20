@@ -36,6 +36,7 @@ class MediaMetaData extends StatelessWidget {
                   ),
                   Text(
                     title,
+                    textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(

@@ -15,9 +15,9 @@ class AudioStreamer {
   final bool isMiniPlayer;
   final List<MusicDataResponse> playlist;
 
-  Future<void> init(audioSources) async {
+  Future<void> init(audioSources, initialIndex) async {
     await audioPlayer!.setLoopMode(LoopMode.all);
-    await audioPlayer!.setAudioSource(audioSources);
+    await audioPlayer!.setAudioSource(audioSources, initialIndex: initialIndex);
   }
 
   Stream<PositionData> get _positionDataSream =>
@@ -56,21 +56,24 @@ class AudioStreamer {
       stream: _positionDataSream,
       builder: (context, snapshot) {
         final positionData = snapshot.data;
-        return ProgressBar(
-          barHeight: isMiniPlayer ? 3 : 8,
-          baseBarColor: Colors.grey,
-          bufferedBarColor: Colors.grey,
-          progressBarColor: Colors.red,
-          thumbColor: Colors.red,
-          timeLabelTextStyle: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: isMiniPlayer ? 10 : 15,
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+          child: ProgressBar(
+            barHeight: isMiniPlayer ? 3 : 6,
+            baseBarColor: Colors.grey,
+            bufferedBarColor: Colors.grey,
+            progressBarColor: Colors.red,
+            thumbColor: Colors.red,
+            timeLabelTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: isMiniPlayer ? 10 : 15,
+            ),
+            progress: positionData?.position ?? Duration.zero,
+            total: positionData?.duration ?? Duration.zero,
+            buffered: positionData?.duration ?? Duration.zero,
+            onSeek: audioPlayer!.seek,
           ),
-          progress: positionData?.position ?? Duration.zero,
-          total: positionData?.duration ?? Duration.zero,
-          buffered: positionData?.duration ?? Duration.zero,
-          onSeek: audioPlayer!.seek,
         );
       },
     );

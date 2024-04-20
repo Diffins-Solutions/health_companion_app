@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:health_companion_app/models/audio_streamer.dart';
 import 'package:health_companion_app/screens/sleep/controls.dart';
+import 'package:health_companion_app/screens/sleep/single_audio_player.dart';
 import 'package:intl/intl.dart';
 import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:health_companion_app/screens/sleep/sleep_schedule_card.dart';
@@ -27,7 +28,6 @@ class SleepScreen extends StatefulWidget {
 
 class _SleepScreenState extends State<SleepScreen>
     with SingleTickerProviderStateMixin {
-  final TextEditingController _textController = TextEditingController();
   late final TabController _tabController;
   late AudioStreamer audioStreamer;
   List<MusicDataResponse> musicList = [];
@@ -189,33 +189,44 @@ class _SleepScreenState extends State<SleepScreen>
             ],
           ),
           (widget.audioPlayer != null && widget.audioPlayer!.playing)
-              ? Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(10),
-                  height: 100,
-                  color: Color(0xFF021A1A),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          child: audioStreamer.getAudioMetaData(),
+              ? GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SingleAudioPlayer(
+                          index: widget.audioPlayer!.currentIndex, playList: musicList, audioPlayer: widget.audioPlayer,),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10.0, left: 30),
-                          child: Column(
-                            children: [
-                              Expanded(child: audioStreamer.getProgressBar()),
-                              Controls(
-                                audioPlayer: widget.audioPlayer,
-                                isMiniPlayer: true,
-                              ),
-                            ],
-                          ),
+                    );
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(10),
+                    height: 100,
+                    color: Color(0xFF021A1A),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: audioStreamer.getAudioMetaData(),
                         ),
-                      )
-                    ],
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10.0, left: 30),
+                            child: Column(
+                              children: [
+                                Expanded(child: audioStreamer.getProgressBar()),
+                                Controls(
+                                  audioPlayer: widget.audioPlayer,
+                                  isMiniPlayer: true,
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 )
               : Container(),
