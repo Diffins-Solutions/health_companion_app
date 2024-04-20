@@ -21,8 +21,6 @@ class ApiService{
           return MusicDataResponse.fromJson(e);
         }).toList();
 
-        debugPrint(response.body.toString());
-        devLog.log(musicList.toString(),name: "MyMusicData");
         return musicList;
 
       } else {

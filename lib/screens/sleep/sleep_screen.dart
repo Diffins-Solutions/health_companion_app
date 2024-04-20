@@ -189,7 +189,7 @@ class _SleepScreenState extends State<SleepScreen>
               ),
             ],
           ),
-          (widget.audioPlayer != null)
+          (widget.audioPlayer != null && widget.audioPlayer!.playing)
               ? Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(10),
