@@ -39,4 +39,19 @@ class UserController {
     }
   }
 
+  static Future updateHeartRate (int id, int heartRate) async {
+    try{
+      print('inside user');
+      int result = await _dbHandler.updateColumn('user', 'id', 'heart', [id, heartRate]);
+      print('inside user result is $result');
+      if (result > 0) {
+        return Future(() => true);
+      } else {
+        return Future(() => false);
+      }
+    } catch (e) {
+      return Future(() => false);
+    }
+  }
+
 }

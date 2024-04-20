@@ -6,6 +6,7 @@ import 'package:health_companion_app/contollers/user_controller.dart';
 import 'package:health_companion_app/models/db_models/daily_target.dart';
 import 'package:health_companion_app/screens/landing/add_calories_popup.dart';
 import 'package:health_companion_app/screens/landing/add_water_popup.dart';
+import 'package:health_companion_app/screens/landing/heart_rate_widget.dart';
 import 'package:health_companion_app/screens/landing/step_counter_widget.dart';
 import 'package:health_companion_app/utils/enums.dart';
 import 'package:health_companion_app/widgets/welcome_text.dart';
@@ -14,7 +15,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/db_models/food_calorie.dart';
 import '../../models/db_models/user.dart';
-import '../../models/step_counter.dart';
 
 class LandingScreen extends StatefulWidget {
   static String id = 'landing_screen';
@@ -25,7 +25,6 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
-  double stepPercentage = 0.0;
   String name = 'Default user';
   Gender gender = Gender.female;
   int targetSteps = 0;
@@ -33,16 +32,17 @@ class _LandingScreenState extends State<LandingScreen> {
   List<String> food = [];
   List<FoodCalorie> foodCalories = [];
   DailyTarget? dailyTargets;
-  int _currentStepCount = 0;
+  int userId = 0 ;
 
   void getUser() async {
     User user = await UserController.getUser();
     if (user != null) {
+      print('User id: ${user.id}');
       setState(() {
         name = user.name;
         gender = user.gender == 'Gender.female' ? Gender.female : Gender.male;
         targetSteps = user.steps;
-        stepPercentage = (_currentStepCount / targetSteps) * 100;
+        userId = user.id!;
         if (user.heart != null) {
           heart = user.heart!;
         }
@@ -68,14 +68,6 @@ class _LandingScreenState extends State<LandingScreen> {
     });
   }
 
-  void updateCounter() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int stepCount = prefs.getInt('counter')!;
-    setState(() {
-      _currentStepCount = stepCount ;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -98,9 +90,12 @@ class _LandingScreenState extends State<LandingScreen> {
                 children: [
                   IconContent(
                     iconData: FontAwesomeIcons.heartPulse,
-                    value: heart == 0 ? 'Not configured' : heart.toString(),
+                    value: heart == 0 ? 'Not configured' : '${heart.toString()} bpm',
                     label: 'Heart',
                     color: Colors.red,
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => HeartRateWidget(userId: userId,)));
+                    },
                   ),
                   IconContent(
                       iconData: FontAwesomeIcons.solidMoon,

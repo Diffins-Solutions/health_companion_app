@@ -37,7 +37,7 @@ class DailyTargetController {
   static Future addOrUpdateSteps(String date, int steps) async {
     print('Adding steps $date : $steps');
     try {
-      int result = await _dbHandler.updateColumn('daily_target', 'date', 'steps', [steps, date]);
+      int result = await _dbHandler.updateColumn('daily_target', 'date', 'steps', [date, steps]);
       if (result > 0) {
         return Future(() => true);
       } else {
