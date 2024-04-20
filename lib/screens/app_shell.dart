@@ -24,7 +24,7 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  int _selectedIndex = 0; // Internal state for selected tab
+  int _selectedIndex = 0; // Inter  nal state for selected tab
 
   @override
   void initState() {

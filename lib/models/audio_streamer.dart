@@ -8,21 +8,22 @@ import 'package:audio_service/audio_service.dart';
 import 'package:health_companion_app/screens/sleep/media_meta_data_section.dart';
 
 class AudioStreamer {
-  const AudioStreamer({required this.audioPlayer, required this.playlist});
+  const AudioStreamer({this.audioPlayer, required this.playlist, required this.isMiniPlayer});
 
-  final AudioPlayer audioPlayer;
+  final AudioPlayer? audioPlayer;
+  final bool isMiniPlayer;
   final List<MusicDataResponse> playlist;
 
   Future<void> init(audioSources) async {
-    await audioPlayer.setLoopMode(LoopMode.all);
-    await audioPlayer.setAudioSource(audioSources);
+    await audioPlayer!.setLoopMode(LoopMode.all);
+    await audioPlayer!.setAudioSource(audioSources);
   }
 
   Stream<PositionData> get _positionDataSream =>
       Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
-        audioPlayer.positionStream,
-        audioPlayer.bufferedPositionStream,
-        audioPlayer.durationStream,
+        audioPlayer!.positionStream,
+        audioPlayer!.bufferedPositionStream,
+        audioPlayer!.durationStream,
         (position, bufferedPosition, duration) => PositionData(
           position,
           bufferedPosition,
@@ -32,7 +33,7 @@ class AudioStreamer {
 
   StreamBuilder<SequenceState?> getAudioMetaData() {
     return StreamBuilder<SequenceState?>(
-      stream: audioPlayer.sequenceStateStream,
+      stream: audioPlayer!.sequenceStateStream,
       builder: (context, snapshot) {
         final state = snapshot.data;
         if (state?.sequence.isEmpty ?? true) {
@@ -43,6 +44,7 @@ class AudioStreamer {
           imageURL: metadata.artUri.toString(),
           title: metadata.title.toString(),
           artist: metadata.artist.toString(),
+          isMiniPlayer: isMiniPlayer,
         );
       },
     );
@@ -54,19 +56,20 @@ class AudioStreamer {
       builder: (context, snapshot) {
         final positionData = snapshot.data;
         return ProgressBar(
-          barHeight: 8,
+          barHeight: isMiniPlayer ? 3 : 8,
           baseBarColor: Colors.grey,
           bufferedBarColor: Colors.grey,
           progressBarColor: Colors.red,
           thumbColor: Colors.red,
-          timeLabelTextStyle: const TextStyle(
+          timeLabelTextStyle: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w600,
+            fontSize: isMiniPlayer ? 10 : 15,
           ),
           progress: positionData?.position ?? Duration.zero,
           total: positionData?.duration ?? Duration.zero,
           buffered: positionData?.duration ?? Duration.zero,
-          onSeek: audioPlayer.seek,
+          onSeek: audioPlayer!.seek,
         );
       },
     );

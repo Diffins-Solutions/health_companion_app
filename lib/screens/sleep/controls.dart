@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 class Controls extends StatelessWidget {
-  const Controls({super.key, required this.audioPlayer});
+  const Controls({super.key, this.audioPlayer, required this.isMiniPlayer});
 
-  final AudioPlayer audioPlayer;
+  final AudioPlayer? audioPlayer;
+  final bool isMiniPlayer;
 
   @override
   Widget build(BuildContext context) {
@@ -12,15 +13,15 @@ class Controls extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-          onPressed: () async => {await audioPlayer.seekToPrevious()},
+          onPressed: () async => {await audioPlayer!.seekToPrevious()},
           icon: Icon(
             Icons.skip_previous_outlined,
-            size: 60,
+            size: isMiniPlayer? 20 : 60,
             color: Colors.white,
           ),
         ),
         StreamBuilder(
-          stream: audioPlayer.playerStateStream,
+          stream: audioPlayer!.playerStateStream,
           builder: (context, snapshot) {
             final playerState = snapshot.data;
             final processingState = playerState?.processingState;
@@ -28,31 +29,31 @@ class Controls extends StatelessWidget {
 
             if (!(playing ?? false)) {
               return IconButton(
-                onPressed: () async => {await audioPlayer.play()},
+                onPressed: () async => {await audioPlayer!.play()},
                 icon: Icon(Icons.play_arrow_rounded),
-                iconSize: 80,
+                iconSize: isMiniPlayer? 50 : 80,
                 color: Colors.white,
               );
             } else if (processingState != ProcessingState.completed) {
               return IconButton(
-                onPressed: () async => {await audioPlayer.pause()},
+                onPressed: () async => {await audioPlayer!.pause()},
                 icon: Icon(Icons.pause_rounded),
-                iconSize: 80,
+                iconSize: isMiniPlayer? 50 : 80,
                 color: Colors.white,
               );
             }
             return Icon(
               Icons.play_arrow_rounded,
-              size: 80,
+              size: isMiniPlayer? 50 : 80,
               color: Colors.white,
             );
           },
         ),
         IconButton(
-          onPressed: () async => {await audioPlayer.seekToNext()},
+          onPressed: () async => {await audioPlayer!.seekToNext()},
           icon: Icon(
             Icons.skip_next_outlined,
-            size: 60,
+            size: isMiniPlayer? 20 : 60,
             color: Colors.white,
           ),
         ),

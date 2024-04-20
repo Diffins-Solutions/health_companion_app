@@ -26,8 +26,10 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer();
-    _audioStreamer =
-        AudioStreamer(audioPlayer: _audioPlayer, playlist: widget.playList);
+    _audioStreamer = AudioStreamer(
+        audioPlayer: _audioPlayer,
+        playlist: widget.playList,
+        isMiniPlayer: false);
     _playlist = _audioStreamer.createPlayList();
     _audioStreamer.init(_playlist);
   }
@@ -64,11 +66,12 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
         height: double.infinity,
         width: double.infinity,
         decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [kActiveCardColor, Colors.black],
-        )),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [kActiveCardColor, Colors.black],
+          ),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -80,7 +83,10 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
             SizedBox(
               height: 10,
             ),
-            Controls(audioPlayer: _audioPlayer),
+            Controls(
+              audioPlayer: _audioPlayer,
+              isMiniPlayer: false,
+            ),
           ],
         ),
       ),
