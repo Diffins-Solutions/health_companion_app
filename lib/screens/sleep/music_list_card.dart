@@ -26,7 +26,7 @@ class _MusicListCardState extends State<MusicListCard> {
               context,
               MaterialPageRoute(
                 builder: (context) => SingleAudioPlayer(
-                    response: widget.musicList[index], playList: widget.musicList),
+                    index: index, playList: widget.musicList),
               ),
             );
           },

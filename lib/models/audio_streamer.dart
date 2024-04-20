@@ -8,7 +8,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:health_companion_app/screens/sleep/media_meta_data_section.dart';
 
 class AudioStreamer {
-  const AudioStreamer({this.audioPlayer, required this.playlist, required this.isMiniPlayer});
+  const AudioStreamer(
+      {this.audioPlayer, required this.playlist, required this.isMiniPlayer});
 
   final AudioPlayer? audioPlayer;
   final bool isMiniPlayer;
@@ -75,21 +76,29 @@ class AudioStreamer {
     );
   }
 
-  ConcatenatingAudioSource createPlayList() {
+  AudioSource _createSource(MusicDataResponse response) {
+    return AudioSource.uri(
+      Uri.parse(response.source.toString()),
+      tag: MediaItem(
+        id: response.id.toString(),
+        title: response.title.toString(),
+        artist: response.artist.toString(),
+        artUri: Uri.parse(
+          response.image.toString(),
+        ),
+      ),
+    );
+  }
+
+  ConcatenatingAudioSource createPlayList(id) {
     List<AudioSource> _songs = [];
+    MusicDataResponse currentSong = playlist.removeAt(id);
+    _songs.add(
+      _createSource(currentSong)
+    );
     for (MusicDataResponse response in playlist) {
       _songs.add(
-        AudioSource.uri(
-          Uri.parse(response.source.toString()),
-          tag: MediaItem(
-            id: response.id.toString(),
-            title: response.title.toString(),
-            artist: response.artist.toString(),
-            artUri: Uri.parse(
-              response.image.toString(),
-            ),
-          ),
-        ),
+          _createSource(response)
       );
     }
     return ConcatenatingAudioSource(children: _songs);
