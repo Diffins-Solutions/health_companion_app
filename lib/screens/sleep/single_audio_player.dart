@@ -9,10 +9,11 @@ import 'package:health_companion_app/models/audio_streamer.dart';
 import 'package:health_companion_app/screens/sleep/controls.dart';
 
 class SingleAudioPlayer extends StatefulWidget {
-  SingleAudioPlayer({Key? key, required this.index, required this.playList})
+  SingleAudioPlayer({Key? key, required this.index, required this.playList, this.audioPlayer})
       : super(key: key);
   final int index;
   final List<MusicDataResponse> playList;
+  final AudioPlayer? audioPlayer;
   @override
   State<SingleAudioPlayer> createState() => _SingleAudioPlayerState();
 }
@@ -25,13 +26,18 @@ class _SingleAudioPlayerState extends State<SingleAudioPlayer> {
   @override
   void initState() {
     super.initState();
-    _audioPlayer = AudioPlayer();
+    _audioPlayer = widget.audioPlayer ?? AudioPlayer();
     _audioStreamer = AudioStreamer(
         audioPlayer: _audioPlayer,
         playlist: widget.playList,
         isMiniPlayer: false);
-    _playlist = _audioStreamer.createPlayList(widget.index);
-    _audioStreamer.init(_playlist);
+    if (widget.audioPlayer == null) {
+      _playlist = _audioStreamer.createPlayList();
+      _audioStreamer.init(_playlist);
+    }
+    _audioPlayer.seek(Duration.zero, index:widget.index);
+    _audioPlayer.pause();
+
   }
 
   @override

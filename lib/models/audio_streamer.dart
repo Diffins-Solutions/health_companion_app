@@ -90,12 +90,8 @@ class AudioStreamer {
     );
   }
 
-  ConcatenatingAudioSource createPlayList(id) {
+  ConcatenatingAudioSource createPlayList() {
     List<AudioSource> _songs = [];
-    MusicDataResponse currentSong = playlist.removeAt(id);
-    _songs.add(
-      _createSource(currentSong)
-    );
     for (MusicDataResponse response in playlist) {
       _songs.add(
           _createSource(response)
