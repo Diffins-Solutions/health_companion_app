@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:health_companion_app/contollers/daily_target_controller.dart';
+import 'package:health_companion_app/models/steps_notifer.dart';
 import 'package:intl/intl.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,11 +11,11 @@ class StepCounter {
   final double _xyThreshold;
   StreamSubscription<AccelerometerEvent>? _streamSubscription;
   double _previousZ = 0.0; // Added for peak detection
+  final StepNotifier provider;
 
-  StepCounter({double zThreshold = 2.0, double xyThreshold = 0.5})
+  StepCounter({required this.provider, double zThreshold = 2.0, double xyThreshold = 0.5})
       : _zThreshold = zThreshold,
         _xyThreshold = xyThreshold;
-
 
   Future<void> startListening() async {
     if (_streamSubscription == null) {
@@ -44,37 +45,50 @@ class StepCounter {
     await prefs.setInt('counterP', stepCount);
     if (_isPeak(currentZ)) {
       if (currentX > _xyThreshold || currentY > _xyThreshold) {
-            stepCount++;
-            await prefs.setInt('counter', stepCount);
+        stepCount++;
+        await prefs.setInt('counter', stepCount);
       }
     }
-    //print("Step count: $stepCount");
+    if(provider.steps == 0 && stepCount !=0){
+      provider.addSteps(stepCount);
+      print('provider steps updated : ${provider.steps}');
+    }
+    _isMoving().then((moving){
+      if(moving){
+        provider.addSteps(stepCount);
+      }
+    });
+
   }
 
   Future checkDateAndUpdate(String date) async {
-    try{
+    try {
       DateTime prefsToday = DateTime.parse(date);
       DateTime today = DateTime.now();
-     if(today.difference(prefsToday).inDays != 0){
-       print('today: $today, prefs: $prefsToday');
+      bool isSameDay = prefsToday.year == today.year &&
+          prefsToday.month == today.month &&
+          prefsToday.day == today.day;
+      if (!isSameDay) {
+        print('today: $today, prefs: $prefsToday');
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        bool result = await DailyTargetController.addOrUpdateSteps(DateFormat.yMMMMd().format(prefsToday), prefs.getInt('counter')!);
+        bool result = await DailyTargetController.addOrUpdateSteps(
+            DateFormat.yMMMMd().format(prefsToday), prefs.getInt('counter')!);
         await prefs.setInt('counter', 0);
         await prefs.setInt('counterP', 0);
         await prefs.setString('today', today.toString());
         await prefs.setString('yesterday', prefsToday.toString());
       }
-    }catch (e){
+    } catch (e) {
       rethrow;
     }
   }
 
-  Future isMoving () async {
+
+  Future _isMoving() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int stepCount = prefs.getInt('counter')!;
     int stepCountP = prefs.getInt('counterP')!;
-    print('Moving compRE $stepCountP, $stepCount');
+    //print('Moving compRE $stepCountP, $stepCount');
     return Future(() => stepCount != stepCountP);
   }
-
 }
