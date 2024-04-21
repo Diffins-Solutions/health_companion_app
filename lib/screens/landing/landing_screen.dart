@@ -27,7 +27,7 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> {
   String name = 'Default user';
   Gender gender = Gender.female;
-  int targetSteps = 0;
+  int targetSteps = 1000;
   int heart = 0;
   List<String> food = [];
   List<FoodCalorie> foodCalories = [];

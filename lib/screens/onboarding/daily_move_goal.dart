@@ -4,9 +4,15 @@ import 'package:flutter/widgets.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
 import 'package:health_companion_app/screens/app_shell.dart';
+import 'package:health_companion_app/contollers/user_controller.dart';
+import 'package:health_companion_app/models/db_models/user.dart';
 
 class DailyMoveGoal extends StatefulWidget {
   static String id = 'daily_move_goal_screen';
+
+  final Map<String, dynamic> previousData;
+
+  DailyMoveGoal({required this.previousData});
 
   @override
   State<DailyMoveGoal> createState() => _DailyMoveGoalsState();
@@ -14,7 +20,25 @@ class DailyMoveGoal extends StatefulWidget {
 
 class _DailyMoveGoalsState extends State<DailyMoveGoal> {
 
-  int noOfCalories = 100;
+  int steps = 1000;
+
+  void addUserData() async {
+    print('adding user data');
+    User user = User(
+        name: widget.previousData['name'],
+        age: 24,
+        height: widget.previousData['height'],
+        weight: widget.previousData['weight'],
+        gender: widget.previousData['gender'],
+        steps: steps);
+    bool response = await UserController.addUser(user);
+    if (response == true) {
+      Navigator.pushNamed(context, AppShell.id);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error Recording user data')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +92,7 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
                     MaterialButton(
                       onPressed: () {
                         setState(() {
-                          noOfCalories--;
+                          steps--;
                         });
                       },
                       shape: CircleBorder(),
@@ -84,7 +108,7 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
                     Column(
                       children: [
                         Text(
-                          noOfCalories.toString(),
+                          steps.toString(),
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
@@ -102,7 +126,7 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
                     MaterialButton(
                       onPressed: () {
                         setState(() {
-                          noOfCalories++;
+                          steps++;
                         });
                       },
                       shape: CircleBorder(),
@@ -123,9 +147,8 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
               label: 'Finish Setup',
               color: kLightGreen,
               onPressed: () {
-                Navigator.pushNamed(context, AppShell.id);
+                addUserData();
               },
-              icon: Icons.navigate_next,
             ),
           ],
         ),

@@ -104,14 +104,18 @@ class _WeightScreenState extends State<WeightScreen> {
               color: kLightGreen,
               onPressed: () async {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            SleepScheduleScreen(previousData: {
-                              'gender': widget.previousData['gender'],
-                              'height': widget.previousData['height'],
-                              'weight': weight
-                            })));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SleepScheduleScreen(
+                      previousData: {
+                        'name': widget.previousData['name'],
+                        'gender': widget.previousData['gender'],
+                        'height': widget.previousData['height'],
+                        'weight': weight,
+                      },
+                    ),
+                  ),
+                );
               },
               icon: Icons.navigate_next,
             ),
@@ -121,5 +125,3 @@ class _WeightScreenState extends State<WeightScreen> {
     );
   }
 }
-
-

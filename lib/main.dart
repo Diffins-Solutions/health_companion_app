@@ -7,14 +7,9 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:health_companion_app/models/local_notifications.dart';
 import 'package:health_companion_app/models/steps_notifer.dart';
 import 'package:health_companion_app/screens/app_shell.dart';
-import 'package:health_companion_app/screens/landing/landing_screen.dart';
-import 'package:health_companion_app/screens/onboarding/daily_move_goal.dart';
-import 'package:health_companion_app/screens/onboarding/height_screen.dart';
 import 'package:health_companion_app/screens/onboarding/name_screen.dart';
-import 'package:health_companion_app/screens/onboarding/sleep_schedule_screen.dart';
 import 'package:health_companion_app/screens/onboarding/welcome_screen.dart';
 import 'package:health_companion_app/screens/onboarding/setup_start_screen.dart';
-import 'package:health_companion_app/screens/onboarding/gender_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -85,11 +80,11 @@ class MyHealthApp extends StatelessWidget {
             ),
           ),
           initialRoute:
-              _auth.currentUser == null ? WelcomeScreen.id : AppShell.id,
+              WelcomeScreen.id ,
           routes: {
             WelcomeScreen.id: (context) => WelcomeScreen(),
             SetupStartScreen.id: (context) => SetupStartScreen(),
-            GenderScreen.id: (context) => GenderScreen(),
+            NameScreen.id: (context) => NameScreen(),
             AppShell.id: (context) => AppShell(currentIndex: 0),
           }),
     );

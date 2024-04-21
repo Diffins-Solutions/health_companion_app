@@ -12,6 +12,8 @@ class NameScreen extends StatefulWidget {
 }
 
 class _NameScreenState extends State<NameScreen> {
+  String? name;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,14 +53,18 @@ class _NameScreenState extends State<NameScreen> {
               child: Text(
                 'Welcome aboard! Please enter your name to kickstart your journey with us.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey
-                ),
+                style: TextStyle(color: Colors.grey),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: CustomInputField(onChange: (value) {}, hint: "Enter your name"),
+              child: CustomInputField(
+                  onChange: (value) {
+                    setState(() {
+                      name = value;
+                    });
+                  },
+                  hint: "Enter your name"),
             ),
             SizedBox(
               height: 50,
@@ -67,7 +73,16 @@ class _NameScreenState extends State<NameScreen> {
               label: 'Continue',
               color: kLightGreen,
               onPressed: () {
-                Navigator.pushNamed(context, GenderScreen.id);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GenderScreen(
+                      previousData: {
+                        'name': name.toString(),
+                      },
+                    ),
+                  ),
+                );
               },
               icon: Icons.navigate_next,
             ),
