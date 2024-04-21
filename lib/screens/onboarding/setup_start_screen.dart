@@ -5,6 +5,8 @@ import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_round_button.dart';
 import 'package:health_companion_app/screens/onboarding/name_screen.dart';
 
+import '../app_shell.dart';
+
 class SetupStartScreen extends StatefulWidget {
   static String id = 'setup_start_screen';
 
@@ -59,7 +61,9 @@ class _SetupStartScreenState extends State<SetupStartScreen> {
                     child:
                         Container()), // Empty container to push text to the right
                 GestureDetector(
-                  onTap: () => {},
+                  onTap: () => {
+                  Navigator.pushNamed(context, AppShell.id)
+                  },
                   child: Text(
                     'Skip  >>',
                     style: TextStyle(

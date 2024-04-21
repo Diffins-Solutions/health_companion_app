@@ -7,6 +7,9 @@ import '../../widgets/custom_flat_button.dart';
 
 class WeightScreen extends StatefulWidget {
   static String id = 'weight_screen';
+  final Map<String, dynamic> previousData;
+
+  WeightScreen({required this.previousData});
 
   @override
   State<WeightScreen> createState() => _WeightScreenState();
@@ -99,8 +102,16 @@ class _WeightScreenState extends State<WeightScreen> {
             CustomFlatButton(
               label: 'Continue',
               color: kLightGreen,
-              onPressed: () {
-                Navigator.pushNamed(context, SleepScheduleScreen.id);
+              onPressed: () async {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SleepScheduleScreen(previousData: {
+                              'gender': widget.previousData['gender'],
+                              'height': widget.previousData['height'],
+                              'weight': weight
+                            })));
               },
               icon: Icons.navigate_next,
             ),
@@ -110,3 +121,5 @@ class _WeightScreenState extends State<WeightScreen> {
     );
   }
 }
+
+

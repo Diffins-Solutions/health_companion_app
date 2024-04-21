@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class DailySleepPlan{
   final String day;
-  TimeOfDay? _wakeupTime = TimeOfDay(hour: 0, minute: 0);
-  TimeOfDay? _sleepTime = TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay _wakeupTime = TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay _sleepTime = TimeOfDay(hour: 0, minute: 0);
 
   DailySleepPlan({required this.day});
 
@@ -15,11 +15,11 @@ class DailySleepPlan{
     return _wakeupTime;
   }
 
-  void setSleepTime (TimeOfDay? time){
+  void setSleepTime (TimeOfDay time){
     _sleepTime = time;
   }
 
-  void setWakeupTime (TimeOfDay? time){
+  void setWakeupTime (TimeOfDay time){
     _wakeupTime = time;
   }
 

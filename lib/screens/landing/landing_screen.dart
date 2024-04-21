@@ -1,33 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:health_companion_app/contollers/daily_target_controller.dart';
+import 'package:health_companion_app/contollers/food_calorie_controller.dart';
+import 'package:health_companion_app/contollers/user_controller.dart';
+import 'package:health_companion_app/models/db_models/daily_target.dart';
 import 'package:health_companion_app/screens/landing/add_calories_popup.dart';
-import 'package:health_companion_app/utils/constants.dart';
+import 'package:health_companion_app/screens/landing/add_water_popup.dart';
+import 'package:health_companion_app/screens/landing/heart_rate_widget.dart';
+import 'package:health_companion_app/screens/landing/step_counter_widget.dart';
 import 'package:health_companion_app/utils/enums.dart';
-import 'package:arc_progress_bar_new/arc_progress_bar_new.dart';
 import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../models/db_models/food_calorie.dart';
+import '../../models/db_models/user.dart';
 
 class LandingScreen extends StatefulWidget {
   static String id = 'landing_screen';
-
-  final String name = 'Nethmi';
-  final Gender gender = Gender.female;
   String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
-  final int targetSteps = 1000;
-  final int coveredSteps = 200;
-  double stpePercentage = 20.0;
+
   @override
   State<LandingScreen> createState() => _LandingScreenState();
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+  String name = 'Default user';
+  Gender gender = Gender.female;
+  int targetSteps = 0;
+  int heart = 0;
+  List<String> food = [];
+  List<FoodCalorie> foodCalories = [];
+  DailyTarget? dailyTargets;
+  int userId = 0 ;
+
+  void getUser() async {
+    User user = await UserController.getUser();
+    if (user != null) {
+      print('User id: ${user.id}');
+      setState(() {
+        name = user.name;
+        gender = user.gender == 'Gender.female' ? Gender.female : Gender.male;
+        targetSteps = user.steps;
+        userId = user.id!;
+        if (user.heart != null) {
+          heart = user.heart!;
+        }
+      });
+    }
+  }
+
+  void getFoodCalories() async {
+    List<FoodCalorie> result = await FoodCalorieController.getFoodCalories();
+    if (result.isNotEmpty) {
+      print(result.length);
+      setState(() {
+        foodCalories = result;
+        food = List.generate(result.length, (i) => result[i].food);
+      });
+    }
+  }
+
+  void getDailyTargets() async {
+    DailyTarget? result = await DailyTargetController.getDailyTarget();
+    setState(() {
+      dailyTargets = result;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+    getFoodCalories();
+    getDailyTargets();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          WelcomeText(name: widget.name, today: widget.formattedDate),
+          WelcomeText(name: name, today: widget.formattedDate),
           Row(
             children: [
               Column(
@@ -35,9 +90,12 @@ class _LandingScreenState extends State<LandingScreen> {
                 children: [
                   IconContent(
                     iconData: FontAwesomeIcons.heartPulse,
-                    value: '80 bpm',
+                    value: heart == 0 ? 'Not configured' : '${heart.toString()} bpm',
                     label: 'Heart',
                     color: Colors.red,
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => HeartRateWidget(userId: userId,)));
+                    },
                   ),
                   IconContent(
                       iconData: FontAwesomeIcons.solidMoon,
@@ -46,16 +104,23 @@ class _LandingScreenState extends State<LandingScreen> {
                       color: Colors.yellow),
                   IconContent(
                     iconData: Icons.fastfood_rounded,
-                    value: '905 kcal',
+                    value: '${dailyTargets?.calorie == null ? 0: dailyTargets!.calorie} kcal',
                     label: 'Calories',
                     color: Colors.orangeAccent,
-                    onTap: () => addCaloriesPopup(context),
+                    onTap: () => {
+                      addCaloriesPopup(context, food, foodCalories, dailyTargets)
+                          .then((e) => {getDailyTargets()})
+                    },
                   ),
                   IconContent(
                       iconData: Icons.water_drop_rounded,
-                      value: '2 liters',
+                      value: '${dailyTargets?.water == null ? 0: dailyTargets!.water} liters',
                       label: 'Water',
-                      color: Colors.blue),
+                      color: Colors.blue,
+                    onTap: () => {
+                        addWaterPopup(context, dailyTargets).then((e) => {getDailyTargets()})
+                    },
+                  ),
                 ],
               ),
               SizedBox(
@@ -63,46 +128,20 @@ class _LandingScreenState extends State<LandingScreen> {
               ),
               Expanded(
                 child: Image.asset(
-                    'images/running${widget.gender == Gender.male ? 'm' : 'w'}.png'),
+                    'images/running${gender == Gender.male ? 'm' : 'w'}.png'),
               ),
               SizedBox(
                 width: 15,
               ),
             ],
           ),
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 40, left: 10, right: 10, bottom: 10),
-            child: ArcProgressBar(
-                percentage: widget.stpePercentage,
-                bottomLeftWidget: Text(
-                  "Begin",
-                  style: TextStyle(fontWeight: FontWeight.w900),
-                ),
-                bottomRightWidget: Text(
-                  '${widget.coveredSteps} / ${widget.targetSteps}',
-                  style: TextStyle(fontWeight: FontWeight.w900),
-                ),
-                bottomCenterWidget: Text(
-                  "STEPS",
-                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
-                ),
-                centerWidget: Icon(
-                  FontAwesomeIcons.walking,
-                  size: 50,
-                ),
-                arcThickness: 25,
-                innerPadding: 15,
-                animateFromLastPercent: true,
-                handleSize: 0,
-                backgroundColor: Colors.white30,
-                foregroundColor: kLightGreen),
-          ),
+          StepCounterWidget(targetSteps: targetSteps),
         ],
       ),
     );
   }
 }
+
 
 class IconContent extends StatelessWidget {
   final IconData iconData;

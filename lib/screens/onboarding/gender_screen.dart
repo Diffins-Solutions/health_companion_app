@@ -69,7 +69,9 @@ class _GenderScreenState extends State<GenderScreen> {
             CustomFlatButton(
               label: 'Continue',
               color: kLightGreen,
-              onPressed: () {Navigator.pushNamed(context, HeightScreen.id);},
+              onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                HeightScreen(previousData: {'gender': selectedGender.toString()
+              })));},
               icon: Icons.navigate_next,
             ),
           ],
