@@ -51,12 +51,15 @@ class ChartSection extends StatelessWidget {
   const ChartSection({
     super.key,
     required TabController tabController,
+    this.todayTimeInBed,
   }) : _tabController = tabController;
 
   final TabController _tabController;
+  final int? todayTimeInBed;
 
   @override
   Widget build(BuildContext context) {
+    Map<String,int> toHourMins = getTimeInBedHoursMins(todayTimeInBed!);
     return Column(
       children: [
         Padding(
@@ -104,6 +107,7 @@ class ChartSection extends StatelessWidget {
               SleepChart(
                 tabName: 'D',
                 chartData: dailyData,
+                timeInBed: toHourMins,
               ),
               SleepChart(
                 tabName: 'W',

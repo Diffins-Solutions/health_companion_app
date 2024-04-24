@@ -47,10 +47,14 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
         : weeklySleepPlan.setSleepTimeForTheDay(selectedDay, time!);
   }
 
+  String formatTimeForDB(TimeOfDay? time) {
+    return "${time?.hour}:${time?.minute}";
+  }
+
   void addSleepSchedule () async {
       List<SleepTarget> sleep_targets = [];
       for(DailySleepPlan dailySleepPlan in weeklySleepPlan.weeklySleepPlan){
-        sleep_targets.add(SleepTarget(day: dailySleepPlan.day, sleep: dailySleepPlan.getSleepTime().toString(), wakeup: dailySleepPlan.getWakeupTime().toString()));
+        sleep_targets.add(SleepTarget(day: dailySleepPlan.day, sleep: formatTimeForDB(dailySleepPlan.getSleepTime()), wakeup: formatTimeForDB(dailySleepPlan.getWakeupTime())));
       }
       print('adding sleep schedule');
       await SleepTargetController.addSleepTargets(sleep_targets);

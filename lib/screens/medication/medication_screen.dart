@@ -142,7 +142,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
                             hintStyle: TextStyle(
                               fontSize: kNormalSize,
                             ),
-                          ),
+                             ),
                         ),
                       ),
                       onTap: () async {

@@ -80,7 +80,7 @@ class MyHealthApp extends StatelessWidget {
             ),
           ),
           initialRoute:
-              WelcomeScreen.id ,
+          _auth.currentUser == null ? WelcomeScreen.id : AppShell.id,
           routes: {
             WelcomeScreen.id: (context) => WelcomeScreen(),
             SetupStartScreen.id: (context) => SetupStartScreen(),

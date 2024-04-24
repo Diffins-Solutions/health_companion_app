@@ -1,17 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:health_companion_app/contollers/daily_sleep_controller.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import 'package:health_companion_app/models/chart_data.dart';
 
-class SleepChart extends StatelessWidget {
+import 'package:health_companion_app/models/db_models/daily_sleep.dart';
+
+
+class SleepChart extends StatefulWidget {
   String tabName;
   List<ChartData> chartData;
+  final Map<String, int>? timeInBed;
 
-  SleepChart({required this.tabName, required this.chartData});
+  SleepChart({required this.tabName, required this.chartData, this.timeInBed});
 
-  bool isDaily() => tabName == "D";
+  @override
+  State<SleepChart> createState() => _SleepChartState();
+}
+
+class _SleepChartState extends State<SleepChart>
+    with SingleTickerProviderStateMixin {
+  bool isDaily() => widget.tabName == "D";
+  late List<DailySleep> sleepTimes;
 
   Map<String, String> titles = {
     'D': 'Today',
@@ -20,8 +32,40 @@ class SleepChart extends StatelessWidget {
     'Y': 'Past Year'
   };
 
+  Map<String, int> getTimeInBedHoursMins(int mins){
+    print(mins);
+    return {"hours":mins ~/ 60, "mins": mins % 60};
+  }
+
+  int getTotalMins(List<DailySleep> sleepData) {
+    int total = 0;
+    for (DailySleep data in sleepData) {
+      total += data.mins;
+    }
+    return total;
+  }
+
+  List<ChartData> formatYearlyChartData (List<DailySleep> yearlySleepData) {
+
+  }
+  
+  Future<List<DailySleep>> getSleepData (String tab) async{
+    DateTime time = DateTime.now();
+    List<DailySleep> sleepData = [];
+    switch(tab) {
+      case'Y':
+        sleepData = await DailySleepController.getYearlySleepData(time.year.toString());
+        break;
+      case 'M':
+        sleepData = await DailySleepController.getMonthlySleepData(time.year.toString(), time.month.toString());
+        break;
+    }
+    return sleepData;
+  }
+  
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20.0),
       child: Column(
@@ -30,7 +74,7 @@ class SleepChart extends StatelessWidget {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 "Time in bed",
                 style: TextStyle(
@@ -39,7 +83,7 @@ class SleepChart extends StatelessWidget {
               ),
               Text(
                 //TODO: calculate the total time and assign it here
-                "7hr31min",
+                "${timeInBed?["hours"]}hr ${timeInBed?["mins"]}min",
                 style: TextStyle(
                     fontSize: 30,
                     letterSpacing: 1,
@@ -53,7 +97,7 @@ class SleepChart extends StatelessWidget {
           Column(
             children: [
               Text(
-                titles[tabName]!,
+                titles[widget.tabName]!,
                 style: TextStyle(
                     fontSize: 17,
                     color: Color(0xF017736a),

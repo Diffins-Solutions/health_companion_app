@@ -3,9 +3,9 @@ import 'package:health_companion_app/utils/constants.dart';
 
 class SleepScheduleCard extends StatelessWidget {
   const SleepScheduleCard(
-      {super.key, required this.time, required this.isBedTime});
+      {super.key, this.time, required this.isBedTime});
 
-  final String time;
+  final String? time;
   final bool isBedTime;
 
   @override
@@ -27,7 +27,7 @@ class SleepScheduleCard extends StatelessWidget {
           children: [
             Icon(Icons.bed),
             Text(
-              time,
+              time!,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(

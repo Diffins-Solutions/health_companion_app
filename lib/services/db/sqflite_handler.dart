@@ -55,9 +55,7 @@ class DbHandler {
           create table daily_sleep ( 
           id integer primary key autoincrement, 
           day text not null,
-          wakeup text,
-          sleep text,
-          foreign key (day) references sleep_target(day))
+          mins integer
           ''');
       print("Inserting data into food_calorie");
       await txn.execute('''
@@ -128,7 +126,6 @@ class DbHandler {
           ('Tea with whole milk', 22);
           ''');
     });
-
   }
 
   Future fetchData(String table) async {
@@ -144,13 +141,22 @@ class DbHandler {
     }
   }
 
-  Future fetchFilteredData(String table, String field, List<dynamic> args) async {
+  Future fetchFilteredData(
+      String table, String field, List<dynamic> args) async {
     Database db = await _db;
-    List<Map<String, dynamic>> maps = await db.query(
-      table,
-        where: "$field=?",
-        whereArgs: args
-    );
+    List<Map<String, dynamic>> maps =
+        await db.query(table, where: "$field=?", whereArgs: args);
+    if (maps.isNotEmpty) {
+      return maps;
+    } else {
+      return null; // Return null if no user found
+    }
+  }
+
+  Future fetchPatternedData(String table, String field, String pattern) async {
+    Database db = await _db;
+    List<Map<String, dynamic>> maps = await db.rawQuery(
+        'SELECT * FROM $table WHERE $field LIKE ?', ['$pattern-%']);
     if (maps.isNotEmpty) {
       return maps;
     } else {
@@ -178,26 +184,30 @@ class DbHandler {
 
   Future<int> insertOrUpdate(String table, dynamic data) async {
     Database db = await _db;
-    var result = await db.insert(table, data.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    var result = await db.insert(table, data.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     return result;
   }
 
-  Future<int> updateColumn(String table, String primaryKey, String columnToUpdate, dynamic data) async {
+  Future<int> updateColumn(String table, String primaryKey,
+      String columnToUpdate, dynamic data) async {
     Database db = await _db;
     await db.transaction((txn) async {
       // Check if row exists
-      final count = await txn.rawQuery('SELECT 1 FROM $table WHERE $primaryKey = ?', [data[0]]);
+      final count = await txn
+          .rawQuery('SELECT 1 FROM $table WHERE $primaryKey = ?', [data[0]]);
       final rowExists = count.isNotEmpty;
       if (rowExists) {
         // Update existing row
         int result = await txn.rawUpdate(
             'UPDATE $table SET $columnToUpdate = ? WHERE $primaryKey = ?',
-            [data[1],data[0]]);
+            [data[1], data[0]]);
         print('Row updated successfully!');
         return result;
       } else {
         // Insert new row
-        int result = await txn.insert(table, {primaryKey: data[0], columnToUpdate: data[1]});
+        int result = await txn
+            .insert(table, {primaryKey: data[0], columnToUpdate: data[1]});
         print('Row inserted successfully!');
         return result;
       }
