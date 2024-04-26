@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/chart.dart';
-import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:intl/intl.dart';
 
 import '../../models/chart_data.dart';
@@ -47,8 +46,7 @@ final List<ChartData> weeklyData = [
 ];
 
 class MoodScreen extends StatefulWidget {
-  final String name = 'Nethmi';
-  String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
+  final String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
 
   @override
   State<MoodScreen> createState() => _MoodScreenState();

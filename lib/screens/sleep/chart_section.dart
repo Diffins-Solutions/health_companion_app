@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/screens/sleep/sleep_chart.dart';
-import 'package:health_companion_app/models/chart_data.dart';
 
 
 class ChartSection extends StatelessWidget {

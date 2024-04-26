@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-import '../../models/db_models/user.dart';
 
 class DbHandler {
   final int dbVersion = 1;

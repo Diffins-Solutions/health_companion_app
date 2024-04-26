@@ -5,11 +5,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:health_companion_app/models/local_notifications.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:intl/intl.dart';
-import '../../widgets/welcome_text.dart';
 import '../../models/reminder.dart';
 
 class MedicationScreen extends StatefulWidget {
-  String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
+  final String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
   MedicationScreen({super.key});
 
   @override

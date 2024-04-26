@@ -9,7 +9,6 @@ import 'package:health_companion_app/models/db_models/sleep_target.dart';
 import 'package:health_companion_app/screens/sleep/controls.dart';
 import 'package:health_companion_app/screens/sleep/single_audio_player.dart';
 import 'package:intl/intl.dart';
-import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:health_companion_app/screens/sleep/sleep_schedule_card.dart';
 import 'package:health_companion_app/screens/sleep/chart_section.dart';
 import 'package:health_companion_app/screens/sleep/music_list_card.dart';
@@ -43,7 +42,7 @@ class SleepScreen extends StatefulWidget {
   final AudioPlayer? audioPlayer;
 
   final String name = 'Nethmi';
-  String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
+  final String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
 
   @override
   State<SleepScreen> createState() => _SleepScreenState();

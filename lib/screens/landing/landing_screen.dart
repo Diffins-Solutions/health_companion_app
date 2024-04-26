@@ -16,7 +16,7 @@ import '../../models/db_models/user.dart';
 
 class LandingScreen extends StatefulWidget {
   static String id = 'landing_screen';
-  String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
+  final String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
 
   @override
   State<LandingScreen> createState() => _LandingScreenState();
