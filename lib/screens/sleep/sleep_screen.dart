@@ -41,7 +41,6 @@ class SleepScreen extends StatefulWidget {
 
   final AudioPlayer? audioPlayer;
 
-  final String name = 'Nethmi';
   final String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
 
   @override
