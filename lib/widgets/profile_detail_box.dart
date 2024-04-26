@@ -6,7 +6,7 @@ import 'package:health_companion_app/utils/constants.dart';
 class ProfileDetailBox extends StatelessWidget {
 
   final String title;
-  final int? value;
+  final dynamic value;
   final bool editMode;
   final VoidCallback onIncrease;
   final VoidCallback onDecrease;
@@ -45,7 +45,7 @@ class ProfileDetailBox extends StatelessWidget {
                 Column(
                   children: [
                     Center(child: Text('$title', style: TextStyle(fontSize: 38, fontWeight: FontWeight.w500, color: Colors.white),)),
-                    Center(child: Text("${value != null ? value : 'N/A'}", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500, color: Colors.grey),)),
+                    Center(child: Text(value != null ? value.toString() : 'N/A', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500, color: Colors.grey),)),
                   ],
                 ),
                 editMode ? Column(
@@ -54,11 +54,11 @@ class ProfileDetailBox extends StatelessWidget {
                     InkWell(
                         onTap: onIncrease,
                         splashColor: kLightGreen,
-                        child: Icon(Icons.arrow_upward, size: 40,color: value != null && value! >= maxLimit ? Colors.grey: Colors.white,)),
+                        child: Icon(Icons.arrow_upward, size: 40,color: value is int && value != null && value! >= maxLimit ? Colors.grey: Colors.white,)),
                     InkWell(
                         onTap: onDecrease,
                         splashColor: kLightGreen,
-                        child: Icon(Icons.arrow_downward,size: 40, color: value != null && value! <= minLimit ? Colors.grey: Colors.white,)),
+                        child: Icon(Icons.arrow_downward,size: 40, color: value is int && value != null && value! <= minLimit ? Colors.grey: Colors.white,)),
                   ],
                 ):
                 SizedBox(width: 0),

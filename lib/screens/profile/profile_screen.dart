@@ -65,6 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         this.errorMap['age'] = false;
         this.errorMap['height'] = false;
         this.errorMap['weight'] = false;
+        this.errorMap['gender'] = false;
         User updatedUser = User(
           id: userId,
           gender: gender == Gender.male ? 'Gender.male' : 'Gender.female',
@@ -102,6 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     this.errorMap['age'] = false;
     this.errorMap['height'] = false;
     this.errorMap['weight'] = false;
+    this.errorMap['gender'] = false;
     User user = await getUser();
     if (user != null) {
       setState(() {
@@ -134,6 +136,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }else{
       setState(() {
         age = minAge;
+      });
+    }
+  }
+
+  void changeGender() {
+    if(gender == Gender.male){
+      setState(() {
+        gender = Gender.female;
+      });
+    }else{
+      setState(() {
+        gender = Gender.male;
       });
     }
   }
@@ -226,6 +240,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     this.errorMap['age'] = false;
     this.errorMap['height'] = false;
     this.errorMap['weight'] = false;
+    this.errorMap['gender'] = false;
     this.errorMap['update'] = false;
     getUser();
   }
@@ -357,6 +372,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Expanded(child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ProfileDetailBox(
+                            title: 'Gender',
+                            value: gender == Gender.male ? "Male" : "Female",
+                            editMode: editMode,
+                            onIncrease: changeGender,
+                            onDecrease: changeGender,
+                            minLimit: minAge,
+                            maxLimit: maxAge,
+                          ),
+                        )),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ProfileDetailBox(
                               title: 'Age',
                               value: age,
                               editMode: editMode,
@@ -382,16 +413,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               maxLimit: maxHeight,
                           ),
                         )),
+                      ],
+                    ),
+                    Row(
+                      children: [
                         Expanded(child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ProfileDetailBox(
-                              title: 'Weight',
-                              value: weight,
-                              editMode: editMode,
-                              onIncrease: weightIncrease,
-                              onDecrease: weightDecrease,
-                              minLimit: minWeight,
-                              maxLimit: maxWeight,
+                            title: 'Weight',
+                            value: weight,
+                            editMode: editMode,
+                            onIncrease: weightIncrease,
+                            onDecrease: weightDecrease,
+                            minLimit: minWeight,
+                            maxLimit: maxWeight,
                           ),
                         )),
                       ],
