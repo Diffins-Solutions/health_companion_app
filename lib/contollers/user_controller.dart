@@ -7,6 +7,8 @@ class UserController {
   static Future<User> getUser() async {
     try {
       dynamic result = await _dbHandler.fetchData('user');
+      print('database res');
+      print(result['gender']);
       return User.fromObject(result);
     } catch (e) {
       rethrow;
@@ -26,7 +28,7 @@ class UserController {
     }
   }
 
-  static Future updateUser(User user) async {
+  static Future<bool> updateUser(User user) async {
     try {
       int result = await _dbHandler.update('user', user, 'id', [user.id]);
       if (result > 0) {

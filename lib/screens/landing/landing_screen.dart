@@ -35,7 +35,8 @@ class _LandingScreenState extends State<LandingScreen> {
   void getUser() async {
     User user = await UserController.getUser();
     if (user != null) {
-      print('User id: ${user.id}');
+      print('User id: ${user.gender}');
+      print('User: ${user}');
       setState(() {
         name = user.name;
         gender = user.gender == 'Gender.female' ? Gender.female : Gender.male;
