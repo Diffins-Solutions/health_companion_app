@@ -73,10 +73,9 @@ class _MoodScreenState extends State<MoodScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Expanded(
       child: Column(
         children: [
-          WelcomeText(name: widget.name, today: widget.formattedDate),
           Expanded(flex: 2, child: ChartSection(tabController: _tabController)),
           Expanded(child: InputEmotion(textController: _textController)),
         ],

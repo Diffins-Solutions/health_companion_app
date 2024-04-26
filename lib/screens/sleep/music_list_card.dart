@@ -25,7 +25,9 @@ class _MusicListCardState extends State<MusicListCard> {
     await Future.delayed(Duration(seconds: 10));
 
     setState(() {
-      _isLoading = false;
+      if (widget.musicList.isNotEmpty) {
+        _isLoading = false;
+      }
     });
   }
 

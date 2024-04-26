@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/contollers/daily_sleep_controller.dart';
-import 'package:health_companion_app/utils/constants.dart';
 import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import 'package:health_companion_app/models/chart_data.dart';
-
+import 'package:health_companion_app/screens/sleep/daily_sleep_chart.dart';
+import 'package:health_companion_app/screens/sleep/general_sleep_chart.dart';
 import 'package:health_companion_app/models/db_models/daily_sleep.dart';
-
+import 'package:health_companion_app/utils/time_utils.dart';
 
 class SleepChart extends StatefulWidget {
   final String tabName;
@@ -57,13 +55,6 @@ class _SleepChartState extends State<SleepChart>
       List<String> months = yearlyData.keys.toList();
       chartData = months.map((month) => ChartData(month, yearlyData[month]!.toDouble())).toList();
     });
-  }
-
-  int getWeekNumber(DateTime date) {
-    final firstDayOfMonth = DateTime(date.year, date.month);
-    final offset = (firstDayOfMonth.weekday - 1) % 7;
-    final day = date.day;
-    return ((day + offset) / 7).ceil();
   }
 
   void formatMonthlyChartData (List<DailySleep> monthlySleepData) {
@@ -207,87 +198,3 @@ class _SleepChartState extends State<SleepChart>
   }
 }
 
-class GeneralSleepChart extends StatelessWidget {
-  GeneralSleepChart(
-      {super.key, this.chartData, required this.tabName});
-
-  final List<ChartData>? chartData;
-  final String tabName;
-
-  final Map<String, int> maxSleepTimeLimits = {
-    'W': 24 * 60 * 7,
-    'M': 24 * 60 * 30,
-    'Y': 24 * 60 * 365
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 15.0),
-      child: SfCartesianChart(
-          primaryXAxis: CategoryAxis(),
-          primaryYAxis: NumericAxis(
-              minimum: 0,
-              maximum: maxSleepTimeLimits[tabName]?.toDouble(),
-              interval: 400000),
-          series: <CartesianSeries<ChartData, String>>[
-            BarSeries<ChartData, String>(
-                dataSource: chartData,
-                xValueMapper: (ChartData data, _) => data.x,
-                yValueMapper: (ChartData data, _) => data.y1,
-                name: 'Gold',
-                color: kLightGreen)
-          ]),
-    );
-  }
-}
-
-class DailySleepChart extends StatelessWidget {
-  const DailySleepChart({
-    super.key,
-    required this.chartData,
-  });
-
-  final List<ChartData> chartData;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          SimpleCircularProgressBar(
-            valueNotifier: ValueNotifier(chartData[0].y1),
-            mergeMode: true,
-            size: 200,
-            progressColors: [kLightGreen],
-            backColor: kInactiveCardColor,
-            progressStrokeWidth: 25,
-            maxValue: 24*60,
-            onGetText: (double value) {
-              return Text(
-                '${value.toInt()} mins',
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              );
-            },
-          ),
-          SizedBox(
-            height: 40,
-          ),
-          Text(
-            "Achieve optimal wellness by tracking your sleep patterns daily"
-                " and striving for a consistent, quality rest every night.",
-            style: const TextStyle(
-              fontSize: 15,
-              color: Colors.grey,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-}

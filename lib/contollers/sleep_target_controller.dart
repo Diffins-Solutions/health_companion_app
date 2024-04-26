@@ -5,7 +5,7 @@ import '../services/db/sqflite_handler.dart';
 
 class SleepTargetController {
   static final _dbHandler = DbHandler();
-  static final String _today = DateFormat.yMMMMd().format(DateTime.now());
+  static String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
 
   static Future<List<SleepTarget>> getSleepTargets() async {
     try {
@@ -22,10 +22,10 @@ class SleepTargetController {
     }
   }
 
-  static Future<SleepTarget?> getDailySleepData(today) async {
+  static Future<SleepTarget?> getDailySleepData() async {
     try {
       dynamic result =
-          await _dbHandler.fetchFilteredData('sleep_target', 'day', [today]);
+          await _dbHandler.fetchFilteredData('sleep_target', 'day', [formattedDate]);
       if (result != null) {
         return SleepTarget.fromObject(result.first);
       } else {

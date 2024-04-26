@@ -1,0 +1,29 @@
+import 'package:flutter/material.dart';
+
+String getTimeOfDay(DayPeriod period) {
+  return period.name == 'am' ? 'AM' : 'PM';
+}
+
+TimeOfDay convertTime(String? unformattedtime){
+  if (unformattedtime != null) {
+    List<String> timeParts = unformattedtime.split(":");
+    int hours = int.parse(timeParts[0]);
+    int mins = int.parse(timeParts[1]);
+    return TimeOfDay(hour: hours, minute: mins);
+  }
+  return TimeOfDay(hour: 00, minute: 00);
+}
+
+String getTimeString(TimeOfDay time) {
+  int hours = time.hour == 0 ? 12 : time.hour < 12 ? time.hour : time.hour - 12;
+  String mins = time.minute < 10 ? "0${time.minute}" : time.minute.toString();
+
+  return "$hours.${mins} ${getTimeOfDay(time.period)}";
+}
+
+int getWeekNumber(DateTime date) {
+  final firstDayOfMonth = DateTime(date.year, date.month);
+  final offset = (firstDayOfMonth.weekday - 1) % 7;
+  final day = date.day;
+  return ((day + offset) / 7).ceil();
+}

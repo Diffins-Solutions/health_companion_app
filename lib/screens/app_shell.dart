@@ -5,12 +5,14 @@ import 'package:health_companion_app/models/db_models/user.dart';
 import 'package:health_companion_app/screens/health_tips/health_tips_screen.dart';
 import 'package:health_companion_app/screens/sleep/sleep_screen.dart';
 import 'package:health_companion_app/screens/medication/medication_screen.dart';
+import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:health_companion_app/services/db/sqflite_handler.dart';
 import 'package:health_companion_app/utils/enums.dart';
+import 'package:health_companion_app/contollers/user_controller.dart';
 
 import '../utils/constants.dart';
 import '../widgets/custom_bottom_bar.dart';
+import '../widgets/welcome_text.dart';
 import 'landing/landing_screen.dart';
 import 'mood/mood_screen.dart';
 
@@ -28,8 +30,17 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0; // Inter  nal state for selected tab
+  String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
+  String name = 'Default user';
 
-
+  void getUser() async {
+    User user = await UserController.getUser();
+    if (user != null) {
+      setState(() {
+        name = user.name;
+      });
+    }
+  }
   // Future getUser() async{
   //   var dbHandler = DbHandler();
   //   User user = await dbHandler.getUser();
@@ -47,7 +58,7 @@ class _AppShellState extends State<AppShell> {
   void initState() {
     super.initState();
     _selectedIndex = widget.currentIndex; // Get initial index
-    //getUser();
+    getUser();
     //addUser();
   }
 
@@ -79,7 +90,14 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
-      body: _buildScreen(_selectedIndex),
+      body: SafeArea(
+        child: Column(
+          children: [
+            WelcomeText(name: name, today: formattedDate),
+            _buildScreen(_selectedIndex),
+          ],
+        ),
+      ),
       bottomNavigationBar: CustomBottomBar(
         currentIndex: _selectedIndex,
         onTap: navigateToScreen,
