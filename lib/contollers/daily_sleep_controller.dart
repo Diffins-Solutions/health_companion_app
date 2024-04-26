@@ -4,6 +4,22 @@ import '../services/db/sqflite_handler.dart';
 
 class DailySleepController {
   static final _dbHandler = DbHandler();
+  static final String _today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+  static Future<List<DailySleep>> getAllSleepData() async {
+    try {
+      dynamic result = await _dbHandler.fetchAllData('daily_sleep');
+      if (result != null) {
+        return List.generate(result.length, (i) {
+          return DailySleep.fromObject(result[i]);
+        });
+      } else {
+        return [];
+      }
+    } catch (e) {
+      return [];
+    }
+  }
 
   static Future<List<DailySleep>> getYearlySleepData(String year) async {
     try {
@@ -21,6 +37,9 @@ class DailySleepController {
   }
 
   static Future<List<DailySleep>> getMonthlySleepData(String year, String month) async {
+    if(month.length == 1) {
+      month = "0$month";
+    }
     try {
       dynamic result = await _dbHandler.fetchPatternedData('daily_sleep', 'day', "$year-$month");
       if (result != null) {
@@ -35,7 +54,7 @@ class DailySleepController {
     }
   }
 
-  Future<DailySleep?> getDailySleepData() async {
+  static Future<DailySleep?> getDailySleepData() async {
     try {
       dynamic result =
       await _dbHandler.fetchFilteredData('daily_sleep', 'day', [_today]);
@@ -49,9 +68,12 @@ class DailySleepController {
     }
   }
 
-  static Future addSleepData(DailySleep dailySleep) async {
+  static Future addDailySleepData(DailySleep dailySleep) async {
     try {
-      await _dbHandler.insert('daily_sleep', dailySleep);
+      DailySleep? todayData = await getDailySleepData();
+      if(todayData == null) {
+        await _dbHandler.insert('daily_sleep', dailySleep);
+      }
       return true;
     } catch (e) {
       return false;

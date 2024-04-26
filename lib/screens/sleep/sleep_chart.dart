@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/contollers/daily_sleep_controller.dart';
 import 'package:health_companion_app/utils/constants.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import 'package:health_companion_app/models/chart_data.dart';
@@ -10,11 +11,10 @@ import 'package:health_companion_app/models/db_models/daily_sleep.dart';
 
 
 class SleepChart extends StatefulWidget {
-  String tabName;
-  List<ChartData> chartData;
-  final Map<String, int>? timeInBed;
+  final String tabName;
+  final int? timeInBed;
 
-  SleepChart({required this.tabName, required this.chartData, this.timeInBed});
+  const SleepChart({super.key, required this.tabName, this.timeInBed});
 
   @override
   State<SleepChart> createState() => _SleepChartState();
@@ -23,44 +23,129 @@ class SleepChart extends StatefulWidget {
 class _SleepChartState extends State<SleepChart>
     with SingleTickerProviderStateMixin {
   bool isDaily() => widget.tabName == "D";
-  late List<DailySleep> sleepTimes;
-
+  List<ChartData>? chartData;
   Map<String, String> titles = {
     'D': 'Today',
     'W': 'Past Week',
     'M': 'Past Month',
     'Y': 'Past Year'
   };
+  Map<String, int>? timeInBedMinsHours = {'hours' : 0, 'mins': 0};
 
-  Map<String, int> getTimeInBedHoursMins(int mins){
-    print(mins);
+  Map<String, int> getTimeInBedHoursMins(int? mins){
+    mins = mins ?? 0;
     return {"hours":mins ~/ 60, "mins": mins % 60};
   }
 
-  int getTotalMins(List<DailySleep> sleepData) {
-    int total = 0;
-    for (DailySleep data in sleepData) {
-      total += data.mins;
+  void formatYearlyChartData (List<DailySleep> yearlySleepData) {
+    Map<String, int> yearlyData = {};
+    int totalmins = 0;
+    for(DailySleep data in yearlySleepData) {
+      DateTime date = DateTime.parse(data.day);
+      String month = DateFormat('MMMM').format(date).substring(0, 3);
+      print(data.day);
+      print(data.mins);
+      if (yearlyData.keys.contains(month)) {
+        yearlyData[month] =  yearlyData[month]! + data.mins;
+      } else {
+        yearlyData[month] = data.mins;
+      }
+      totalmins += data.mins;
     }
-    return total;
+    setState(() {
+      timeInBedMinsHours = getTimeInBedHoursMins(totalmins);
+      List<String> months = yearlyData.keys.toList();
+      chartData = months.map((month) => ChartData(month, yearlyData[month]!.toDouble())).toList();
+    });
   }
 
-  List<ChartData> formatYearlyChartData (List<DailySleep> yearlySleepData) {
+  int getWeekNumber(DateTime date) {
+    final firstDayOfMonth = DateTime(date.year, date.month);
+    final offset = (firstDayOfMonth.weekday - 1) % 7;
+    final day = date.day;
+    return ((day + offset) / 7).ceil();
+  }
 
+  void formatMonthlyChartData (List<DailySleep> monthlySleepData) {
+    Map<String, int> monthlyData = {};
+    int totalMins = 0;
+    for(DailySleep data in monthlySleepData) {
+      DateTime date = DateTime.parse(data.day);
+      int weekNumber = getWeekNumber(date);
+      String mapKey = "Week $weekNumber";
+      if (monthlyData.keys.contains(mapKey)) {
+        monthlyData[mapKey] =  monthlyData[mapKey]! + data.mins;
+      } else {
+        monthlyData[mapKey] = data.mins;
+      }
+      totalMins += data.mins;
+    }
+    setState(() {
+      timeInBedMinsHours = getTimeInBedHoursMins(totalMins);
+      List<String> weeks = monthlyData.keys.toList();
+      chartData = weeks.map((week) => ChartData(week, monthlyData[week]!.toDouble())).toList();
+    });
+  }
+
+  void formatWeeklyChartData (List<DailySleep> monthlySleepData) {
+    Map<String, int> weeklyData = {};
+    int totalMins = 0;
+    for(DailySleep data in monthlySleepData) {
+      DateTime date = DateTime.parse(data.day);
+      int weekNumber = getWeekNumber(date);
+      int currentWeekNumber = getWeekNumber(DateTime.now());
+      if (weekNumber != currentWeekNumber) {
+        continue;
+      } else {
+        totalMins += data.mins;
+        weeklyData[DateFormat('EEE').format(date)] = data.mins;
+      }
+    }
+    setState(() {
+      timeInBedMinsHours = getTimeInBedHoursMins(totalMins);
+      List<String> weekDays = weeklyData.keys.toList();
+      chartData = weekDays.map((day) => ChartData(day, weeklyData[day]!.toDouble())).toList();
+    });
+  }
+
+  void formatDailyChartData (DailySleep? dailySleepData) {
+    setState(() {
+      timeInBedMinsHours = getTimeInBedHoursMins(widget.timeInBed);
+      chartData = [ChartData('', widget.timeInBed!.toDouble())];
+      if (dailySleepData != null) {
+        print('not null');
+        timeInBedMinsHours = getTimeInBedHoursMins(dailySleepData.mins);
+        chartData = [ChartData('', dailySleepData.mins.toDouble())];
+      }
+    });
   }
   
-  Future<List<DailySleep>> getSleepData (String tab) async{
+  void getSleepData (String tab) async {
     DateTime time = DateTime.now();
-    List<DailySleep> sleepData = [];
     switch(tab) {
       case'Y':
-        sleepData = await DailySleepController.getYearlySleepData(time.year.toString());
+        List<DailySleep> data =  await DailySleepController.getYearlySleepData(time.year.toString());
+        formatYearlyChartData(data);
         break;
       case 'M':
-        sleepData = await DailySleepController.getMonthlySleepData(time.year.toString(), time.month.toString());
+        List<DailySleep> data = await DailySleepController.getMonthlySleepData(time.year.toString(), time.month.toString());
+        formatMonthlyChartData(data);
+        break;
+      case 'W':
+        List<DailySleep> data = await DailySleepController.getMonthlySleepData(time.year.toString(), time.month.toString());
+        formatWeeklyChartData(data);
+        break;
+      case 'D':
+        DailySleep? data = await DailySleepController.getDailySleepData();
+        formatDailyChartData(data);
         break;
     }
-    return sleepData;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getSleepData(widget.tabName);
   }
   
   @override
@@ -82,8 +167,7 @@ class _SleepChartState extends State<SleepChart>
                 ),
               ),
               Text(
-                //TODO: calculate the total time and assign it here
-                "${timeInBed?["hours"]}hr ${timeInBed?["mins"]}min",
+                "${timeInBedMinsHours?["hours"]}hr ${timeInBedMinsHours?["mins"]}min",
                 style: TextStyle(
                     fontSize: 30,
                     letterSpacing: 1,
@@ -107,10 +191,10 @@ class _SleepChartState extends State<SleepChart>
                 height: 30,
               ),
               isDaily()
-                  ? DailySleepChart(chartData: chartData)
+                  ? DailySleepChart(chartData: chartData!)
                   : GeneralSleepChart(
                       chartData: chartData,
-                      tabName: tabName,
+                      tabName: widget.tabName,
                     ),
               SizedBox(
                 height: 15,
@@ -125,9 +209,9 @@ class _SleepChartState extends State<SleepChart>
 
 class GeneralSleepChart extends StatelessWidget {
   GeneralSleepChart(
-      {super.key, required this.chartData, required this.tabName});
+      {super.key, this.chartData, required this.tabName});
 
-  final List<ChartData> chartData;
+  final List<ChartData>? chartData;
   final String tabName;
 
   final Map<String, int> maxSleepTimeLimits = {
@@ -178,6 +262,7 @@ class DailySleepChart extends StatelessWidget {
             progressColors: [kLightGreen],
             backColor: kInactiveCardColor,
             progressStrokeWidth: 25,
+            maxValue: 24*60,
             onGetText: (double value) {
               return Text(
                 '${value.toInt()} mins',
@@ -190,7 +275,7 @@ class DailySleepChart extends StatelessWidget {
             },
           ),
           SizedBox(
-            height: 50,
+            height: 40,
           ),
           Text(
             "Achieve optimal wellness by tracking your sleep patterns daily"

@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-
 import 'package:health_companion_app/models/local_notifications.dart';
 import 'package:health_companion_app/models/steps_notifer.dart';
 import 'package:health_companion_app/screens/app_shell.dart';

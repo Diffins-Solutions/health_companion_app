@@ -57,18 +57,18 @@ class _SleepScreenState extends State<SleepScreen>
   late TimeOfDay? scheduledSleep;
   TimeOfDay? wakeup;
   TimeOfDay? sleep;
-  late int todayTimeInBed = getTimeInBedMins(scheduledWakeUp!, scheduledSleep!);
+  late int todayTimeInBed = 0;
   late NetworkHelper networkHelper = NetworkHelper(
       Uri.parse("https://storage.googleapis.com/uamp/catalog.json"));
   List<MusicDataResponse> musicList = [];
   final TextEditingController _wakeupTimeController = TextEditingController();
   final TextEditingController _sleepTimeController = TextEditingController();
-  final String todayDate = DateFormat.yMMMMd().format(DateTime.now());
+  final String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   void addSleepData (int mins) async {
-    DailySleep sleepData = DailySleep(day: todayDate, mins: mins);
+    DailySleep sleepData = DailySleep(day: todayDate , mins: mins);
     print('adding sleep schedule');
-    await DailySleepController.addSleepData(sleepData);
+    await DailySleepController.addDailySleepData(sleepData);
   }
 
   void updateSleepData (int mins) async {
@@ -80,9 +80,22 @@ class _SleepScreenState extends State<SleepScreen>
   void getSleepTarget() async {
     SleepTarget? sleepTarget =
         await SleepTargetController.getDailySleepData(today);
+    setState(() {
+      scheduledSleep = convertTime(sleepTarget?.sleep);
+      scheduledWakeUp = convertTime(sleepTarget?.wakeup);
+      todayTimeInBed = getTimeInBedMins(scheduledWakeUp!, scheduledSleep!);
+    });
+    addSleepData(todayTimeInBed);
+  }
 
-    scheduledSleep = convertTime(sleepTarget?.sleep);
-    scheduledWakeUp = convertTime(sleepTarget?.wakeup);
+  void getDailySleepRecord() async {
+    DailySleep? dailySleep =
+    await DailySleepController.getDailySleepData();
+    setState(() {
+      if (dailySleep != null) {
+        todayTimeInBed = dailySleep.mins;
+      }
+    });
   }
 
   String getTimeOfDay(DayPeriod period) {
@@ -101,8 +114,9 @@ class _SleepScreenState extends State<SleepScreen>
 
   String getTimeString(TimeOfDay time) {
     int hours = time.hour == 0 ? 12 : time.hour < 12 ? time.hour : time.hour - 12;
+    String mins = time.minute < 10 ? "0${time.minute}" : time.minute.toString();
 
-    return "$hours.${time.minute} ${getTimeOfDay(time.period)}";
+    return "$hours.${mins} ${getTimeOfDay(time.period)}";
   }
 
   @override
@@ -118,7 +132,6 @@ class _SleepScreenState extends State<SleepScreen>
     scheduledSleep = TimeOfDay(hour: 22, minute: 00);
     fetchMusicData();
     getSleepTarget();
-    addSleepData(todayTimeInBed);
   }
 
   Future<void> fetchMusicData() async {
@@ -188,7 +201,6 @@ class _SleepScreenState extends State<SleepScreen>
                                 ),
                                 Row(
                                   children: [
-                                    //TODO: Get the average time
                                     SleepScheduleCard(
                                         time: getTimeString(scheduledSleep!),
                                         isBedTime: true),
@@ -216,6 +228,55 @@ class _SleepScreenState extends State<SleepScreen>
                         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
                         child: Row(
                           children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () async {
+                                  TimeOfDay? selectedTime = await showTimePicker(
+                                    initialTime: TimeOfDay.now(),
+                                    context: context,
+                                    builder: (context, child) {
+                                      return Theme(
+                                        data: ThemeData.light().copyWith(
+                                            colorScheme: kTimePickerTheme),
+                                        child: child!,
+                                      );
+                                    },
+                                  );
+
+                                  if (selectedTime != null) {
+                                    setState(() {
+                                      sleep = selectedTime;
+                                      if ( sleep != null && wakeup != null) {
+                                        todayTimeInBed = getTimeInBedMins(sleep!, wakeup!);
+                                        updateSleepData(todayTimeInBed);
+                                      }
+                                      final now = DateTime.now();
+                                      final time = DateTime(now.year, now.month,
+                                          now.day, sleep!.hour, sleep!.minute);
+                                      _sleepTimeController.text =
+                                          DateFormat('hh:mm a').format(time);
+                                    });
+                                  }
+                                },
+                                child: IgnorePointer(
+                                  ignoring: true,
+                                  child: TextFormField(
+                                    controller: _sleepTimeController,
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 12,
+                                      ),
+                                      hintText: 'Sleep Time',
+                                      hintStyle: TextStyle(
+                                        fontSize: kNormalSize,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 12),
                             Expanded(
                               child: InkWell(
                                 child: IgnorePointer(
@@ -250,6 +311,10 @@ class _SleepScreenState extends State<SleepScreen>
                                   if (selectedTime != null) {
                                     setState(() {
                                       wakeup = selectedTime;
+                                      if ( sleep != null && wakeup != null) {
+                                        todayTimeInBed = getTimeInBedMins(sleep!, wakeup!);
+                                        updateSleepData(todayTimeInBed);
+                                      }
                                       final now = DateTime.now();
                                       final time = DateTime(now.year, now.month,
                                           now.day, wakeup!.hour, wakeup!.minute);
@@ -258,53 +323,6 @@ class _SleepScreenState extends State<SleepScreen>
                                     });
                                   }
                                 },
-                              ),
-                            ),
-                            SizedBox(width: 12),
-                            Expanded(
-                              child: InkWell(
-                                onTap: () async {
-                                  TimeOfDay? selectedTime = await showTimePicker(
-                                    initialTime: TimeOfDay.now(),
-                                    context: context,
-                                    builder: (context, child) {
-                                      return Theme(
-                                        data: ThemeData.light().copyWith(
-                                            colorScheme: kTimePickerTheme),
-                                        child: child!,
-                                      );
-                                    },
-                                  );
-
-                                  if (selectedTime != null) {
-                                    setState(() {
-                                      sleep = selectedTime;
-                                      todayTimeInBed = getTimeInBedMins(sleep!, wakeup!);
-                                      updateSleepData(todayTimeInBed);
-                                      final now = DateTime.now();
-                                      final time = DateTime(now.year, now.month,
-                                          now.day, sleep!.hour, sleep!.minute);
-                                      _sleepTimeController.text =
-                                          DateFormat('hh:mm a').format(time);
-                                    });
-                                  }
-                                },
-                                child: IgnorePointer(
-                                  ignoring: true,
-                                  child: TextFormField(
-                                    controller: _sleepTimeController,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 12,
-                                      ),
-                                      hintText: 'Sleep Time',
-                                      hintStyle: TextStyle(
-                                        fontSize: kNormalSize,
-                                      ),
-                                    ),
-                                  ),
-                                ),
                               ),
                             ),
                           ],
@@ -326,7 +344,7 @@ class _SleepScreenState extends State<SleepScreen>
                             expanded: SizedBox(
                               height: 530,
                               child:
-                                  ChartSection(tabController: _tabController, todayTimeInBed: todayTimeInBed),
+                                  ChartSection(tabController: _tabController, timeInBed: todayTimeInBed,),
                             ),
                             theme: ExpandableThemeData(
                                 tapHeaderToExpand: true,

@@ -55,7 +55,7 @@ class DbHandler {
           create table daily_sleep ( 
           id integer primary key autoincrement, 
           day text not null,
-          mins integer
+          mins integer)
           ''');
       print("Inserting data into food_calorie");
       await txn.execute('''

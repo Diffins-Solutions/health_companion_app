@@ -3,63 +3,19 @@ import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/screens/sleep/sleep_chart.dart';
 import 'package:health_companion_app/models/chart_data.dart';
 
-// in mins
-//TODO: But actually times should receive as DateTime and should calculate the sum of hours
-final List<ChartData> yearlyData = [
-  ChartData('Jan', 100000),
-  ChartData('Feb', 11000),
-  ChartData('Mar', 14000),
-  ChartData('Apr', 30000),
-  ChartData('May', 60000),
-  ChartData('Jun', 10000),
-  ChartData('Jul', 14000),
-  ChartData('Aug', 10000),
-  ChartData('Sep', 50000),
-  ChartData('Oct', 10000),
-  ChartData('Nov', 15000),
-  ChartData('Dec', 24000),
-];
-
-final List<ChartData> monthlyData = [
-  ChartData('Week 1', 10000),
-  ChartData('Week 2', 11000),
-  ChartData('Week 3', 1400),
-  ChartData('Week 4', 300),
-];
-
-final List<ChartData> weeklyData = [
-  ChartData(
-    'Mon',
-    10,
-  ),
-  ChartData('Tue', 1100),
-  ChartData('Wed', 1400),
-  ChartData('Thu', 3000),
-  ChartData('Fri', 6000),
-  ChartData('Sat', 10000),
-  ChartData('Sun', 1400),
-];
-
-final List<ChartData> dailyData = [
-  ChartData(
-    '',
-    10,
-  ),
-];
 
 class ChartSection extends StatelessWidget {
-  const ChartSection({
+  ChartSection({
     super.key,
     required TabController tabController,
-    this.todayTimeInBed,
+    this.timeInBed
   }) : _tabController = tabController;
 
   final TabController _tabController;
-  final int? todayTimeInBed;
+  final int? timeInBed;
 
   @override
   Widget build(BuildContext context) {
-    Map<String,int> toHourMins = getTimeInBedHoursMins(todayTimeInBed!);
     return Column(
       children: [
         Padding(
@@ -106,20 +62,16 @@ class ChartSection extends StatelessWidget {
             children: [
               SleepChart(
                 tabName: 'D',
-                chartData: dailyData,
-                timeInBed: toHourMins,
+                timeInBed: timeInBed,
               ),
               SleepChart(
                 tabName: 'W',
-                chartData: weeklyData,
               ),
               SleepChart(
                 tabName: 'M',
-                chartData: monthlyData,
               ),
               SleepChart(
                 tabName: 'Y',
-                chartData: yearlyData,
               )
             ],
           ),
