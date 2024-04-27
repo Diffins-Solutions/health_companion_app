@@ -22,10 +22,10 @@ class SleepTargetController {
     }
   }
 
-  static Future<SleepTarget?> getDailySleepData() async {
+  static Future<SleepTarget?> getDailySleepData(today) async {
     try {
       dynamic result =
-          await _dbHandler.fetchFilteredData('sleep_target', 'day', [formattedDate]);
+          await _dbHandler.fetchFilteredData('sleep_target', 'day', ['M']);
       if (result != null) {
         return SleepTarget.fromObject(result.first);
       } else {

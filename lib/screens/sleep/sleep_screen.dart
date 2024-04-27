@@ -79,7 +79,8 @@ class _SleepScreenState extends State<SleepScreen>
 
   void getSleepTarget() async {
     SleepTarget? sleepTarget =
-        await SleepTargetController.getDailySleepData();
+        await SleepTargetController.getDailySleepData(today);
+    print('data $sleepTarget');
     setState(() {
       scheduledSleep = convertTime(sleepTarget?.sleep);
       scheduledWakeUp = convertTime(sleepTarget?.wakeup);

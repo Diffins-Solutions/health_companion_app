@@ -68,4 +68,31 @@ class Quessionaire {
       );
     return Future<Task>.value(task);
   }
+
+  static List<List<bool>> getAnswers() {
+    return [
+      [true, true, false],
+      [true, false, true],
+      [false, true, true],
+      [true, false, true],
+      [false, true, true],
+      [true, true, false],
+      [true, false, true],
+      [true, true, false],
+      [true, false, true],
+      [false, true, true],
+      [true, true, false],
+      [true, true, false],
+      [false, true, true],
+      [true, true, false],
+      [true, false, true],
+      [false, true, true],
+      [false, true, true],
+      [true, true, false],
+      [true, false, true],
+      [true, false, true],
+      [false, true, true],
+    ];
+  }
+
 }

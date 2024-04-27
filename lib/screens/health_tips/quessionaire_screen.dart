@@ -30,12 +30,28 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                 final Task task = snapshot.data!;
                 return SurveyKit(
                   onResult: (SurveyResult result) {
-                    debugPrint(jsonEncode(result.toJson()));
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AppShell(currentIndex: 2)),
-                    );
+                    List<StepResult> answers = result.results.toList();
+                    List<List<bool>> scoringScheme = Quessionaire.getAnswers();
+                    Map<String, int> scores = {
+                      "Depression": 0,
+                      "Anxiety":0,
+                      "Stress": 0
+                    };
+                    answers.removeAt(0);
+                    answers.removeAt(answers.length - 1);
+                    for (var i = 0; i< answers.length; i++) {
+                      int currentAnswer = int.parse(answers[i].results[0].valueIdentifier!);
+                      List<bool> scorings = scoringScheme[i];
+                      scores["Depression"] =  scorings[0] ? scores["Depression"]! + currentAnswer : scores["Depression"]!;
+                      scores["Anxiety"] =  scorings[1] ? scores["Anxiety"]! + currentAnswer : scores["Anxiety"]!;
+                      scores["Stress"] =  scorings[2] ? scores["Stress"]! + currentAnswer : scores["Stress"]!;
+                    }
+                    print(scores);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => AppShell(currentIndex: 2)),
+                    // );
                   },
                   task: task,
                   showProgress: true,
@@ -121,7 +137,7 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                         fontFamily: 'Hind-Regular'
                       ),
                       headlineSmall: TextStyle(
-                        fontSize: 19.0,
+                        fontSize: 17.0,
                         color: Colors.black,
                           fontFamily: 'Hind-Regular'
                       ),
