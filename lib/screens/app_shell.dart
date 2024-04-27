@@ -53,7 +53,6 @@ class _AppShellState extends State<AppShell> {
   //   print('User is: $user');
   // }
 
-
   @override
   void initState() {
     super.initState();
@@ -93,7 +92,12 @@ class _AppShellState extends State<AppShell> {
       body: SafeArea(
         child: Column(
           children: [
-            WelcomeText(name: name, today: formattedDate),
+            WelcomeText(
+              name: name,
+              today: formattedDate,
+              isLandingPage: _selectedIndex == 0,
+              isMoodPage: _selectedIndex == 1,
+            ),
             _buildScreen(_selectedIndex),
           ],
         ),
