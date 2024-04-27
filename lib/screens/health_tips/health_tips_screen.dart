@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_companion_app/models/health_tips_model.dart';
+import 'package:health_companion_app/screens/health_tips/quessionaire_screen.dart';
 import 'package:health_companion_app/services/db/fire_store_handler.dart';
 import 'package:health_companion_app/utils/constants.dart';
 
@@ -149,37 +150,81 @@ class _HealthTipsScreenState extends State<HealthTipsScreen> with TickerProvider
       Navigator.push(context, MaterialPageRoute(builder: (context)=> HealthTipList(healthTips: healthTips)));
     }
 
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Expanded(
+      child: Stack(
+        alignment: AlignmentDirectional.bottomCenter,
         children: [
-          Container(margin: EdgeInsets.only(bottom: 10),child: Image.asset('images/health_tips.png'),),
-          loading ? SizedBox(
-            height:300,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  isOnline ? Text('Loading your personalized health tips ...') : Text('Please connect to internet ...'),
-                  SizedBox(height: 30,),
-                  CircularProgressIndicator(color: kLightGreen,strokeAlign: CircularProgressIndicator.strokeAlignCenter,),
-                ],
+          Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(margin: EdgeInsets.only(bottom: 10),child: Image.asset('images/health_tips.png', width: 300,),),
+                    loading ? SizedBox(
+                      height:300,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            isOnline ? Text('Loading your personalized health tips ...') : Text('Please connect to internet ...'),
+                            SizedBox(height: 30,),
+                            CircularProgressIndicator(color: kLightGreen,strokeAlign: CircularProgressIndicator.strokeAlignCenter,),
+                          ],
+                        ),
+                      ),
+                    ) : ListView(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        // (healthTipsGeneral.isNotEmpty) ? AnimatedTile(slide: 30, animation: animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.asterisk, size: 40,), leftColor: Colors.indigoAccent, rightColor: Colors.indigo, title: 'General Tips', onPressed: (){navigateToHealthTips(healthTipsGeneral);},),):SizedBox(),
+                        // (healthTipsHeart.isNotEmpty) ? AnimatedTile(slide:60, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.heartPulse, color: Colors.red, size: 40), leftColor: Colors.orangeAccent, rightColor: Colors.orange, title: 'Heart Health', onPressed: (){navigateToHealthTips(healthTipsHeart);},)):SizedBox(),
+                        // (healthTipsDepression.isNotEmpty) ? AnimatedTile(slide:90, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personBurst, size: 30,), leftColor: Colors.white60, rightColor: Colors.white38, title: 'Depression', onPressed: (){navigateToHealthTips(healthTipsDepression);},)):SizedBox(),
+                        // (healthTipsOld.isNotEmpty) ?  AnimatedTile(slide:30, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personCane, size: 40, color: Colors.brown[200],), leftColor: Colors.redAccent, rightColor: Colors.red, title: 'Old Age', onPressed: (){navigateToHealthTips(healthTipsOld);},)) : SizedBox(),
+                        // (healthTipsSleep.isNotEmpty) ? AnimatedTile(slide:120, animation:animation, child: HealthTipCard(icon: Icon(FontAwesomeIcons.bed, size: 30,), leftColor: Colors.blueAccent, rightColor: Colors.blue, title: 'Sleep Routine', onPressed: (){navigateToHealthTips(healthTipsSleep);},)):SizedBox(),
+                        // (healthTipsWeight.isNotEmpty) ? AnimatedTile(slide:150, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.weightScale, size: 40, color: Colors.grey,), leftColor: Colors.yellowAccent, rightColor: Colors.yellow, title: 'Weight Loss', onPressed: (){navigateToHealthTips(healthTipsWeight);},)):SizedBox(),
+                        // (healthTipsStress.isNotEmpty) ? AnimatedTile(slide:180, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.headSideVirus, size: 40, color: Colors.brown,), leftColor: Colors.greenAccent, rightColor: Colors.green, title: 'Stress Management', onPressed: (){navigateToHealthTips(healthTipsStress);},)):SizedBox(),
+                        // (healthTipsAnxiety.isNotEmpty) ? AnimatedTile(slide:210, animation:animation,child: HealthTipCard(icon: Icon(Icons.face_retouching_natural, size: 40,), leftColor: Colors.purpleAccent, rightColor: Colors.purple, title: 'Anxiety', onPressed: (){navigateToHealthTips(healthTipsAnxiety);},)):SizedBox(),
+                        (true) ? AnimatedTile(slide: 30, animation: animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.asterisk, size: 40,), leftColor: Colors.indigoAccent, rightColor: Colors.indigo, title: 'General Tips', onPressed: (){navigateToHealthTips(healthTipsGeneral);},),):SizedBox(),
+                        (true) ? AnimatedTile(slide:60, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.heartPulse, color: Colors.red, size: 40), leftColor: Colors.orangeAccent, rightColor: Colors.orange, title: 'Heart Health', onPressed: (){navigateToHealthTips(healthTipsHeart);},)):SizedBox(),
+                        (true) ? AnimatedTile(slide:90, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personBurst, size: 30,), leftColor: Colors.white60, rightColor: Colors.white38, title: 'Depression', onPressed: (){navigateToHealthTips(healthTipsDepression);},)):SizedBox(),
+                        (true) ?  AnimatedTile(slide:30, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personCane, size: 40, color: Colors.brown[200],), leftColor: Colors.redAccent, rightColor: Colors.red, title: 'Old Age', onPressed: (){navigateToHealthTips(healthTipsOld);},)) : SizedBox(),
+                        (true) ? AnimatedTile(slide:120, animation:animation, child: HealthTipCard(icon: Icon(FontAwesomeIcons.bed, size: 30,), leftColor: Colors.blueAccent, rightColor: Colors.blue, title: 'Sleep Routine', onPressed: (){navigateToHealthTips(healthTipsSleep);},)):SizedBox(),
+                        (true) ? AnimatedTile(slide:150, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.weightScale, size: 40, color: Colors.grey,), leftColor: Colors.yellowAccent, rightColor: Colors.amber, title: 'Weight Loss', onPressed: (){navigateToHealthTips(healthTipsWeight);},)):SizedBox(),
+                        (true) ? AnimatedTile(slide:180, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.headSideVirus, size: 40, color: Colors.brown,), leftColor: Colors.greenAccent, rightColor: Colors.green, title: 'Stress Management', onPressed: (){navigateToHealthTips(healthTipsStress);},)):SizedBox(),
+                        (true) ? AnimatedTile(slide:210, animation:animation,child: HealthTipCard(icon: Icon(Icons.face_retouching_natural, size: 40,), leftColor: Colors.purpleAccent, rightColor: Colors.purple, title: 'Anxiety', onPressed: (){navigateToHealthTips(healthTipsAnxiety);},)):SizedBox(),
+      
+                      ],
+                    ),
+                    SizedBox(height: 60,)
+                  ],
+                ),
               ),
             ),
-          ) : ListView(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              (healthTipsGeneral.isNotEmpty) ? AnimatedTile(slide: 30, animation: animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.asterisk, size: 60,), leftColor: Colors.indigoAccent, rightColor: Colors.indigo, title: 'General Tips', onPressed: (){navigateToHealthTips(healthTipsGeneral);},),):SizedBox(),
-              (healthTipsHeart.isNotEmpty) ? AnimatedTile(slide:60, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.heartPulse, color: Colors.red, size: 60), leftColor: Colors.orangeAccent, rightColor: Colors.orange, title: 'Heart Health', onPressed: (){navigateToHealthTips(healthTipsHeart);},)):SizedBox(),
-              (healthTipsDepression.isNotEmpty) ? AnimatedTile(slide:90, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personBurst, size: 50,), leftColor: Colors.white60, rightColor: Colors.white38, title: 'Depression', onPressed: (){navigateToHealthTips(healthTipsDepression);},)):SizedBox(),
-              (healthTipsOld.isNotEmpty) ?  AnimatedTile(slide:30, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.personCane, size: 60, color: Colors.brown[200],), leftColor: Colors.redAccent, rightColor: Colors.red, title: 'Old Age', onPressed: (){navigateToHealthTips(healthTipsOld);},)) : SizedBox(),
-              (healthTipsSleep.isNotEmpty) ? AnimatedTile(slide:120, animation:animation, child: HealthTipCard(icon: Icon(FontAwesomeIcons.bed, size: 50,), leftColor: Colors.blueAccent, rightColor: Colors.blue, title: 'Sleep Routine', onPressed: (){navigateToHealthTips(healthTipsSleep);},)):SizedBox(),
-              (healthTipsWeight.isNotEmpty) ? AnimatedTile(slide:150, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.weightScale, size: 60, color: Colors.grey,), leftColor: Colors.yellowAccent, rightColor: Colors.yellow, title: 'Weight Loss', onPressed: (){navigateToHealthTips(healthTipsWeight);},)):SizedBox(),
-              (healthTipsStress.isNotEmpty) ? AnimatedTile(slide:180, animation:animation,child: HealthTipCard(icon: Icon(FontAwesomeIcons.headSideVirus, size: 60, color: Colors.brown,), leftColor: Colors.greenAccent, rightColor: Colors.green, title: 'Stress Management', onPressed: (){navigateToHealthTips(healthTipsStress);},)):SizedBox(),
-              (healthTipsAnxiety.isNotEmpty) ? AnimatedTile(slide:210, animation:animation,child: HealthTipCard(icon: Icon(Icons.face_retouching_natural, size: 60,), leftColor: Colors.purpleAccent, rightColor: Colors.purple, title: 'Anxiety', onPressed: (){navigateToHealthTips(healthTipsAnxiety);},)):SizedBox(),
-            ],
-          ),
+          ],
+        ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => QuessionaireScreen()
+                ),
+              );
+            },
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(10),
+              height: 60,
+              color: Color(0xFF021A1A),
+              child:Text("Take the test", textAlign: TextAlign.center, style: TextStyle(
+                  fontSize: kSubHeadingSize,
+                  fontWeight: FontWeight.w700
+              ),)
+            ),
+          )
         ],
       ),
     );
@@ -201,7 +246,7 @@ class HealthTipCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 15),
+      padding: const EdgeInsets.only(top: 10),
       child: Material(
         child: MaterialButton(
           elevation: 10,
@@ -212,9 +257,9 @@ class HealthTipCard extends StatelessWidget {
                 flex: 1,
                 child: Container(
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(25), bottomLeft: Radius.circular(25),), color: leftColor,),
+                  decoration: BoxDecoration(color: leftColor,),
 
-                  height:100,
+                  height:70,
                   child: icon,
                 ),
               ),
@@ -222,9 +267,9 @@ class HealthTipCard extends StatelessWidget {
                 flex: 3,
                 child: Container(
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(25), bottomRight: Radius.circular(25),), color: rightColor,),
-                  height: 100,
-                  child: Text(title, style: TextStyle(fontSize: kHeadingSize), textAlign: TextAlign.center,),
+                  decoration: BoxDecoration( color: rightColor,),
+                  height: 70,
+                  child: Text(title, style: TextStyle(fontSize: kSubHeadingSize)),
                 ),
               ),
             ],

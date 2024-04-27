@@ -110,6 +110,7 @@ class _SleepScreenState extends State<SleepScreen>
     scheduledSleep = TimeOfDay(hour: 22, minute: 00);
     fetchMusicData();
     getSleepTarget();
+    getDailySleepRecord();
   }
 
   Future<void> fetchMusicData() async {

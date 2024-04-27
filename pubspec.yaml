@@ -67,6 +67,7 @@ dependencies:
   provider: ^6.1.2
   heart_bpm: ^2.0.0+0
   audio_service: ^0.18.13
+  survey_kit: ^0.2.0
 
 flutter_native_splash:
   android: true
