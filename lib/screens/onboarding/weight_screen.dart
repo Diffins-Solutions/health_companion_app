@@ -80,23 +80,21 @@ class _WeightScreenState extends State<WeightScreen> {
                 ],
               ),
             ),
-            Expanded(
-              child: SizedBox(
-                height: 40,
-                child: RulerPicker(
-                  onChange: (val) {
-                    setState(() {
-                      weight = val;
-                    });
-                  },
-                  background: kBackgroundColor,
-                  lineColor: kLightGreen,
-                  direction: Axis.horizontal,
-                  startValue: 60,
-                  minValue: 30,
-                  maxValue: 150,
-                  padding: EdgeInsets.all(10),
-                ),
+            SizedBox(
+              height: 40,
+              child: RulerPicker(
+                onChange: (val) {
+                  setState(() {
+                    weight = val;
+                  });
+                },
+                background: kBackgroundColor,
+                lineColor: kLightGreen,
+                direction: Axis.horizontal,
+                startValue: 60,
+                minValue: 30,
+                maxValue: 150,
+                padding: EdgeInsets.all(10),
               ),
             ),
             CustomFlatButton(

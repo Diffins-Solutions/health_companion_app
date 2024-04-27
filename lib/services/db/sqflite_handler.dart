@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:health_companion_app/models/db_models/mood_record.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -58,6 +60,27 @@ class DbHandler {
           wakeup text,
           sleep text,
           foreign key (day) references sleep_target(day))
+          ''');
+
+      /// 1. sadness => 🙁
+      /// 2. joy => 😀
+      /// 3. love => 🥰
+      /// 4. anger => 😡
+      /// 5. fear => 😰
+      /// 6. surprise => 😲
+      print("Creating mood table");
+      await txn.execute('''
+          create table mood ( 
+          id integer primary key autoincrement, 
+          day text not null,
+          sadness integer not null default 0,
+          joy integer not null default 0,
+          love integer not null default 0,
+          anger integer not null default 0,
+          fear integer not null default 0,
+          surprise integer not null default 0,
+          user_id integer not null,
+          foreign key (user_id) references user(id))
           ''');
       print("Inserting data into food_calorie");
       await txn.execute('''
@@ -218,4 +241,120 @@ class DbHandler {
         where: "$field=?", whereArgs: args);
     return result;
   }
+
+  Future<int> insertMood(int userId, int mood) async {
+    Database db = await _db;
+    int timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000; // Get current Unix timestamp
+    int result = await db.insert(
+      'mood',
+      {'day': timestamp, 'mood': mood, 'user_id': userId},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return result;
+  }
+
+  Future fetchFilteredDataUsingMultipleFields(String table, Map<String, dynamic> fieldArgs) async {
+    Database db = await _db;
+
+    // Construct the 'where' clause
+    String whereString = "";
+    List<dynamic> whereArgs = [];
+    fieldArgs.forEach((key, value) {
+      if (whereString.isNotEmpty) whereString += " AND ";
+      whereString += "$key=?";
+      whereArgs.add(value);
+    });
+
+    List<Map<String, dynamic>> maps = await db.query(
+        table,
+        where: whereString,
+        whereArgs: whereArgs
+    );
+
+    if (maps.isNotEmpty) {
+      return maps;
+    } else {
+      return null; // Return null if no data found
+    }
+  }
+
+  Future<List<MoodRecord>> getRecordsThisWeek(int userId) async {
+    try {
+      Database db = await _db;
+      DateTime now = DateTime.now();
+      DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+      String formattedDate = DateFormat('yyyy-MM-dd').format(startOfWeek);
+
+      List<Map<String, dynamic>> maps = await db.query(
+        'mood',
+        where: "day >= ? AND user_id = ?",
+        whereArgs: [formattedDate, userId],
+      );
+
+      return List.generate(maps.length, (i) => MoodRecord.fromObject(maps[i]));
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<List<MoodRecord>> getTodayRecord(int userId) async {
+    try {
+      Database db = await _db;
+      String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      List<Map<String, dynamic>> maps = await db.query(
+        'mood',
+        where: "day >= ? AND user_id = ?",
+        whereArgs: [today, userId],
+      );
+
+      return List.generate(maps.length, (i) => MoodRecord.fromObject(maps[i]));
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<List<MoodRecord>> getRecordsThisMonth(int userId) async {
+    try {
+      Database db = await _db;
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('yyyy-MM').format(now) + '-01';
+
+      List<Map<String, dynamic>> maps = await db.query(
+        'mood',
+        where: "day >= ? AND user_id = ?",
+        whereArgs: [formattedDate, userId],
+      );
+
+      return List.generate(maps.length, (i) => MoodRecord.fromObject(maps[i]));
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<List<MoodRecord>> getRecordsThisYear(int userId) async {
+    try {
+      Database db = await _db;
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('yyyy').format(now) + '-01-01';
+
+      List<Map<String, dynamic>> maps = await db.query(
+        'mood',
+        where: "day >= ? AND user_id = ?",
+        whereArgs: [formattedDate, userId],
+      );
+
+      return List.generate(maps.length, (i) => MoodRecord.fromObject(maps[i]));
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+
+
+
 }
