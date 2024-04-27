@@ -1,44 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:health_companion_app/screens/onboarding/gender_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
-import 'package:health_companion_app/screens/app_shell.dart';
-import 'package:health_companion_app/contollers/user_controller.dart';
-import 'package:health_companion_app/models/db_models/user.dart';
 
-class DailyMoveGoal extends StatefulWidget {
-  static String id = 'daily_move_goal_screen';
+class AgeScreen extends StatefulWidget {
+  static String id = 'age_screen';
 
   final Map<String, dynamic> previousData;
 
-  DailyMoveGoal({required this.previousData});
+  AgeScreen({required this.previousData});
 
   @override
-  State<DailyMoveGoal> createState() => _DailyMoveGoalsState();
+  State<AgeScreen> createState() => _AgeScreenState();
 }
 
-class _DailyMoveGoalsState extends State<DailyMoveGoal> {
-
-  int steps = 1000;
-
-  void addUserData() async {
-    print('adding user data');
-    User user = User(
-        name: widget.previousData['name'],
-        age: widget.previousData['age'],
-        height: widget.previousData['height'],
-        weight: widget.previousData['weight'],
-        gender: widget.previousData['gender'],
-        steps: steps);
-    bool response = await UserController.addUser(user);
-    if (response == true) {
-      Navigator.pushNamed(context, AppShell.id);
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error Recording user data')));
-    }
-  }
+class _AgeScreenState extends State<AgeScreen> {
+  int age = 25;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +43,7 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
                       width: 20,
                     ),
                     Text(
-                      'Your Daily Move Goal ?',
+                      'How old are you ?',
                       style:
                           TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
                     ),
@@ -73,17 +52,9 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
                 SizedBox(
                   height: 30,
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30),
-                  child: Text(
-                    'Formulate a goal that aligns with your current level of activity or the level of activity you aim to accomplish each day.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
+                Image.asset('images/age_screen.jpg'),
                 SizedBox(
-                  height: 150,
+                  height: 75,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +63,7 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
                     MaterialButton(
                       onPressed: () {
                         setState(() {
-                          steps--;
+                          age--;
                         });
                       },
                       shape: CircleBorder(),
@@ -105,28 +76,23 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
                         ),
                       ),
                     ),
-                    Column(
-                      children: [
-                        Text(
-                          steps.toString(),
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          'Steps/ Day',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ],
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      age.toString(),
+                      style: TextStyle(
+                        fontSize: 70,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15,
                     ),
                     MaterialButton(
                       onPressed: () {
                         setState(() {
-                          steps++;
+                          age++;
                         });
                       },
                       shape: CircleBorder(),
@@ -141,14 +107,38 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 80,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    "Age is your unique timeline, a personal journey. Sharing it helps us tailor health"
+                    " advice, turning years into milestones "
+                    "of wellness. Let’s navigate this health odyssey together, one year at a time.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
               ],
             ),
             CustomFlatButton(
-              label: 'Finish Setup',
+              label: 'Continue',
               color: kLightGreen,
               onPressed: () {
-                addUserData();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GenderScreen(
+                      previousData: {
+                        'name': widget.previousData['name'],
+                        'age': age
+                      },
+                    ),
+                  ),
+                );
               },
+              icon: Icons.navigate_next,
             ),
           ],
         ),

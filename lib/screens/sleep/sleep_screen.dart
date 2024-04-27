@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:expandable/expandable.dart';
+import 'package:just_audio/just_audio.dart';
+
 import 'package:health_companion_app/contollers/daily_sleep_controller.dart';
 import 'package:health_companion_app/contollers/sleep_target_controller.dart';
 import 'package:health_companion_app/models/audio_streamer.dart';
@@ -8,14 +12,11 @@ import 'package:health_companion_app/models/db_models/daily_sleep.dart';
 import 'package:health_companion_app/models/db_models/sleep_target.dart';
 import 'package:health_companion_app/screens/sleep/controls.dart';
 import 'package:health_companion_app/screens/sleep/single_audio_player.dart';
-import 'package:intl/intl.dart';
 import 'package:health_companion_app/screens/sleep/sleep_schedule_card.dart';
 import 'package:health_companion_app/screens/sleep/chart_section.dart';
 import 'package:health_companion_app/screens/sleep/music_list_card.dart';
-import 'package:expandable/expandable.dart';
 import 'package:health_companion_app/services/api/networking.dart';
 import 'package:health_companion_app/models/music_response_data.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/utils/time_utils.dart';
 
@@ -227,7 +228,7 @@ class _SleepScreenState extends State<SleepScreen>
                                       );
                                     },
                                   );
-      
+
                                   if (selectedTime != null) {
                                     setState(() {
                                       sleep = selectedTime;
@@ -294,7 +295,7 @@ class _SleepScreenState extends State<SleepScreen>
                                       );
                                     },
                                   );
-      
+
                                   if (selectedTime != null) {
                                     setState(() {
                                       wakeup = selectedTime;

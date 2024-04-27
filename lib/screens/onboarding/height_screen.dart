@@ -118,6 +118,7 @@ class _HeightScreenState extends State<HeightScreen> {
                       previousData: {
                         'name': widget.previousData['name'],
                         'gender': widget.previousData['gender'],
+                        'age': widget.previousData['age'],
                         'height': height
                       },
                     ),

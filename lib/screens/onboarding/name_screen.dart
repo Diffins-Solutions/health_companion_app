@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:health_companion_app/screens/onboarding/gender_screen.dart';
+import 'package:health_companion_app/screens/onboarding/age_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_input_field.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
@@ -76,7 +76,7 @@ class _NameScreenState extends State<NameScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => GenderScreen(
+                    builder: (context) => AgeScreen(
                       previousData: {
                         'name': name.toString(),
                       },

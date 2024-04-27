@@ -80,6 +80,7 @@ class _GenderScreenState extends State<GenderScreen> {
                     builder: (context) => HeightScreen(
                       previousData: {
                         'name': widget.previousData['name'],
+                        'age': widget.previousData['age'],
                         'gender': selectedGender.toString(),
                       },
                     ),

@@ -15,7 +15,7 @@ import 'firebase_options.dart';
 
 final _auth = FirebaseAuth.instance;
 
-void main() async{
+void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   //splash screen
@@ -29,21 +29,22 @@ void main() async{
   );
   //Initialize background audio player
   await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio Playback',
-    androidNotificationOngoing: true
-  );
+      androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+      androidNotificationChannelName: 'Audio Playback',
+      androidNotificationOngoing: true);
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  if(prefs.getInt('counter') == null){
+  if (prefs.getInt('counter') == null) {
     await prefs.setInt('counter', 0);
     await prefs.setInt('counterP', 0);
     DateTime today = DateTime.now();
     await prefs.setString('today', today.toString());
-    await prefs.setString('yesterday', today.subtract(Duration(days: 1)).toString());
+    await prefs.setString(
+        'yesterday', today.subtract(Duration(days: 1)).toString());
   }
 
   runApp(MyHealthApp());
 }
+
 class MyHealthApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

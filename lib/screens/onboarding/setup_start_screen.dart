@@ -52,28 +52,6 @@ class _SetupStartScreenState extends State<SetupStartScreen> {
           SizedBox(
             height: 45,
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 25.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Expanded(
-                    child:
-                        Container()), // Empty container to push text to the right
-                GestureDetector(
-                  onTap: () => {
-                  Navigator.pushNamed(context, AppShell.id)
-                  },
-                  child: Text(
-                    'Skip  >>',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       )),
     );

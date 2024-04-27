@@ -109,6 +109,7 @@ class _WeightScreenState extends State<WeightScreen> {
                     builder: (context) => SleepScheduleScreen(
                       previousData: {
                         'name': widget.previousData['name'],
+                        'age': widget.previousData['age'],
                         'gender': widget.previousData['gender'],
                         'height': widget.previousData['height'],
                         'weight': weight,

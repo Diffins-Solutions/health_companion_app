@@ -200,40 +200,6 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
                     .toList(),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 25.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Expanded(
-                      child:
-                          Container()), // Empty container to push text to the right
-                  GestureDetector(
-                    onTap: ()  {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DailyMoveGoal(
-                            previousData: {
-                              'name': widget.previousData['name'],
-                              'gender': widget.previousData['gender'],
-                              'height': widget.previousData['height'],
-                              'weight': widget.previousData['weight'],
-                            },
-                          ),
-                        ),
-                      );
-                  },
-                    child: Text(
-                      'Skip  >>',
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             SizedBox(
               height: OSUtils.isAndroid() ? 20 : 80,
             ),
@@ -248,6 +214,7 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
                     builder: (context) => DailyMoveGoal(
                       previousData: {
                         'name': widget.previousData['name'],
+                        'age': widget.previousData['age'],
                         'gender': widget.previousData['gender'],
                         'height': widget.previousData['height'],
                         'weight': widget.previousData['weight'],
