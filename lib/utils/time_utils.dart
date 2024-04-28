@@ -43,3 +43,12 @@ int getWeekNumber(DateTime date) {
   final day = date.day;
   return ((day + offset) / 7).ceil();
 }
+
+List<DateTime> getNextSevenDays() {
+  List<DateTime> nextDays = [];
+  for (var i =1; i < 8 ; i ++) {
+    DateTime nextDay = DateTime.now().add(Duration(days: i));
+    nextDays.add(nextDay);
+  }
+  return nextDays;
+}

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/screens/app_shell.dart';
+import 'package:health_companion_app/utils/constants.dart';
 import 'package:survey_kit/survey_kit.dart';
 import 'package:health_companion_app/models/quessionaire.dart';
 
@@ -80,26 +81,26 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                   task: task,
                   showProgress: true,
                   themeData: ThemeData.dark().copyWith(
-                    primaryColor: Colors.cyan,
+                    primaryColor: kLightGreen,
                     appBarTheme: const AppBarTheme(
-                      color: Colors.white,
+                      color: kActiveCardColor,
                       iconTheme: IconThemeData(
-                        color: Colors.cyan,
+                        color: kLightGreen,
                       ),
                       titleTextStyle: TextStyle(
-                        color: Colors.cyan,
+                        color: kLightGreen,
                       ),
                     ),
                     iconTheme: const IconThemeData(
-                      color: Colors.cyan,
+                      color: kLightGreen,
                     ),
                     textSelectionTheme: const TextSelectionThemeData(
-                      cursorColor: Colors.cyan,
-                      selectionColor: Colors.cyan,
-                      selectionHandleColor: Colors.cyan,
+                      cursorColor: kLightGreen,
+                      selectionColor: kLightGreen,
+                      selectionHandleColor: kLightGreen,
                     ),
                     cupertinoOverrideTheme: const CupertinoThemeData(
-                      primaryColor: Colors.cyan,
+                      primaryColor: kLightGreen,
                     ),
                     outlinedButtonTheme: OutlinedButtonThemeData(
                       style: ButtonStyle(
@@ -114,7 +115,7 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                               );
                             }
                             return const BorderSide(
-                              color: Colors.cyan,
+                              color: kLightGreen,
                             );
                           },
                         ),
@@ -137,7 +138,7 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                                 .textTheme
                                 .labelLarge
                                 ?.copyWith(
-                                  color: Colors.cyan,
+                                  color: kLightGreen,
                                 );
                           },
                         ),
@@ -147,7 +148,7 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                       style: ButtonStyle(
                         textStyle: MaterialStateProperty.all(
                           Theme.of(context).textTheme.labelLarge?.copyWith(
-                                color: Colors.cyan,
+                                color: kLightGreen,
                               ),
                         ),
                       ),
@@ -155,21 +156,17 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                     textTheme: const TextTheme(
                       displayMedium: TextStyle(
                           fontSize: 20.0,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Hind-Regular'),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,),
                       headlineSmall: TextStyle(
                           fontSize: 17.0,
-                          color: Colors.black,
-                          fontFamily: 'Hind-Regular'),
+                          color: Colors.white,),
                       bodyMedium: TextStyle(
                           fontSize: 18.0,
-                          color: Colors.black,
-                          fontFamily: 'Hind-Regular'),
+                          color: Colors.white,),
                       titleMedium: TextStyle(
                           fontSize: 18.0,
-                          color: Colors.black,
-                          fontFamily: 'Hind-Regular'),
+                          color: Colors.white,),
                     ),
                     inputDecorationTheme: const InputDecorationTheme(
                       labelStyle: TextStyle(
@@ -182,10 +179,10 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                         .copyWith(
                           onPrimary: Colors.white,
                         )
-                        .copyWith(background: Colors.white),
+                        .copyWith(background: kActiveCardColor),
                   ),
                   surveyProgressbarConfiguration: SurveyProgressConfiguration(
-                    backgroundColor: Colors.white,
+                    backgroundColor: kActiveCardColor,
                   ),
                 );
               }
