@@ -33,7 +33,7 @@ class Quessionaire {
         text:
             'The DASS 21 is a 21 item self report questionnaire designed to measure the severity of a range of symptoms common to both'
             'Depression and Anxiety. In completing DASS, the invidual is required to indicate the symptom over the previous week. Each item'
-            'is scored from zero(didn\'t apply to me at all over the last week) to 3(applied to me very much or most of the time over the past week).',
+            ' is scored from zero(didn\'t apply to me at all over the last week) to 3(applied to me very much or most of the time over the past week).',
         buttonText: 'Let\'s go!',
       )
     ];
