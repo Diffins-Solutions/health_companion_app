@@ -1,10 +1,11 @@
 import 'dart:collection';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:health_companion_app/screens/onboarding/welcome_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/utils/enums.dart';
+import 'package:health_companion_app/utils/signout.dart';
 import 'package:health_companion_app/widgets/profile_detail_box.dart';
 import 'package:health_companion_app/widgets/profile_page_button.dart';
 import 'package:health_companion_app/widgets/profile_picture.dart';
@@ -22,7 +23,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
 
   final _nameFormKey = GlobalKey<FormState>();
-
   String name = 'Default user';
   Gender gender = Gender.female;
   int userId = 0 ;
@@ -39,8 +39,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int minAge = 8;
   Map<String,bool> errorMap = Map<String,bool>();
 
-  void logout() {
+  void logout() async {
     this.errorMap['update'] = false;
+    await SignOutUtil.signOut();
+    Navigator.pushNamedAndRemoveUntil(context, WelcomeScreen.id, (Route<dynamic> route) => false);
     print('logout clicked!');
   }
 

@@ -42,58 +42,60 @@ class _InputEmotionState extends State<InputEmotion> {
   
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formkey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'How are you feeling now ?',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.w900,
+    return SingleChildScrollView(
+      child: Form(
+        key: _formkey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'How are you feeling now ?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: TextFormField(
-                    controller: widget._textController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 3,
-                    minLines: 3,
-                    validator: textValidator,
-                    decoration: InputDecoration(
-                        fillColor: kActiveCardColor,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide: BorderSide(color: Colors.transparent),
-                        )),
-                  ),
-                ),
-                Expanded(
-                  child: IconButton(
-                    icon: Icon(
-                      size: 35,
-                      Icons.send,
-                      color: Colors.white,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: TextFormField(
+                      controller: widget._textController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 3,
+                      minLines: 3,
+                      validator: textValidator,
+                      decoration: InputDecoration(
+                          fillColor: kActiveCardColor,
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: BorderSide(color: Colors.transparent),
+                          )),
                     ),
-                    onPressed: onPressed,
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: IconButton(
+                      icon: Icon(
+                        size: 35,
+                        Icons.send,
+                        color: Colors.white,
+                      ),
+                      onPressed: onPressed,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

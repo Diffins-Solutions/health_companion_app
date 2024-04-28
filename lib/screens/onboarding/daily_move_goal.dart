@@ -33,7 +33,7 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
         steps: steps);
     bool response = await UserController.addUser(user);
     if (response == true) {
-      Navigator.pushNamed(context, AppShell.id);
+      Navigator.pushNamedAndRemoveUntil(context, AppShell.id, (Route<dynamic> route) => false);
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Error Recording user data')));
