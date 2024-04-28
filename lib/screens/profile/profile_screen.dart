@@ -9,6 +9,7 @@ import 'package:health_companion_app/utils/signout.dart';
 import 'package:health_companion_app/widgets/profile_detail_box.dart';
 import 'package:health_companion_app/widgets/profile_page_button.dart';
 import 'package:health_companion_app/widgets/profile_picture.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../contollers/user_controller.dart';
 import '../../models/db_models/user.dart';
@@ -26,6 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String name = 'Default user';
   Gender gender = Gender.female;
   int userId = 0 ;
+  String uid = 'none';
   int? age;
   int? height;
   int? weight;
@@ -69,6 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         this.errorMap['weight'] = false;
         this.errorMap['gender'] = false;
         User updatedUser = User(
+          uid: uid,
           id: userId,
           gender: gender == Gender.male ? 'Gender.male' : 'Gender.female',
           age: age!,
@@ -106,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     this.errorMap['height'] = false;
     this.errorMap['weight'] = false;
     this.errorMap['gender'] = false;
-    User user = await getUser();
+    User? user = await getUser();
     if (user != null) {
       setState(() {
         editMode = false;
@@ -210,13 +213,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<User> getUser() async {
-    User user = await UserController.getUser();
+  Future<User?> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? uid = prefs.getString('uid');
+    if(uid == null){
+      await SignOutUtil.signOut();
+      Navigator.pushNamedAndRemoveUntil(context, WelcomeScreen.id, (Route<dynamic> route) => false);
+      return null;
+    }
+    User user;
+    try{
+      user = await UserController.getCurrentUser(uid);
+    }catch(e){
+      await SignOutUtil.signOut();
+      Navigator.pushNamedAndRemoveUntil(context, WelcomeScreen.id, (Route<dynamic> route) => false);
+      return null;
+    }
     if (user != null) {
-      print('User id: ${user.gender}');
-      print('User: ${user}');
+      print('User id: ${user.id}');
+      print('User: ${user.name} ${user.uid}');
       setState(() {
         name = user.name;
+        uid = user.uid;
         gender = user.gender == 'Gender.female' ? Gender.female : Gender.male;
         userId = user.id!;
         if (user.age != null) {

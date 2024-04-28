@@ -3,6 +3,7 @@ import 'package:health_companion_app/contollers/daily_target_controller.dart';
 import 'package:health_companion_app/models/db_models/daily_target.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 addWaterPopup(BuildContext context, DailyTarget? dailyTarget) {
 
@@ -12,10 +13,14 @@ addWaterPopup(BuildContext context, DailyTarget? dailyTarget) {
 
     late DailyTarget newDailyTarget;
     if(dailyTarget == null){
-      newDailyTarget = DailyTarget(date: DateFormat.yMMMMd().format(DateTime.now()), water: double.parse(_amountController.text));
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      int userId = prefs.getString('user_id') as int;
+      newDailyTarget = DailyTarget(date: DateFormat.yMMMMd().format(DateTime.now()), water: double.parse(_amountController.text), userId: userId);
     }else{
       double newAmount = (dailyTarget.water ?? 0) + double.parse(_amountController.text);
-      newDailyTarget = DailyTarget(date: dailyTarget.date, calorie: dailyTarget.calorie, water: newAmount, steps: dailyTarget.steps);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      int userId = prefs.getString('user_id') as int;
+      newDailyTarget = DailyTarget(date: dailyTarget.date, calorie: dailyTarget.calorie, water: newAmount, steps: dailyTarget.steps, userId: userId);
     }
     await DailyTargetController.addOrUpdateDailyTarget(newDailyTarget);
     Navigator.pop(context);

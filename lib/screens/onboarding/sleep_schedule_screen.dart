@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/contollers/sleep_target_controller.dart';
+import 'package:health_companion_app/contollers/user_controller.dart';
 import 'package:health_companion_app/models/daily_sleep_plan.dart';
 import 'package:health_companion_app/models/db_models/sleep_target.dart';
+import 'package:health_companion_app/models/db_models/user.dart';
 import 'package:health_companion_app/models/weekly_sleep_plan.dart';
+import 'package:health_companion_app/screens/app_shell.dart';
 import 'package:health_companion_app/screens/onboarding/daily_move_goal.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
@@ -41,6 +44,30 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
     }
   }
 
+  void addUserData() async {
+    print('adding user data uid = ${widget.previousData['uid']} steps = ${widget.previousData['steps']}');
+
+    User user = User(
+        name: widget.previousData['name'],
+        uid: widget.previousData['uid'],
+        age: widget.previousData['age'],
+        height: widget.previousData['height'],
+        weight: widget.previousData['weight'],
+        gender: widget.previousData['gender'],
+        steps: widget.previousData['steps']);
+    bool response = await UserController.addUser(user);
+    if (response == true) {
+      User user = await UserController.getCurrentUser(widget.previousData['uid']);
+      if(user != null){
+        await addSleepSchedule(user.id!);
+      }
+      Navigator.pushNamedAndRemoveUntil(context, AppShell.id, (Route<dynamic> route) => false);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error Recording user data')));
+    }
+  }
+
   void updateWeeklyTimePlan(bool isWakeupTime, TimeOfDay? time) {
     isWakeupTime
         ? weeklySleepPlan.setWakeupTimeForTheDay(selectedDay, time!)
@@ -51,10 +78,10 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
     return "${time?.hour}:${time?.minute}";
   }
 
-  void addSleepSchedule () async {
+  Future<void> addSleepSchedule (int userId) async {
       List<SleepTarget> sleep_targets = [];
       for(DailySleepPlan dailySleepPlan in weeklySleepPlan.weeklySleepPlan){
-        sleep_targets.add(SleepTarget(day: dailySleepPlan.day, sleep: formatTimeForDB(dailySleepPlan.getSleepTime()), wakeup: formatTimeForDB(dailySleepPlan.getWakeupTime())));
+        sleep_targets.add(SleepTarget(userId: userId,day: dailySleepPlan.day, sleep: formatTimeForDB(dailySleepPlan.getSleepTime()), wakeup: formatTimeForDB(dailySleepPlan.getWakeupTime())));
       }
       print('adding sleep schedule');
       await SleepTargetController.addSleepTargets(sleep_targets);
@@ -204,24 +231,10 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
               height: OSUtils.isAndroid() ? 20 : 80,
             ),
             CustomFlatButton(
-              label: 'Continue',
+              label: 'Finish Setup',
               color: kLightGreen,
               onPressed: () {
-                addSleepSchedule();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DailyMoveGoal(
-                      previousData: {
-                        'name': widget.previousData['name'],
-                        'age': widget.previousData['age'],
-                        'gender': widget.previousData['gender'],
-                        'height': widget.previousData['height'],
-                        'weight': widget.previousData['weight'],
-                      },
-                    ),
-                  ),
-                );
+                addUserData();
               },
               icon: Icons.navigate_next,
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:health_companion_app/screens/onboarding/sleep_schedule_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
 import 'package:health_companion_app/screens/app_shell.dart';
@@ -21,24 +22,6 @@ class DailyMoveGoal extends StatefulWidget {
 class _DailyMoveGoalsState extends State<DailyMoveGoal> {
 
   int steps = 1000;
-
-  void addUserData() async {
-    print('adding user data');
-    User user = User(
-        name: widget.previousData['name'],
-        age: widget.previousData['age'],
-        height: widget.previousData['height'],
-        weight: widget.previousData['weight'],
-        gender: widget.previousData['gender'],
-        steps: steps);
-    bool response = await UserController.addUser(user);
-    if (response == true) {
-      Navigator.pushNamedAndRemoveUntil(context, AppShell.id, (Route<dynamic> route) => false);
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error Recording user data')));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,10 +127,25 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
               ],
             ),
             CustomFlatButton(
-              label: 'Finish Setup',
+              label: 'Continue',
               color: kLightGreen,
               onPressed: () {
-                addUserData();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SleepScheduleScreen(
+                      previousData: {
+                        'uid': widget.previousData['uid'],
+                        'name': widget.previousData['name'],
+                        'age': widget.previousData['age'],
+                        'gender': widget.previousData['gender'],
+                        'height': widget.previousData['height'],
+                        'weight': widget.previousData['weight'],
+                        'steps': steps,
+                      },
+                    ),
+                  ),
+                );
               },
             ),
           ],

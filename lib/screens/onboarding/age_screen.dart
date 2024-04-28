@@ -131,6 +131,7 @@ class _AgeScreenState extends State<AgeScreen> {
                   MaterialPageRoute(
                     builder: (context) => GenderScreen(
                       previousData: {
+                        'uid': widget.previousData['uid'],
                         'name': widget.previousData['name'],
                         'age': age
                       },

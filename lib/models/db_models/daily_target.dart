@@ -3,12 +3,14 @@ class DailyTarget{
   double? calorie;
   double? water;
   int? steps;
+  int userId;
 
-  DailyTarget({required this.date, this.calorie, this.water, this.steps});
+  DailyTarget({required this.date, this.calorie, this.water, this.steps, required this.userId});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
     map["date"] = date;
+    map['user_id'] = userId;
     if(calorie != null) {
       map["calorie"] = calorie;
     }
@@ -25,6 +27,7 @@ class DailyTarget{
       : date = o['date'],
         calorie= o['calorie'],
         water = o['water'],
-        steps = o['steps'];
+        steps = o['steps'],
+        userId = o['user_id'];
 
 }

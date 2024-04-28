@@ -7,12 +7,15 @@ import 'package:health_companion_app/models/db_models/daily_sleep.dart';
 import 'package:health_companion_app/models/db_models/sleep_target.dart';
 import 'package:health_companion_app/models/db_models/user.dart';
 import 'package:health_companion_app/screens/health_tips/health_tips_screen.dart';
+import 'package:health_companion_app/screens/onboarding/welcome_screen.dart';
 import 'package:health_companion_app/screens/sleep/sleep_screen.dart';
 import 'package:health_companion_app/screens/medication/medication_screen.dart';
+import 'package:health_companion_app/utils/signout.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:health_companion_app/contollers/user_controller.dart';
 import 'package:health_companion_app/utils/time_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/health_tips_model.dart';
 import '../utils/constants.dart';
@@ -43,7 +46,22 @@ class _AppShellState extends State<AppShell> {
   late List<String>? _healthTipsKeyWords = ["general"];
 
   void getUserDetails() async {
-    User user = await UserController.getUser();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? uid = prefs.getString('uid');
+    if(uid == null){
+      await SignOutUtil.signOut();
+      Navigator.pushNamedAndRemoveUntil(context, WelcomeScreen.id, (Route<dynamic> route) => false);
+      return;
+    }
+    User user;
+    try{
+       user = await UserController.getCurrentUser(uid);
+    }catch(e){
+      await SignOutUtil.signOut();
+      Navigator.pushNamedAndRemoveUntil(context, WelcomeScreen.id, (Route<dynamic> route) => false);
+      return;
+    }
+    await prefs.setString('user_id', user.id.toString());
     DailySleep? dailySleepData = await DailySleepController.getDailySleepData();
     SleepTarget? sleepTargetData = await SleepTargetController.getDailySleepData();
     if (dailySleepData == null) {

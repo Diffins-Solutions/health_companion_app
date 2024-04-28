@@ -19,6 +19,7 @@ import 'package:health_companion_app/services/api/networking.dart';
 import 'package:health_companion_app/models/music_response_data.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/utils/time_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Map<int, String> weekDays = {
   1: 'M',
@@ -59,13 +60,25 @@ class _SleepScreenState extends State<SleepScreen>
   final String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   void addSleepData(int mins) async {
-    DailySleep sleepData = DailySleep(day: '2024-04-22', mins: 988);
-    print('adding sleep schedule');
-    await DailySleepController.addDailySleepData(sleepData);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userIdString = prefs.getString('user_id')!;
+    int user_id;
+    try {
+      user_id = int.parse(userIdString);
+      DailySleep sleepData = DailySleep(day: '2024-04-22', mins: 988, userId: user_id);
+      print('adding sleep schedule');
+      await DailySleepController.addDailySleepData(sleepData);
+    } catch (e) {
+      print('Failed to parse user_id: $e');
+      // Handle the exception as needed.
+    }
   }
 
   void updateSleepData(int mins) async {
-    DailySleep sleepData = DailySleep(day: todayDate, mins: mins);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int user_id = prefs.getString('user_id') as int;
+
+    DailySleep sleepData = DailySleep(day: todayDate, mins: mins, userId: user_id);
     print('updating sleep schedule');
     await DailySleepController.updateSleepData(sleepData);
   }

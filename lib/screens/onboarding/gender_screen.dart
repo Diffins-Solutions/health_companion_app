@@ -80,6 +80,7 @@ class _GenderScreenState extends State<GenderScreen> {
                     MaterialPageRoute(
                       builder: (context) => HeightScreen(
                         previousData: {
+                          'uid': widget.previousData['uid'],
                           'name': widget.previousData['name'],
                           'age': widget.previousData['age'],
                           'gender': selectedGender.toString(),
