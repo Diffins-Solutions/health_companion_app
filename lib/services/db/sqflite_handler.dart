@@ -21,6 +21,7 @@ class DbHandler {
       await txn.execute('''
           create table user ( 
           id integer primary key autoincrement, 
+          uid text not null,
           name text not null,
           gender text not null,
           age integer not null,
@@ -34,7 +35,9 @@ class DbHandler {
           create table sleep_target (  
           day text primary key,
           wakeup text not null,
-          sleep text not null)
+          sleep text not null,
+          user_id integer not null,
+          foreign key (user_id) references user(id))
           ''');
       print("Creating daily target table");
       await txn.execute('''
@@ -42,7 +45,9 @@ class DbHandler {
           date text primary key, 
           calorie real,
           water real,
-          steps integer)
+          steps integer,
+          user_id integer not null,
+          foreign key (user_id) references user(id))
           ''');
       //kCal for for 100g
       print("Creating food calorie table");
@@ -56,7 +61,9 @@ class DbHandler {
           create table daily_sleep ( 
           id integer primary key autoincrement, 
           day text not null,
-          mins integer)
+          mins integer,
+          user_id integer not null,
+          foreign key (user_id) references user(id))
           ''');
 
       /// 1. sadness => 🙁
@@ -65,6 +72,7 @@ class DbHandler {
       /// 4. anger => 😡
       /// 5. fear => 😰
       /// 6. surprise => 😲
+
       print("Creating mood table");
       await txn.execute('''
           create table mood ( 
@@ -175,10 +183,21 @@ class DbHandler {
     }
   }
 
-  Future fetchPatternedData(String table, String field, String pattern) async {
+  Future fetchFilteredDataFromCurrentUser(String table, String field, int userId, List<dynamic> args) async {
+    Database db = await _db;
+    List<Map<String, dynamic>> maps = await db.query(table, where: "$field=? AND user_id=?", whereArgs: [args[0], userId]);
+    if (maps.isNotEmpty) {
+      return maps;
+    } else {
+      return null; // Return null if no user found
+    }
+  }
+
+
+  Future fetchPatternedData(String table, String field, String pattern, int userId) async {
     Database db = await _db;
     List<Map<String, dynamic>> maps = await db.rawQuery(
-        'SELECT * FROM $table WHERE $field LIKE ?', ['$pattern-%']);
+        'SELECT * FROM $table WHERE $field LIKE ? AND user_id = ?', ['$pattern-%', userId]);
     if (maps.isNotEmpty) {
       return maps;
     } else {
@@ -248,6 +267,14 @@ class DbHandler {
     Database db = await _db;
     var result = await db.update(table, data.toMap(),
         where: "$field=?", whereArgs: args);
+    return result;
+  }
+
+  Future updateWithUserId(
+      String table, dynamic data, String field, List<dynamic> args) async {
+    Database db = await _db;
+    var result = await db.update(table, data.toMap(),
+        where: "$field=? AND user_id=?", whereArgs: args);
     return result;
   }
 

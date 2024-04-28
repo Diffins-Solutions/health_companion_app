@@ -1,5 +1,6 @@
 import 'package:health_companion_app/models/db_models/daily_sleep.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/db/sqflite_handler.dart';
 
 class DailySleepController {
@@ -23,7 +24,10 @@ class DailySleepController {
 
   static Future<List<DailySleep>> getYearlySleepData(String year) async {
     try {
-      dynamic result = await _dbHandler.fetchPatternedData('daily_sleep', 'day', year);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userIdString = prefs.getString('user_id')!;
+      int user_id = int.parse(userIdString);
+      dynamic result = await _dbHandler.fetchPatternedData('daily_sleep', 'day', year, user_id);
       if (result != null) {
         return List.generate(result.length, (i) {
           return DailySleep.fromObject(result[i]);
@@ -41,7 +45,11 @@ class DailySleepController {
       month = "0$month";
     }
     try {
-      dynamic result = await _dbHandler.fetchPatternedData('daily_sleep', 'day', "$year-$month");
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userIdString = prefs.getString('user_id')!;
+      int user_id = int.parse(userIdString);
+
+      dynamic result = await _dbHandler.fetchPatternedData('daily_sleep', 'day', "$year-$month",user_id);
       if (result != null) {
         return List.generate(result.length, (i) {
           return DailySleep.fromObject(result[i]);
@@ -56,8 +64,11 @@ class DailySleepController {
 
   static Future<DailySleep?> getDailySleepData() async {
     try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userIdString = prefs.getString('user_id')!;
+      int user_id = int.parse(userIdString);
       dynamic result =
-      await _dbHandler.fetchFilteredData('daily_sleep', 'day', [_today]);
+      await _dbHandler.fetchFilteredDataFromCurrentUser('daily_sleep', 'day',user_id, [_today]);
       if (result != null) {
         return DailySleep.fromObject(result.first);
       } else {
@@ -80,10 +91,10 @@ class DailySleepController {
     }
   }
 
-  static Future updateSleepData(DailySleep dailySleep) async {
+  static Future<bool> updateSleepData(DailySleep dailySleep) async {
     try {
       int result =
-      await _dbHandler.update('daily_sleep', dailySleep, 'day', [dailySleep.day]);
+      await _dbHandler.updateWithUserId('daily_sleep', dailySleep, 'day', [dailySleep.day, dailySleep.userId]);
       if (result > 0) {
         return true;
       } else {

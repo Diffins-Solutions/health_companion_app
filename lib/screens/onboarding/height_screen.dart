@@ -116,6 +116,7 @@ class _HeightScreenState extends State<HeightScreen> {
                   MaterialPageRoute(
                     builder: (context) => WeightScreen(
                       previousData: {
+                        'uid': widget.previousData['uid'],
                         'name': widget.previousData['name'],
                         'gender': widget.previousData['gender'],
                         'age': widget.previousData['age'],

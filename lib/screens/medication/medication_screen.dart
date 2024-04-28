@@ -27,9 +27,20 @@ class _MedicationScreenState extends State<MedicationScreen> {
   Future<void> getPendingRequests() async {
     List<PendingNotificationRequest> pendingRequests =
         await LocalNotifications.getPending();
+    //get pending
     setState(() {
-      reminders = pendingRequests;
+      reminders = filterMedicationReminders(pendingRequests);
     });
+  }
+
+  List<PendingNotificationRequest> filterMedicationReminders (List<PendingNotificationRequest> pendingRequests){
+    List<PendingNotificationRequest> filteredPendingRequests = [];
+    for (int i = 0; i < pendingRequests.length; i++){
+      if(pendingRequests[i].title != 'Time for Sleep' && pendingRequests[i].title != 'Rise and Shine'){
+        filteredPendingRequests.add(pendingRequests[i]);
+      }
+    }
+    return filteredPendingRequests;
   }
 
   String getDateForReminder(PendingNotificationRequest reminder) {
@@ -234,7 +245,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
                           List<PendingNotificationRequest> pendingReminders =
                               await LocalNotifications.getPending();
                           setState(() {
-                            reminders = pendingReminders;
+                            reminders = filterMedicationReminders(pendingReminders);
                             _medicineController.clear();
                             _timeController.clear();
                             _dateController.clear();
@@ -292,7 +303,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
                                 await LocalNotifications.getPending();
                             // Update the UI using setState
                             setState(() {
-                              reminders = pendingReminders;
+                              reminders = filterMedicationReminders(pendingReminders);
                             });
                           },
                           background: Container(

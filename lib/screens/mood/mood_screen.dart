@@ -5,11 +5,14 @@ import 'package:health_companion_app/contollers/emotions_controller.dart';
 import 'package:health_companion_app/contollers/user_controller.dart';
 import 'package:health_companion_app/models/db_models/mood_record.dart';
 import 'package:health_companion_app/models/db_models/user.dart';
+import 'package:health_companion_app/screens/onboarding/welcome_screen.dart';
 import 'package:health_companion_app/services/mood/mood_service.dart';
+import 'package:health_companion_app/utils/signout.dart';
 import 'package:health_companion_app/widgets/chart_section.dart';
 import 'package:health_companion_app/widgets/input_emotion.dart';
 import 'package:intl/intl.dart';
 import 'package:health_companion_app/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/chart_data.dart';
 import '../app_shell.dart';
 
@@ -41,41 +44,49 @@ class _MoodScreenState extends State<MoodScreen>
   List<ChartData> weeklyData = [];
   List<ChartData> yearlyData = [];
 
-  Future<User> getUser() async {
-    User user = await UserController.getUser();
-    if (user != null) {
-      MoodRecord? todayRec = await EmotionsController.getTodayRecord(user.id!);
-      if (todayRec == null) {
-        todayRec = MoodRecord(
-            day: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-            sadness: 0,
-            joy: 0,
-            love: 0,
-            anger: 0,
-            fear: 0,
-            surprise: 0,
-            userId: user.id!);
-        bool res = await EmotionsController.addRecord(todayRec);
-        if (res) {
-          todayRec = await EmotionsController.getTodayRecord(user.id!);
-          if (todayRec != null) {
-            await getEmotions(user.id!);
+  Future<User?> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? uid = prefs.getString('uid');
+    if(uid != null){
+      User user = await UserController.getCurrentUser(uid);
+      if (user != null) {
+        MoodRecord? todayRec = await EmotionsController.getTodayRecord(user.id!);
+        if (todayRec == null) {
+          todayRec = MoodRecord(
+              day: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              sadness: 0,
+              joy: 0,
+              love: 0,
+              anger: 0,
+              fear: 0,
+              surprise: 0,
+              userId: user.id!);
+          bool res = await EmotionsController.addRecord(todayRec);
+          if (res) {
+            todayRec = await EmotionsController.getTodayRecord(user.id!);
+            if (todayRec != null) {
+              await getEmotions(user.id!);
+            }
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(
+                    'Something went wrong! Can not load previous records!')));
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                  'Something went wrong! Can not load previous records!')));
+          await getEmotions(user.id!);
         }
-      } else {
-        await getEmotions(user.id!);
-      }
 
-      setState(() {
-        this.name = user.name;
-        this.userId = user.id;
-      });
+        setState(() {
+          this.name = user.name;
+          this.userId = user.id;
+        });
+      }
+      return user;
+    }else{
+      await SignOutUtil.signOut();
+      Navigator.pushNamedAndRemoveUntil(context, WelcomeScreen.id, (Route<dynamic> route) => false);
     }
-    return user;
+
   }
 
   Future<Map<String, List<ChartData>>> getEmotions(int userId) async {

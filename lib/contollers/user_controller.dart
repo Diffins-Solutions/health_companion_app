@@ -4,12 +4,10 @@ import '../services/db/sqflite_handler.dart';
 class UserController {
   static final _dbHandler = DbHandler();
 
-  static Future<User> getUser() async {
+  static Future<User> getCurrentUser(String uid) async {
     try {
-      dynamic result = await _dbHandler.fetchData('user');
-      print('database res');
-      print(result['gender']);
-      return User.fromObject(result);
+      dynamic result = await _dbHandler.fetchFilteredData('user', 'uid', [uid]);
+      return User.fromObject(result[0]);
     } catch (e) {
       rethrow;
     }

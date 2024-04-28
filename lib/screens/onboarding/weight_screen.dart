@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:health_companion_app/screens/onboarding/daily_move_goal.dart';
 import 'package:health_companion_app/screens/onboarding/sleep_schedule_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:ruler_picker_bn/ruler_picker_bn.dart';
@@ -108,8 +109,9 @@ class _WeightScreenState extends State<WeightScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SleepScheduleScreen(
+                    builder: (context) => DailyMoveGoal(
                       previousData: {
+                        'uid': widget.previousData['uid'],
                         'name': widget.previousData['name'],
                         'age': widget.previousData['age'],
                         'gender': widget.previousData['gender'],

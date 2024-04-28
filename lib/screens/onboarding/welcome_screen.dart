@@ -4,6 +4,7 @@ import 'package:health_companion_app/screens/app_shell.dart';
 import 'package:health_companion_app/screens/onboarding/setup_start_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/custom_input_field.dart';
 import '../../widgets/custom_round_button.dart';
 
@@ -88,6 +89,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               final user = await _auth.signInWithEmailAndPassword(
                                   email: email, password: password);
                               if (user != null) {
+                                final String uid = await _auth.currentUser!.uid;
+                                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                await prefs.setString('uid', uid);
                                 Navigator.pushNamed(context, AppShell.id);
                               }
 
@@ -119,7 +123,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               final newUser = await _auth.createUserWithEmailAndPassword(
                                   email: email, password: password);
                               if (newUser != null) {
-                                Navigator.pushNamed(context, SetupStartScreen.id);
+                                final String uid = await _auth.currentUser!.uid;
+                                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                await prefs.setString('uid', uid);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SetupStartScreen(
+                                      previousData: {
+                                        'uid': uid,
+                                      },
+                                    ),
+                                  ),
+                                );
                               }
 
                               setState(() {

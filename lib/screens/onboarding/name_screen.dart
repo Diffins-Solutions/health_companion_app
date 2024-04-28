@@ -7,6 +7,10 @@ import 'package:health_companion_app/widgets/custom_flat_button.dart';
 class NameScreen extends StatefulWidget {
   static String id = 'name_screen';
 
+  final Map<String, dynamic> previousData;
+
+  NameScreen({required this.previousData});
+
   @override
   State<NameScreen> createState() => _NameScreenState();
 }
@@ -79,6 +83,7 @@ class _NameScreenState extends State<NameScreen> {
                     MaterialPageRoute(
                       builder: (context) => AgeScreen(
                         previousData: {
+                          'uid': widget.previousData['uid'],
                           'name': name.toString(),
                         },
                       ),

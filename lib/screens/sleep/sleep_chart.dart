@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:health_companion_app/contollers/daily_sleep_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:health_companion_app/models/chart_data.dart';
@@ -104,14 +105,13 @@ class _SleepChartState extends State<SleepChart>
       timeInBedMinsHours = getTimeInBedHoursMins(widget.timeInBed);
       chartData = [ChartData('', widget.timeInBed!.toDouble())];
       if (dailySleepData != null) {
-        print('not null');
         timeInBedMinsHours = getTimeInBedHoursMins(dailySleepData.mins);
         chartData = [ChartData('', dailySleepData.mins.toDouble())];
       }
     });
   }
   
-  void getSleepData (String tab) async {
+  Future<bool> getSleepData (String tab) async {
     DateTime time = DateTime.now();
     switch(tab) {
       case'Y':
@@ -131,6 +131,7 @@ class _SleepChartState extends State<SleepChart>
         formatDailyChartData(data);
         break;
     }
+    return true;
   }
 
   @override
@@ -169,28 +170,41 @@ class _SleepChartState extends State<SleepChart>
           SizedBox(
             height: 10,
           ),
-          Column(
-            children: [
-              Text(
-                titles[widget.tabName]!,
-                style: TextStyle(
-                    fontSize: 17,
-                    color: Color(0xF017736a),
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              isDaily()
-                  ? DailySleepChart(chartData: chartData!)
-                  : GeneralSleepChart(
+          FutureBuilder(
+            future: getSleepData(widget.tabName),
+            builder: (BuildContext context,AsyncSnapshot<bool?> snapshot ){
+              if(chartData != null){
+                return Column(
+                  children: [
+                    Text(
+                      titles[widget.tabName]!,
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: Color(0xF017736a),
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    isDaily()
+                        ? DailySleepChart(chartData: chartData!)
+                        : GeneralSleepChart(
                       chartData: chartData,
                       tabName: widget.tabName,
                     ),
-              SizedBox(
-                height: 15,
-              ),
-            ],
+                    SizedBox(
+                      height: 15,
+                    ),
+                  ],
+                );
+              }else if (snapshot.hasError){
+                return Text('Error: ${snapshot.error}');
+              }else{
+                return Center(
+                    child:
+                    CircularProgressIndicator());
+              }
+            },
           ),
         ],
       ),

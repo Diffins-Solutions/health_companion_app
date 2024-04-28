@@ -8,13 +8,16 @@ import 'package:health_companion_app/screens/landing/add_calories_popup.dart';
 import 'package:health_companion_app/screens/landing/add_water_popup.dart';
 import 'package:health_companion_app/screens/landing/heart_rate_widget.dart';
 import 'package:health_companion_app/screens/landing/step_counter_widget.dart';
+import 'package:health_companion_app/screens/onboarding/welcome_screen.dart';
 import 'package:health_companion_app/utils/enums.dart';
+import 'package:health_companion_app/utils/signout.dart';
 import 'package:intl/intl.dart';
 import 'package:health_companion_app/models/db_models/daily_sleep.dart';
 import 'package:health_companion_app/models/db_models/sleep_target.dart';
 import 'package:health_companion_app/utils/time_utils.dart';
 import 'package:health_companion_app/contollers/daily_sleep_controller.dart';
 import 'package:health_companion_app/contollers/sleep_target_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/db_models/food_calorie.dart';
 import '../../models/db_models/user.dart';
@@ -38,30 +41,45 @@ class _LandingScreenState extends State<LandingScreen> {
   DailyTarget? dailyTargets;
   int userId = 0 ;
 
+  // void testWeeklyReminder() async {
+  //   DateTime time = DateTime.now().add(Duration(minutes: 1));
+  //   Random random = Random();
+  //   int randomNumber = random.nextInt(1000) + 1;
+  //   await LocalNotifications.showWeeklyAlarm(id: randomNumber, dateTime: time);
+  // }
+
   void getUserDetails() async {
-    User user = await UserController.getUser();
-    DailySleep? dailySleepData = await DailySleepController.getDailySleepData();
-    SleepTarget? sleepTargetData = await SleepTargetController.getDailySleepData();
-    if (dailySleepData == null) {
-      setState(() {
-        sleep = getTimeInBedMins(convertTime(sleepTargetData!.sleep), convertTime(sleepTargetData!.wakeup));
-      });
-    } else {
-      setState(() {
-        sleep = dailySleepData.mins;
-      });
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? uid = prefs.getString('uid');
+    if(uid != null){
+      User user = await UserController.getCurrentUser(uid);
+      DailySleep? dailySleepData = await DailySleepController.getDailySleepData();
+      SleepTarget? sleepTargetData = await SleepTargetController.getDailySleepData();
+      if (dailySleepData == null) {
+        setState(() {
+          sleep = getTimeInBedMins(convertTime(sleepTargetData!.sleep), convertTime(sleepTargetData!.wakeup));
+        });
+      } else {
+        setState(() {
+          sleep = dailySleepData.mins;
+        });
+      }
+      if (user != null) {
+        setState(() {
+          name = user.name;
+          gender = user.gender == 'Gender.female' ? Gender.female : Gender.male;
+          targetSteps = user.steps;
+          userId = user.id!;
+          if (user.heart != null) {
+            heart = user.heart!;
+          }
+        });
+      }
+    }else{
+      await SignOutUtil.signOut();
+      Navigator.pushNamedAndRemoveUntil(context, WelcomeScreen.id, (Route<dynamic> route) => false);
     }
-    if (user != null) {
-      setState(() {
-        name = user.name;
-        gender = user.gender == 'Gender.female' ? Gender.female : Gender.male;
-        targetSteps = user.steps;
-        userId = user.id!;
-        if (user.heart != null) {
-          heart = user.heart!;
-        }
-      });
-    }
+
   }
 
   void getFoodCalories() async {

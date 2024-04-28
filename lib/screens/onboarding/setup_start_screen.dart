@@ -10,6 +10,10 @@ import '../app_shell.dart';
 class SetupStartScreen extends StatefulWidget {
   static String id = 'setup_start_screen';
 
+  final Map<String, dynamic> previousData;
+
+  SetupStartScreen({required this.previousData});
+
   @override
   State<SetupStartScreen> createState() => _SetupStartScreenState();
 }
@@ -45,7 +49,16 @@ class _SetupStartScreenState extends State<SetupStartScreen> {
             label: "Setup Account",
             color: kDarkGreen,
             onPressed: () {
-              Navigator.pushNamed(context, NameScreen.id);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NameScreen(
+                    previousData: {
+                      'uid': widget.previousData['uid'],
+                    },
+                  ),
+                ),
+              );
             },
             isSmall: false,
           ),

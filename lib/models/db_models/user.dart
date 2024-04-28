@@ -2,6 +2,7 @@ import '../../services/db/sqflite_handler.dart';
 
 class User {
   final int? id;
+  final String uid;
   final String name;
   final String gender;
   final int age;
@@ -12,6 +13,7 @@ class User {
 
   User({
     this.id,
+    required this.uid,
     required this.name,
     required this.age,
     required this.height,
@@ -27,6 +29,7 @@ class User {
       map["id"] = id;
     }
     map["name"] = name;
+    map["uid"] = uid;
     map["gender"] = gender;
     map["age"] = age;
     map["height"] = height;
@@ -41,6 +44,7 @@ class User {
   User.fromObject(Map<String, dynamic> o)
       : assert(o != null, 'Input object cannot be null'),
         id = int.tryParse(o["id"].toString())!,
+        uid = o["uid"],
         name = o["name"],
         gender = o["gender"],
         age = int.tryParse(o["age"].toString())!,
