@@ -14,6 +14,7 @@ import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/utils/time_utils.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
 import 'package:health_companion_app/utils/os_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SleepScheduleScreen extends StatefulWidget {
   static String id = 'sleep_schedule_screen';
@@ -85,7 +86,7 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
     return "${time?.hour}:${time?.minute}";
   }
 
-  Future<void> addSleepSchedule() async {
+  Future<void> addSleepSchedule(int userId) async {
     List<SleepTarget> sleep_targets = [];
     List<DateTime> nextWeek = getNextSevenDays();
     Random random = Random();
@@ -104,8 +105,8 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
           id: randomNumber, dateTime: sleep);
       await LocalNotifications.showWeeklyAlarm(
           id: randomNumber, dateTime: wakeup);
-
       sleep_targets.add(SleepTarget(
+          userId: userId,
           day: plan[i].day,
           sleep: formatTimeForDB(plan[i].getSleepTime()),
           wakeup: formatTimeForDB(plan[i].getWakeupTime())));
