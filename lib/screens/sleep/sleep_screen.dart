@@ -59,7 +59,7 @@ class _SleepScreenState extends State<SleepScreen>
   final String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   void addSleepData(int mins) async {
-    DailySleep sleepData = DailySleep(day: todayDate, mins: mins);
+    DailySleep sleepData = DailySleep(day: '2024-04-22', mins: 988);
     print('adding sleep schedule');
     await DailySleepController.addDailySleepData(sleepData);
   }
