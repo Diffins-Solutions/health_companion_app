@@ -59,7 +59,7 @@ class EmotionsController {
 
   static List<ChartData> convertToChartData(List<MoodRecord> moodRecords, List<String> labels) {
     // Initialize ChartData list
-    List<ChartData> chartDataList = labels.map((label) => ChartData(label, 0, 0, 0, 0, 0, 0)).toList();
+    List<ChartData> chartDataList = labels.map((label) => ChartData(label, 0, y2: 0, y3: 0, y4: 0, y5: 0, y6: 0)).toList();
 
     for (var record in moodRecords) {
       DateTime recordDate = DateTime.parse(record.day);
@@ -73,11 +73,11 @@ class EmotionsController {
       }
 
       chartDataList[index].y1 += record.sadness;
-      chartDataList[index].y2 += record.joy;
-      chartDataList[index].y3 += record.love;
-      chartDataList[index].y4 += record.anger;
-      chartDataList[index].y5 += record.fear;
-      chartDataList[index].y6 += record.surprise;
+      chartDataList[index].y2 = chartDataList[index].y2! + record.joy;
+      chartDataList[index].y3 = chartDataList[index].y3! + record.love;
+      chartDataList[index].y4 = chartDataList[index].y4! + record.anger;
+      chartDataList[index].y5 = chartDataList[index].y5! + record.fear;
+      chartDataList[index].y6 = chartDataList[index].y6! + record.surprise;
     }
 
     return chartDataList;

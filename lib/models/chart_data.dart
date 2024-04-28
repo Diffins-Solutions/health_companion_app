@@ -1,5 +1,4 @@
 class ChartData{
-  ChartData(this.x, this.y1, this.y2, this.y3, this.y4, this.y5, this.y6);
   String x;
   double y1;
   double? y2;
@@ -26,15 +25,15 @@ class ChartData{
     if(emotion == 'sadness'){
       y1++;
     }else if(emotion == 'joy'){
-      y2++;
+      y2 = y2! + 1;
     }else if(emotion == 'love'){
-      y3++;
+      y3 =  y3! + 1;
     }else if(emotion == 'anger'){
-      y4++;
+      y4 = y4! + 1;
     }else if(emotion == 'fear'){
-      y5++;
+      y5 = y5! + 1;
     }else if(emotion == 'surprise'){
-      y6++;
+      y6 = y6! + 1;
     }
 
   }
