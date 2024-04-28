@@ -30,13 +30,6 @@ Map<int, String> weekDays = {
   7: 'S'
 };
 
-int getTimeInBedMins(TimeOfDay sleepTime, TimeOfDay wakeupTime) {
-  Duration start = Duration(hours: sleepTime.hour, minutes: sleepTime.minute);
-  Duration end = Duration(hours: wakeupTime.hour, minutes: wakeupTime.minute);
-
-  return (end - start).inMinutes.abs();
-}
-
 class SleepScreen extends StatefulWidget {
   SleepScreen({this.audioPlayer});
 
@@ -79,8 +72,7 @@ class _SleepScreenState extends State<SleepScreen>
 
   void getSleepTarget() async {
     SleepTarget? sleepTarget =
-        await SleepTargetController.getDailySleepData(today);
-    print('data $sleepTarget');
+        await SleepTargetController.getDailySleepData();
     setState(() {
       scheduledSleep = convertTime(sleepTarget?.sleep);
       scheduledWakeUp = convertTime(sleepTarget?.wakeup);

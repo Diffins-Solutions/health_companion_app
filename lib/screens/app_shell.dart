@@ -1,6 +1,10 @@
 // AppShell.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:health_companion_app/contollers/daily_sleep_controller.dart';
+import 'package:health_companion_app/contollers/sleep_target_controller.dart';
+import 'package:health_companion_app/models/db_models/daily_sleep.dart';
+import 'package:health_companion_app/models/db_models/sleep_target.dart';
 import 'package:health_companion_app/models/db_models/user.dart';
 import 'package:health_companion_app/screens/health_tips/health_tips_screen.dart';
 import 'package:health_companion_app/screens/sleep/sleep_screen.dart';
@@ -8,6 +12,7 @@ import 'package:health_companion_app/screens/medication/medication_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:health_companion_app/contollers/user_controller.dart';
+import 'package:health_companion_app/utils/time_utils.dart';
 
 import '../models/health_tips_model.dart';
 import '../utils/constants.dart';
@@ -34,16 +39,24 @@ class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0; // Inter  nal state for selected tab
   String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
   String name = 'Default user';
+  int sleep = 0;
   late List<String>? _healthTipsKeyWords = ["general"];
 
-  void getUser() async {
+  void getUserDetails() async {
     User user = await UserController.getUser();
+    DailySleep? dailySleepData = await DailySleepController.getDailySleepData();
+    SleepTarget? sleepTargetData = await SleepTargetController.getDailySleepData();
+    if (dailySleepData == null) {
+      sleep = getTimeInBedMins(convertTime(sleepTargetData!.sleep), convertTime(sleepTargetData!.wakeup));
+    } else {
+      sleep = dailySleepData.mins;
+    }
     if (user != null) {
       setState(() {
         name = user.name;
       });
       if (_selectedIndex == 2) {
-        List<String> recommendations = HealthTipsModel.getRecomendedHealthTips(user);
+        List<String> recommendations = HealthTipsModel.getRecomendedHealthTips(user, (sleep/60).floor());
         if (widget.healthTipsKeyWords == null && recommendations.isNotEmpty) {
           _healthTipsKeyWords = _healthTipsKeyWords! + recommendations;
         } else {
@@ -53,23 +66,13 @@ class _AppShellState extends State<AppShell> {
       }
     }
   }
-  // Future getUser() async{
-  //   var dbHandler = DbHandler();
-  //   User user = await dbHandler.getUser();
-  //   print('get User: ${user.name}');
-  // }
-  //
-  // Future addUser() async{
-  //   var dbHandler = DbHandler();
-  //   int user = (await dbHandler.insert(User(name: 'Nethmi', age: 25, height: 163, weight: 62, gender: Gender.female.toString(), steps: 3000))) ;
-  //   print('User is: $user');
-  // }
+  
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.currentIndex; // Get initial index
-    getUser();
+    getUserDetails();
   }
 
   void navigateToScreen(int index) {

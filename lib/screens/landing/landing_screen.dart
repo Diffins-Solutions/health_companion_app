@@ -10,6 +10,11 @@ import 'package:health_companion_app/screens/landing/heart_rate_widget.dart';
 import 'package:health_companion_app/screens/landing/step_counter_widget.dart';
 import 'package:health_companion_app/utils/enums.dart';
 import 'package:intl/intl.dart';
+import 'package:health_companion_app/models/db_models/daily_sleep.dart';
+import 'package:health_companion_app/models/db_models/sleep_target.dart';
+import 'package:health_companion_app/utils/time_utils.dart';
+import 'package:health_companion_app/contollers/daily_sleep_controller.dart';
+import 'package:health_companion_app/contollers/sleep_target_controller.dart';
 
 import '../../models/db_models/food_calorie.dart';
 import '../../models/db_models/user.dart';
@@ -26,17 +31,27 @@ class _LandingScreenState extends State<LandingScreen> {
   String name = 'Default user';
   Gender gender = Gender.female;
   int targetSteps = 1000;
+  int sleep = 0;
   int heart = 0;
   List<String> food = [];
   List<FoodCalorie> foodCalories = [];
   DailyTarget? dailyTargets;
   int userId = 0 ;
 
-  void getUser() async {
+  void getUserDetails() async {
     User user = await UserController.getUser();
+    DailySleep? dailySleepData = await DailySleepController.getDailySleepData();
+    SleepTarget? sleepTargetData = await SleepTargetController.getDailySleepData();
+    if (dailySleepData == null) {
+      setState(() {
+        sleep = getTimeInBedMins(convertTime(sleepTargetData!.sleep), convertTime(sleepTargetData!.wakeup));
+      });
+    } else {
+      setState(() {
+        sleep = dailySleepData.mins;
+      });
+    }
     if (user != null) {
-      print('User id: ${user.gender}');
-      print('User: ${user}');
       setState(() {
         name = user.name;
         gender = user.gender == 'Gender.female' ? Gender.female : Gender.male;
@@ -70,7 +85,7 @@ class _LandingScreenState extends State<LandingScreen> {
   @override
   void initState() {
     super.initState();
-    getUser();
+    getUserDetails();
     getFoodCalories();
     getDailyTargets();
   }
@@ -95,9 +110,9 @@ class _LandingScreenState extends State<LandingScreen> {
                   },
                 ),
                 IconContent(
-                    iconData: FontAwesomeIcons.personWalking,
-                    value: targetSteps.toString(),
-                    label: 'Steps',
+                    iconData: FontAwesomeIcons.bed,
+                    value: getTimeInBedHoursMins(sleep),
+                    label: 'Sleep',
                     color: Colors.yellow),
                 IconContent(
                   iconData: Icons.fastfood_rounded,

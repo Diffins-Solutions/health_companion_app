@@ -27,7 +27,7 @@ class HealthTipsModel {
     return healthTips;
   }
 
-  static List<String> getRecomendedHealthTips(User user) {
+  static List<String> getRecomendedHealthTips(User user, int sleep) {
     List<String> currentRecommendations = [];
     double bmi = user.weight / pow(user.height, 2);
 
@@ -46,7 +46,11 @@ class HealthTipsModel {
         currentRecommendations.add("heart");
       }
     }
-
+    if (user.age >= 18 && sleep < 7) {
+      currentRecommendations.add("sleep");
+    } else if (user.age >= 13 && sleep < 8) {
+      currentRecommendations.add("sleep");
+    }
     return currentRecommendations;
   }
 

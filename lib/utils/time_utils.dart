@@ -4,6 +4,22 @@ String getTimeOfDay(DayPeriod period) {
   return period.name == 'am' ? 'AM' : 'PM';
 }
 
+int getTimeInBedMins(TimeOfDay sleepTime, TimeOfDay wakeupTime) {
+  Duration start = Duration(hours: sleepTime.hour, minutes: sleepTime.minute);
+  Duration end = Duration(hours: wakeupTime.hour, minutes: wakeupTime.minute);
+
+  return (end - start).inMinutes.abs();
+}
+
+String getTimeInBedHoursMins(int? mins){
+  if (mins == null) {
+    return "0 hours";
+  } else if (mins%60 == 0) {
+    return "${mins ~/ 60}hours";
+  }
+  return "${mins ~/ 60}hours ${mins % 60}mins";
+}
+
 TimeOfDay convertTime(String? unformattedtime){
   if (unformattedtime != null) {
     List<String> timeParts = unformattedtime.split(":");
