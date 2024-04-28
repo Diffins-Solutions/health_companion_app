@@ -30,33 +30,56 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                 final Task task = snapshot.data!;
                 return SurveyKit(
                   onResult: (SurveyResult result) {
-                    List<StepResult> answers = result.results.toList();
-                    List<List<bool>> scoringScheme = Quessionaire.getAnswers();
-                    Map<String, int> scores = {
-                      "Depression": 0,
-                      "Anxiety":0,
-                      "Stress": 0
-                    };
-                    answers.removeAt(0);
-                    answers.removeAt(answers.length - 1);
-                    for (var i = 0; i< answers.length; i++) {
-                      int currentAnswer = int.parse(answers[i].results[0].valueIdentifier!);
-                      List<bool> scorings = scoringScheme[i];
-                      scores["Depression"] =  scorings[0] ? scores["Depression"]! + currentAnswer : scores["Depression"]!;
-                      scores["Anxiety"] =  scorings[1] ? scores["Anxiety"]! + currentAnswer : scores["Anxiety"]!;
-                      scores["Stress"] =  scorings[2] ? scores["Stress"]! + currentAnswer : scores["Stress"]!;
+                    if (result.finishReason == FinishReason.COMPLETED) {
+                      List<StepResult> answers = result.results.toList();
+                      List<List<bool>> scoringScheme = Quessionaire.getAnswers();
+                      Map<String, int> scores = {
+                        "Depression": 0,
+                        "Anxiety": 0,
+                        "Stress": 0
+                      };
+                      answers.removeAt(0);
+                      answers.removeAt(answers.length - 1);
+                      for (var i = 0; i < answers.length; i++) {
+                        int currentAnswer =
+                        int.parse(answers[i].results[0].valueIdentifier!);
+                        List<bool> scorings = scoringScheme[i];
+                        scores["Depression"] = scorings[0]
+                            ? scores["Depression"]! + currentAnswer
+                            : scores["Depression"]!;
+                        scores["Anxiety"] = scorings[1]
+                            ? scores["Anxiety"]! + currentAnswer
+                            : scores["Anxiety"]!;
+                        scores["Stress"] = scorings[2]
+                            ? scores["Stress"]! + currentAnswer
+                            : scores["Stress"]!;
+                      }
+                      scores["Depression"] = scores["Depression"]! * 2;
+                      scores["Anxiety"] = scores["Anxiety"]! * 2;
+                      scores["Stress"] = scores["Stress"]! * 2;
+
+                      List<String> finalResult = [];
+                      for (String condition in scores.keys.toList()) {
+                        finalResult.add(Quessionaire.getScoringResult(condition, scores[condition]!));
+                      }
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AppShell(currentIndex: 1, dassScores: finalResult)),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AppShell(currentIndex: 1)),
+                      );
                     }
-                    print(scores);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => AppShell(currentIndex: 2)),
-                    // );
+
                   },
                   task: task,
                   showProgress: true,
                   themeData: ThemeData.dark().copyWith(
-
                     primaryColor: Colors.cyan,
                     appBarTheme: const AppBarTheme(
                       color: Colors.white,
@@ -131,26 +154,22 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                     ),
                     textTheme: const TextTheme(
                       displayMedium: TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Hind-Regular'
-                      ),
+                          fontSize: 20.0,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Hind-Regular'),
                       headlineSmall: TextStyle(
-                        fontSize: 17.0,
-                        color: Colors.black,
-                          fontFamily: 'Hind-Regular'
-                      ),
+                          fontSize: 17.0,
+                          color: Colors.black,
+                          fontFamily: 'Hind-Regular'),
                       bodyMedium: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black,
-                          fontFamily: 'Hind-Regular'
-                      ),
+                          fontSize: 18.0,
+                          color: Colors.black,
+                          fontFamily: 'Hind-Regular'),
                       titleMedium: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black,
-                          fontFamily: 'Hind-Regular'
-                      ),
+                          fontSize: 18.0,
+                          color: Colors.black,
+                          fontFamily: 'Hind-Regular'),
                     ),
                     inputDecorationTheme: const InputDecorationTheme(
                       labelStyle: TextStyle(

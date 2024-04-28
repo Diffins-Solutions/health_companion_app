@@ -7,9 +7,9 @@ import 'package:health_companion_app/screens/sleep/sleep_screen.dart';
 import 'package:health_companion_app/screens/medication/medication_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:health_companion_app/utils/enums.dart';
 import 'package:health_companion_app/contollers/user_controller.dart';
 
+import '../models/health_tips_model.dart';
 import '../utils/constants.dart';
 import '../widgets/custom_bottom_bar.dart';
 import '../widgets/welcome_text.dart';
@@ -20,8 +20,10 @@ class AppShell extends StatefulWidget {
   final int currentIndex;
   final AudioPlayer? audioPlayer;
   static final String id = 'app_shell';
+  final List<String>? dassScores;
+  final List<String>? healthTipsKeyWords;
 
-  const AppShell({Key? key, required this.currentIndex, this.audioPlayer})
+  const AppShell({Key? key, required this.currentIndex, this.audioPlayer, this.dassScores, this.healthTipsKeyWords})
       : super(key: key);
 
   @override
@@ -32,6 +34,7 @@ class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0; // Inter  nal state for selected tab
   String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
   String name = 'Default user';
+  late List<String>? _healthTipsKeyWords = ["general"];
 
   void getUser() async {
     User user = await UserController.getUser();
@@ -39,6 +42,15 @@ class _AppShellState extends State<AppShell> {
       setState(() {
         name = user.name;
       });
+      if (_selectedIndex == 2) {
+        List<String> recommendations = HealthTipsModel.getRecomendedHealthTips(user);
+        if (widget.healthTipsKeyWords == null && recommendations.isNotEmpty) {
+          _healthTipsKeyWords = _healthTipsKeyWords! + recommendations;
+        } else {
+          _healthTipsKeyWords = _healthTipsKeyWords! + widget.healthTipsKeyWords!;
+          _healthTipsKeyWords = _healthTipsKeyWords! + recommendations;
+        }
+      }
     }
   }
   // Future getUser() async{
@@ -58,7 +70,6 @@ class _AppShellState extends State<AppShell> {
     super.initState();
     _selectedIndex = widget.currentIndex; // Get initial index
     getUser();
-    //addUser();
   }
 
   void navigateToScreen(int index) {
@@ -71,9 +82,9 @@ class _AppShellState extends State<AppShell> {
       case 0:
         return LandingScreen();
       case 1:
-        return MoodScreen();
+        return MoodScreen(dassScores: widget.dassScores);
       case 2:
-        return HealthTipsScreen();
+        return HealthTipsScreen(healthTipsKeyWords: _healthTipsKeyWords,);
       case 3:
         return SleepScreen(
           audioPlayer: widget.audioPlayer,

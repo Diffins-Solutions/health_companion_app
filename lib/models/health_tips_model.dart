@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:health_companion_app/services/api/networking.dart';
+
+import 'db_models/user.dart';
 
 class HealthTipsModel {
   List<dynamic> healthTips = [];
@@ -16,16 +20,34 @@ class HealthTipsModel {
         List<dynamic> cleanedList = cleanList(decodedData.data['Result']
         ['Resources']['Resource'][0]['Sections']['section']);
         healthTips[i]['content'].addAll(cleanedList);
-        // print(decodedData
-        //     .data['Result']['Resources']['Resource'][0]['Sections']['section']
-        //     .length);
       }
       print(healthTips[i]['content'].length);
       i++;
-      //Result.Resources.Resource[0].Sections.section
     }
     return healthTips;
+  }
 
+  static List<String> getRecomendedHealthTips(User user) {
+    List<String> currentRecommendations = [];
+    double bmi = user.weight / pow(user.height, 2);
+
+    if (user.age >= 50) {
+      currentRecommendations.add("old");
+    }
+    if (user.age >= 20 && bmi > 25){
+      currentRecommendations.add("weight");
+    } else if (user.age < 20 && bmi > 85){
+      currentRecommendations.add("weight");
+    }
+    if (user.heart != null) {
+      if ((user.age > 20 && user.age < 64) && (user.heart! < 60 && user.heart! > 100)) {
+        currentRecommendations.add("heart");
+      } else if ( user.age > 65 && (user.heart! < 60 && user.heart! > 90)) {
+        currentRecommendations.add("heart");
+      }
+    }
+
+    return currentRecommendations;
   }
 
   List<dynamic> cleanList (List<dynamic> inputList) {

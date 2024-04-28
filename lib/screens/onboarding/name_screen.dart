@@ -67,22 +67,24 @@ class _NameScreenState extends State<NameScreen> {
                   hint: "Enter your name"),
             ),
             SizedBox(
-              height: 50,
+              height: 40,
             ),
             CustomFlatButton(
               label: 'Continue',
               color: kLightGreen,
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AgeScreen(
-                      previousData: {
-                        'name': name.toString(),
-                      },
+                if (name != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AgeScreen(
+                        previousData: {
+                          'name': name.toString(),
+                        },
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
               icon: Icons.navigate_next,
             ),

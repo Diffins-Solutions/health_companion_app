@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/chart.dart';
 import 'package:intl/intl.dart';
 
 import '../../models/chart_data.dart';
+import '../app_shell.dart';
 
 /// 1. sadness => 🙁
 /// 2. joy => 😀
@@ -47,6 +50,9 @@ final List<ChartData> weeklyData = [
 
 class MoodScreen extends StatefulWidget {
   final String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
+  final List<String>? dassScores;
+
+  MoodScreen({super.key, this.dassScores});
 
   @override
   State<MoodScreen> createState() => _MoodScreenState();
@@ -72,12 +78,194 @@ class _MoodScreenState extends State<MoodScreen>
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Column(
+      child: Stack(
+        alignment: AlignmentDirectional.center,
         children: [
-          Expanded(flex: 2, child: ChartSection(tabController: _tabController)),
-          Expanded(child: InputEmotion(textController: _textController)),
+          Column(
+            children: [
+              Expanded(
+                  flex: 2, child: ChartSection(tabController: _tabController)),
+              Expanded(child: InputEmotion(textController: _textController)),
+            ],
+          ),
+          (widget.dassScores != null)
+              ? AlertBox(scores: widget.dassScores!)
+              : Container()
         ],
       ),
+    );
+  }
+}
+
+class AlertBox extends StatefulWidget {
+  final List<String> scores;
+  AlertBox({required this.scores});
+
+  @override
+  _AlertBoxState createState() => _AlertBoxState();
+}
+
+class _AlertBoxState extends State<AlertBox> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  List<String>? recommendedTips(List<String> results) {
+    List<String> recommendations = ["depression", "stress", "anxiety"];
+    List<String> finalRecommendations = [];
+
+    for (var i = 0; i < recommendations.length; i++) {
+      if (results[i] != "Normal") {
+        finalRecommendations.add(recommendations[i]);
+      }
+    }
+    return finalRecommendations.isNotEmpty ? finalRecommendations : null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: AlignmentDirectional.center,
+      children: [
+        Container(
+          color: Colors.black.withOpacity(0.6),
+        ),
+        Container(
+          padding: EdgeInsets.all(20),
+          height: 270,
+          width: 300,
+          color: kActiveCardColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Your DASS 21 Score',
+                style: TextStyle(
+                    fontFamily: "Hind-Regular",
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
+              Divider(
+                color: Colors.grey,
+                height: 5, // You can adjust the height as needed
+                thickness: 1,
+              ),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Depression",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                            letterSpacing: 2),
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      Text(
+                        widget.scores[0],
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Anxiety",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2),
+                      ),
+                      SizedBox(
+                        width: 64,
+                      ),
+                      Text(widget.scores[1]),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Stress",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2),
+                      ),
+                      SizedBox(
+                        width: 78,
+                      ),
+                      Text(widget.scores[2]),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AppShell(
+                              currentIndex: 1,
+                            )),
+                      );
+                    },
+                    child: Text(
+                      "CANCEL",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Hind-Regular",
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AppShell(
+                                  currentIndex: 2,
+                                  healthTipsKeyWords:
+                                      recommendedTips(widget.scores),
+                                )),
+                      );
+                    },
+                    child: Text(
+                      "GET HEALTH TIPS",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Hind-Regular",
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
 }

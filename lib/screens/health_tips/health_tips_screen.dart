@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_companion_app/models/health_tips_model.dart';
-import 'package:health_companion_app/screens/health_tips/quessionaire_screen.dart';
 import 'package:health_companion_app/services/db/fire_store_handler.dart';
 import 'package:health_companion_app/utils/constants.dart';
 
@@ -13,7 +12,9 @@ import 'health_tip_widget.dart';
 FireStoreHandler fireStoreHandler = FireStoreHandler();
 
 class HealthTipsScreen extends StatefulWidget {
-  const HealthTipsScreen({super.key});
+  const HealthTipsScreen({super.key, required this.healthTipsKeyWords});
+
+  final List<String>? healthTipsKeyWords;
 
   @override
   State<HealthTipsScreen> createState() => _HealthTipsScreenState();
@@ -36,7 +37,7 @@ class _HealthTipsScreenState extends State<HealthTipsScreen> with TickerProvider
 
     HealthTipsModel healthTipsModel = HealthTipsModel();
   Future getHealthTips () async {
-      List<dynamic> result = await fireStoreHandler.fetchDataWithFilter('health_tips', 'key_word', ['general', 'heart', 'weight', 'old']);
+      List<dynamic> result = await fireStoreHandler.fetchDataWithFilter('health_tips', 'key_word', widget.healthTipsKeyWords!);
       List<dynamic> healthTips = await healthTipsModel.getHealthTips(result);
       for(var healthTip in healthTips){
         healthTipsArraysCount++;
@@ -79,6 +80,11 @@ class _HealthTipsScreenState extends State<HealthTipsScreen> with TickerProvider
       case 'stress':
         setState(() {
           healthTipsStress = content;
+        });
+        break;
+      case 'anxiety':
+        setState(() {
+          healthTipsAnxiety = content;
         });
         break;
       case 'old':

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:health_companion_app/screens/profile/profile_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 
-import 'package:health_companion_app/screens/health_tips/quessionaire_screen.dart';
+import 'package:health_companion_app/screens/mood/quessionaire_screen.dart';
 
 class WelcomeText extends StatelessWidget {
   final String name;

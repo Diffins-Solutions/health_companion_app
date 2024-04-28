@@ -74,18 +74,20 @@ class _GenderScreenState extends State<GenderScreen> {
               label: 'Continue',
               color: kLightGreen,
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HeightScreen(
-                      previousData: {
-                        'name': widget.previousData['name'],
-                        'age': widget.previousData['age'],
-                        'gender': selectedGender.toString(),
-                      },
+                if (selectedGender != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HeightScreen(
+                        previousData: {
+                          'name': widget.previousData['name'],
+                          'age': widget.previousData['age'],
+                          'gender': selectedGender.toString(),
+                        },
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
               icon: Icons.navigate_next,
             ),
