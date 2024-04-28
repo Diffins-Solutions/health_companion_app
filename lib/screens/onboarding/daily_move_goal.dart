@@ -176,6 +176,7 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
             _showInputDialog
                 ? AlertBox(
                     previousData: widget.previousData,
+              steps: widget.steps,
                   )
                 : Container()
           ],
@@ -185,15 +186,29 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
   }
 }
 
-class AlertBox extends StatelessWidget {
+class AlertBox extends StatefulWidget {
   final Map<String, dynamic> previousData;
+  final int? steps;
 
-  AlertBox({required this.previousData});
+  AlertBox({required this.previousData, required this.steps});
+
+  @override
+  State<AlertBox> createState() => _AlertBoxState();
+}
+
+class _AlertBoxState extends State<AlertBox> {
+  int? _steps;
+
+  @override
+  void initState(){
+    super.initState();
+    setState(() {
+      _steps = widget.steps;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    int? _steps;
-
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
@@ -222,7 +237,7 @@ class AlertBox extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => DailyMoveGoal(
-                                previousData: previousData, steps: _steps)),
+                                previousData: widget.previousData, steps: _steps)),
                       );
                     },
                     child: Text(
@@ -242,7 +257,7 @@ class AlertBox extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => DailyMoveGoal(
-                                previousData: previousData, steps: _steps)),
+                                previousData: widget.previousData, steps: _steps)),
                       );
                     },
                     child: Text(
@@ -262,3 +277,4 @@ class AlertBox extends StatelessWidget {
     );
   }
 }
+
