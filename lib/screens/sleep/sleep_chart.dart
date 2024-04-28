@@ -105,7 +105,6 @@ class _SleepChartState extends State<SleepChart>
       timeInBedMinsHours = getTimeInBedHoursMins(widget.timeInBed);
       chartData = [ChartData('', widget.timeInBed!.toDouble())];
       if (dailySleepData != null) {
-        print('not null');
         timeInBedMinsHours = getTimeInBedHoursMins(dailySleepData.mins);
         chartData = [ChartData('', dailySleepData.mins.toDouble())];
       }

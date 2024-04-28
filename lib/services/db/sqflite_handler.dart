@@ -270,6 +270,14 @@ class DbHandler {
     return result;
   }
 
+  Future updateWithUserId(
+      String table, dynamic data, String field, List<dynamic> args) async {
+    Database db = await _db;
+    var result = await db.update(table, data.toMap(),
+        where: "$field=? AND user_id=?", whereArgs: args);
+    return result;
+  }
+
   Future<int> insertMood(int userId, int mood) async {
     Database db = await _db;
     int timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000; // Get current Unix timestamp

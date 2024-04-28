@@ -65,7 +65,7 @@ class _SleepScreenState extends State<SleepScreen>
     int user_id;
     try {
       user_id = int.parse(userIdString);
-      DailySleep sleepData = DailySleep(day: '2024-04-22', mins: 988, userId: user_id);
+      DailySleep sleepData = DailySleep(day: todayDate, mins: mins, userId: user_id);
       print('adding sleep schedule');
       await DailySleepController.addDailySleepData(sleepData);
     } catch (e) {
@@ -76,11 +76,15 @@ class _SleepScreenState extends State<SleepScreen>
 
   void updateSleepData(int mins) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    int user_id = prefs.getString('user_id') as int;
+    String? userIdString = prefs.getString('user_id');
+    if(userIdString != null){
+      int user_id = int.parse(userIdString!);
+      DailySleep sleepData = DailySleep(day: todayDate, mins: mins, userId: user_id);
+      print('updating sleep schedule');
+      bool res = await DailySleepController.updateSleepData(sleepData);
+      print('update succ: $res');
+    }
 
-    DailySleep sleepData = DailySleep(day: todayDate, mins: mins, userId: user_id);
-    print('updating sleep schedule');
-    await DailySleepController.updateSleepData(sleepData);
   }
 
   void getSleepTarget() async {
@@ -222,9 +226,64 @@ class _SleepScreenState extends State<SleepScreen>
                           children: [
                             Expanded(
                               child: InkWell(
+                                child: IgnorePointer(
+                                  ignoring: true,
+                                  child: TextFormField(
+                                    controller: _wakeupTimeController,
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 12,
+                                      ),
+                                      hintText: 'Wakeup Time',
+                                      hintStyle: TextStyle(
+                                        fontSize: kNormalSize,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                                 onTap: () async {
                                   TimeOfDay? selectedTime =
-                                      await showTimePicker(
+                                  await showTimePicker(
+                                    initialTime: TimeOfDay.now(),
+                                    context: context,
+                                    builder: (context, child) {
+                                      return Theme(
+                                        data: ThemeData.light().copyWith(
+                                            colorScheme: kTimePickerTheme),
+                                        child: child!,
+                                      );
+                                    },
+                                  );
+
+                                  if (selectedTime != null) {
+                                    setState(() {
+                                      wakeup = selectedTime;
+                                      if (sleep != null && wakeup != null) {
+                                        todayTimeInBed =
+                                            getTimeInBedMins(sleep!, wakeup!);
+                                        updateSleepData(todayTimeInBed);
+                                      }
+                                      final now = DateTime.now();
+                                      final time = DateTime(
+                                          now.year,
+                                          now.month,
+                                          now.day,
+                                          wakeup!.hour,
+                                          wakeup!.minute);
+                                      _wakeupTimeController.text =
+                                          DateFormat('hh:mm a').format(time);
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () async {
+                                  TimeOfDay? selectedTime =
+                                  await showTimePicker(
                                     initialTime: TimeOfDay.now(),
                                     context: context,
                                     builder: (context, child) {
@@ -268,61 +327,6 @@ class _SleepScreenState extends State<SleepScreen>
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            SizedBox(width: 12),
-                            Expanded(
-                              child: InkWell(
-                                child: IgnorePointer(
-                                  ignoring: true,
-                                  child: TextFormField(
-                                    controller: _wakeupTimeController,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 12,
-                                      ),
-                                      hintText: 'Wakeup Time',
-                                      hintStyle: TextStyle(
-                                        fontSize: kNormalSize,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                onTap: () async {
-                                  TimeOfDay? selectedTime =
-                                      await showTimePicker(
-                                    initialTime: TimeOfDay.now(),
-                                    context: context,
-                                    builder: (context, child) {
-                                      return Theme(
-                                        data: ThemeData.light().copyWith(
-                                            colorScheme: kTimePickerTheme),
-                                        child: child!,
-                                      );
-                                    },
-                                  );
-
-                                  if (selectedTime != null) {
-                                    setState(() {
-                                      wakeup = selectedTime;
-                                      if (sleep != null && wakeup != null) {
-                                        todayTimeInBed =
-                                            getTimeInBedMins(sleep!, wakeup!);
-                                        updateSleepData(todayTimeInBed);
-                                      }
-                                      final now = DateTime.now();
-                                      final time = DateTime(
-                                          now.year,
-                                          now.month,
-                                          now.day,
-                                          wakeup!.hour,
-                                          wakeup!.minute);
-                                      _wakeupTimeController.text =
-                                          DateFormat('hh:mm a').format(time);
-                                    });
-                                  }
-                                },
                               ),
                             ),
                           ],

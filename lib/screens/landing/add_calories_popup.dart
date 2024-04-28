@@ -27,13 +27,15 @@ addCaloriesPopup(BuildContext context, List<String> food, List<FoodCalorie> food
     late DailyTarget newDailyTarget;
     if(dailyTarget == null){
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      int user_id = prefs.getString('user_id') as int;
+      String userIdString = prefs.getString('user_id')!;
+      int user_id = int.parse(userIdString);
       newDailyTarget = DailyTarget(date: DateFormat.yMMMMd().format(DateTime.now()), calorie: calculatedCalorie, userId: user_id);
     }else{
 
       double newAmount = (dailyTarget.calorie ?? 0) + calculatedCalorie;
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      int userId = prefs.getString('user_id') as int;
+      String userIdString = prefs.getString('user_id')!;
+      int userId = int.parse(userIdString);
       newDailyTarget = DailyTarget(date: dailyTarget.date, calorie: newAmount, water: dailyTarget.water, steps: dailyTarget.steps, userId: userId);
     }
 

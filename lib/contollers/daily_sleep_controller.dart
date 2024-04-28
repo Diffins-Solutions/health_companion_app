@@ -25,7 +25,8 @@ class DailySleepController {
   static Future<List<DailySleep>> getYearlySleepData(String year) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      int user_id = prefs.getString('user_id') as int;
+      String userIdString = prefs.getString('user_id')!;
+      int user_id = int.parse(userIdString);
       dynamic result = await _dbHandler.fetchPatternedData('daily_sleep', 'day', year, user_id);
       if (result != null) {
         return List.generate(result.length, (i) {
@@ -45,7 +46,8 @@ class DailySleepController {
     }
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      int user_id = prefs.getString('user_id') as int;
+      String userIdString = prefs.getString('user_id')!;
+      int user_id = int.parse(userIdString);
 
       dynamic result = await _dbHandler.fetchPatternedData('daily_sleep', 'day', "$year-$month",user_id);
       if (result != null) {
@@ -63,7 +65,8 @@ class DailySleepController {
   static Future<DailySleep?> getDailySleepData() async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      int user_id = prefs.getString('user_id') as int;
+      String userIdString = prefs.getString('user_id')!;
+      int user_id = int.parse(userIdString);
       dynamic result =
       await _dbHandler.fetchFilteredDataFromCurrentUser('daily_sleep', 'day',user_id, [_today]);
       if (result != null) {
@@ -88,10 +91,10 @@ class DailySleepController {
     }
   }
 
-  static Future updateSleepData(DailySleep dailySleep) async {
+  static Future<bool> updateSleepData(DailySleep dailySleep) async {
     try {
       int result =
-      await _dbHandler.update('daily_sleep', dailySleep, 'day', [dailySleep.day]);
+      await _dbHandler.updateWithUserId('daily_sleep', dailySleep, 'day', [dailySleep.day, dailySleep.userId]);
       if (result > 0) {
         return true;
       } else {

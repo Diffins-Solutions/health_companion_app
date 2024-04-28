@@ -14,12 +14,14 @@ addWaterPopup(BuildContext context, DailyTarget? dailyTarget) {
     late DailyTarget newDailyTarget;
     if(dailyTarget == null){
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      int userId = prefs.getString('user_id') as int;
+      String userIdString = prefs.getString('user_id')!;
+      int userId = int.parse(userIdString);
       newDailyTarget = DailyTarget(date: DateFormat.yMMMMd().format(DateTime.now()), water: double.parse(_amountController.text), userId: userId);
     }else{
       double newAmount = (dailyTarget.water ?? 0) + double.parse(_amountController.text);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      int userId = prefs.getString('user_id') as int;
+      String userIdString = prefs.getString('user_id')!;
+      int userId = int.parse(userIdString);
       newDailyTarget = DailyTarget(date: dailyTarget.date, calorie: dailyTarget.calorie, water: newAmount, steps: dailyTarget.steps, userId: userId);
     }
     await DailyTargetController.addOrUpdateDailyTarget(newDailyTarget);
