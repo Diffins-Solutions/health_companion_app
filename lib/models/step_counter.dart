@@ -32,13 +32,13 @@ class StepCounter {
   }
 
   bool _isPeak(double X, double Y, double Z) {
-    print('prev x,y,z: $_previousX, $_previousY, $_previousZ');
-    print('x,y,z : $X, $Y, $Z');
+    //print('prev x,y,z: $_previousX, $_previousY, $_previousZ');
+    //print('x,y,z : $X, $Y, $Z');
     // Simple peak detection based on change in Z-axis
     double prevAbsXYZ = sqrt(_previousX*_previousX + _previousY*_previousY + _previousZ*_previousZ);
-    print('Prev abs $prevAbsXYZ');
+    //print('Prev abs $prevAbsXYZ');
     double absXYZ =sqrt( X*X + Y*Y + Z*Z);
-    print('Abs: $absXYZ');
+    //print('Abs: $absXYZ');
     double value = prevAbsXYZ - absXYZ;
     bool isPeak = value.abs() > _xyzThreshold && Z > 9.36;
     isPeak? print('is Step : $isPeak'): print('');
