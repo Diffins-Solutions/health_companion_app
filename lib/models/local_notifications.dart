@@ -91,6 +91,43 @@ class LocalNotifications {
     );
   }
 
+  static Future<void> showWeeklyNotification({required id, required DateTime dateTime}) async {
+    print('Inside weekly notify');
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+        id,
+        'Time for Sleep',
+        'Good Night Buddy !! Have a sweet Dream !!',
+        _nextInstanceOfDay(dateTime),
+        const NotificationDetails(
+          android: AndroidNotificationDetails('weekly sleep notification channel id',
+              'weekly sleep notification channel',
+              channelDescription: 'Reminder for weekly sleep'),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime);
+  }
+
+  static Future<void> showWeeklyAlarm({required id, required DateTime dateTime}) async {
+    print('Inside wakeup notify');
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+        id,
+        'Rise and Shine',
+        'Good Morning Buddy !! Have a great day !!',
+        _nextInstanceOfDay(dateTime),
+        const NotificationDetails(
+          android: AndroidNotificationDetails('Weekly wakeup alarm channel ID',
+              'weekly wakeup notification channel',
+              channelDescription: 'Reminder for weekly wakeup', playSound: true,sound: RawResourceAndroidNotificationSound('alarm')),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime);
+  }
+
+
   static tz.TZDateTime _nextInstanceOfTime(DateTime dateTime) {
     final now = tz.TZDateTime.now(tz.local);
     print(now.toString());
@@ -108,6 +145,28 @@ class LocalNotifications {
     }
     // Schedule for today
     print(desiredTime.toString());
+    return desiredTime;
+  }
+
+  static tz.TZDateTime _nextInstanceOfDay(DateTime dateTime) {
+    final now = tz.TZDateTime.now(tz.local);
+    print(now.toString());
+    tz.TZDateTime desiredTime = tz.TZDateTime.from(
+      dateTime,
+      tz.local,
+    );
+
+    // Check if desired time has already passed today (including date)
+
+    print(desiredTime.isBefore(now));
+    if (desiredTime.isBefore(now)) {
+      // Schedule for tomorrow
+      desiredTime = desiredTime.add(const Duration(days: 7));
+    }
+    // Schedule for today
+    print('desired time weekly:');
+    print(desiredTime.toString());
+
     return desiredTime;
   }
 
