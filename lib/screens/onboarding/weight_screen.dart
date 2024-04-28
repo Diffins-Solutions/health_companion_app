@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/screens/onboarding/sleep_schedule_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
@@ -80,21 +81,23 @@ class _WeightScreenState extends State<WeightScreen> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 40,
-              child: RulerPicker(
-                onChange: (val) {
-                  setState(() {
-                    weight = val;
-                  });
-                },
-                background: kBackgroundColor,
-                lineColor: kLightGreen,
-                direction: Axis.horizontal,
-                startValue: 60,
-                minValue: 30,
-                maxValue: 150,
-                padding: EdgeInsets.all(10),
+            Expanded(
+              child: SizedBox(
+                height: 40,
+                child: RulerPicker(
+                  onChange: (val) {
+                    setState(() {
+                      weight = val;
+                    });
+                  },
+                  background: kBackgroundColor,
+                  lineColor: kLightGreen,
+                  direction: Axis.horizontal,
+                  startValue: 60,
+                  minValue: 30,
+                  maxValue: 150,
+                  padding: EdgeInsets.all(10),
+                ),
               ),
             ),
             CustomFlatButton(
