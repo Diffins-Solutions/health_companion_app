@@ -6,7 +6,6 @@ import 'package:health_companion_app/contollers/daily_target_controller.dart';
 import 'package:health_companion_app/contollers/food_calorie_controller.dart';
 import 'package:health_companion_app/contollers/user_controller.dart';
 import 'package:health_companion_app/models/db_models/daily_target.dart';
-import 'package:health_companion_app/models/local_notifications.dart';
 import 'package:health_companion_app/screens/landing/add_calories_popup.dart';
 import 'package:health_companion_app/screens/landing/add_water_popup.dart';
 import 'package:health_companion_app/screens/landing/heart_rate_widget.dart';
@@ -98,7 +97,6 @@ class _LandingScreenState extends State<LandingScreen> {
     getUserDetails();
     getFoodCalories();
     getDailyTargets();
-    //testWeeklyReminder();
   }
 
   @override

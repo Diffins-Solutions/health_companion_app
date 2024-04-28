@@ -1,10 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:health_companion_app/contollers/sleep_target_controller.dart';
 import 'package:health_companion_app/models/daily_sleep_plan.dart';
+import 'package:health_companion_app/models/local_notifications.dart';
 import 'package:health_companion_app/models/db_models/sleep_target.dart';
 import 'package:health_companion_app/models/weekly_sleep_plan.dart';
 import 'package:health_companion_app/screens/onboarding/daily_move_goal.dart';
 import 'package:health_companion_app/utils/constants.dart';
+import 'package:health_companion_app/utils/time_utils.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
 import 'package:health_companion_app/utils/os_utils.dart';
 
@@ -51,15 +55,35 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
     return "${time?.hour}:${time?.minute}";
   }
 
-  void addSleepSchedule () async {
-      List<SleepTarget> sleep_targets = [];
-      for(DailySleepPlan dailySleepPlan in weeklySleepPlan.weeklySleepPlan){
-        sleep_targets.add(SleepTarget(day: dailySleepPlan.day, sleep: formatTimeForDB(dailySleepPlan.getSleepTime()), wakeup: formatTimeForDB(dailySleepPlan.getWakeupTime())));
-      }
-      print('adding sleep schedule');
-      await SleepTargetController.addSleepTargets(sleep_targets);
-  }
+  void addSleepSchedule() async {
+    List<SleepTarget> sleep_targets = [];
+    List<DateTime> nextWeek = getNextSevenDays();
+    Random random = Random();
+    int randomNumber = random.nextInt(1000) + 1;
+    List<DailySleepPlan> plan = weeklySleepPlan.weeklySleepPlan;
+    for (var i = 0; i < plan.length; i++) {
 
+      TimeOfDay? sleepTime = plan[i].getSleepTime();
+      TimeOfDay? wakeupTime = plan[i].getWakeupTime();
+
+      DateTime sleep = DateTime(nextWeek[i].year, nextWeek[i].month,
+          nextWeek[i].day, sleepTime!.hour, sleepTime.minute);
+      DateTime wakeup = DateTime(nextWeek[i].year, nextWeek[i].month,
+          nextWeek[i].day, wakeupTime!.hour, wakeupTime.minute);
+
+      await LocalNotifications.showWeeklyNotification(
+          id: randomNumber, dateTime: sleep);
+      await LocalNotifications.showWeeklyAlarm(
+          id: randomNumber, dateTime: wakeup);
+
+      sleep_targets.add(SleepTarget(
+          day: plan[i].day,
+          sleep: formatTimeForDB(plan[i].getSleepTime()),
+          wakeup: formatTimeForDB(plan[i].getWakeupTime())));
+    }
+    print('adding sleep schedule');
+    await SleepTargetController.addSleepTargets(sleep_targets);
+  }
 
   @override
   Widget build(BuildContext context) {
