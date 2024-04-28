@@ -3,12 +3,10 @@ import 'package:health_companion_app/contollers/sleep_target_controller.dart';
 import 'package:health_companion_app/models/daily_sleep_plan.dart';
 import 'package:health_companion_app/models/db_models/sleep_target.dart';
 import 'package:health_companion_app/models/weekly_sleep_plan.dart';
-import 'package:health_companion_app/screens/app_shell.dart';
+import 'package:health_companion_app/screens/onboarding/daily_move_goal.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
-
-import '../../contollers/user_controller.dart';
-import '../../models/db_models/user.dart';
+import 'package:health_companion_app/utils/os_utils.dart';
 
 class SleepScheduleScreen extends StatefulWidget {
   static String id = 'sleep_schedule_screen';
@@ -27,7 +25,11 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
   TimeOfDay? bedTime = TimeOfDay(hour: 00, minute: 00);
 
   String getTimeOfDay(int hours) {
-    return hours - 12 < 0 ? 'AM' : 'PM';
+    return OSUtils.isIOS()
+        ? hours - 12 < 0
+            ? 'AM'
+            : 'PM'
+        : '';
   }
 
   String getSelectedTimeString(TimeOfDay? selectedTime) {
@@ -39,34 +41,20 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
     }
   }
 
-  void updateWeeklyTimePlan(bool isWakeupTime, TimeOfDay time) {
+  void updateWeeklyTimePlan(bool isWakeupTime, TimeOfDay? time) {
     isWakeupTime
-        ? weeklySleepPlan.setWakeupTimeForTheDay(selectedDay, time)
-        : weeklySleepPlan.setSleepTimeForTheDay(selectedDay, time);
+        ? weeklySleepPlan.setWakeupTimeForTheDay(selectedDay, time!)
+        : weeklySleepPlan.setSleepTimeForTheDay(selectedDay, time!);
   }
 
-  void addUserData() async {
-    print('adding user data');
-    User user = User(
-        name: 'Nethmi',
-        age: 24,
-        height: widget.previousData['height'],
-        weight: widget.previousData['weight'],
-        gender: widget.previousData['gender'],
-        steps: 3000);
-    bool response = await UserController.addUser(user);
-    if (response == true) {
-      Navigator.pushNamed(context, AppShell.id);
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error Recording user data')));
-    }
+  String formatTimeForDB(TimeOfDay? time) {
+    return "${time?.hour}:${time?.minute}";
   }
 
   void addSleepSchedule () async {
       List<SleepTarget> sleep_targets = [];
       for(DailySleepPlan dailySleepPlan in weeklySleepPlan.weeklySleepPlan){
-        sleep_targets.add(SleepTarget(day: dailySleepPlan.day, sleep: dailySleepPlan.getSleepTime().toString(), wakeup: dailySleepPlan.getWakeupTime().toString()));
+        sleep_targets.add(SleepTarget(day: dailySleepPlan.day, sleep: formatTimeForDB(dailySleepPlan.getSleepTime()), wakeup: formatTimeForDB(dailySleepPlan.getWakeupTime())));
       }
       print('adding sleep schedule');
       await SleepTargetController.addSleepTargets(sleep_targets);
@@ -212,40 +200,30 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
                     .toList(),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 25.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Expanded(
-                      child:
-                          Container()), // Empty container to push text to the right
-                  GestureDetector(
-                    onTap: ()  {
-                      addUserData();
-                      Navigator.pushNamed(context, AppShell.id);
-                  },
-                    child: Text(
-                      'Skip  >>',
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             SizedBox(
-              height: 80,
+              height: OSUtils.isAndroid() ? 20 : 80,
             ),
             CustomFlatButton(
-              label: 'Finish Setup',
+              label: 'Continue',
               color: kLightGreen,
               onPressed: () {
-                addUserData();
                 addSleepSchedule();
-                Navigator.pushNamed(context, AppShell.id);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DailyMoveGoal(
+                      previousData: {
+                        'name': widget.previousData['name'],
+                        'age': widget.previousData['age'],
+                        'gender': widget.previousData['gender'],
+                        'height': widget.previousData['height'],
+                        'weight': widget.previousData['weight'],
+                      },
+                    ),
+                  ),
+                );
               },
+              icon: Icons.navigate_next,
             ),
           ],
         ),

@@ -2,11 +2,18 @@ class ChartData{
   ChartData(this.x, this.y1, this.y2, this.y3, this.y4, this.y5, this.y6);
   String x;
   double y1;
-  double y2;
-  double y3;
-  double y4;
-  double y5;
-  double y6;
+  double? y2;
+  double? y3;
+  double? y4;
+  double? y5;
+  double? y6;
+
+  ChartData(this.x, this.y1,
+      {this.y2 = 0.0,
+        this.y3 = 0.0,
+        this.y4 = 0.0,
+        this.y5 = 0.0,
+        this.y6 = 0.0});
 
   /// 1. sadness => 🙁
   /// 2. joy => 😀

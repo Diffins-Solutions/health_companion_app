@@ -14,6 +14,10 @@ import '../../widgets/icon_content.dart';
 class GenderScreen extends StatefulWidget {
   static String id = 'gender_screen';
 
+  final Map<String, dynamic> previousData;
+
+  GenderScreen({required this.previousData});
+
   @override
   State<GenderScreen> createState() => _GenderScreenState();
 }
@@ -69,9 +73,22 @@ class _GenderScreenState extends State<GenderScreen> {
             CustomFlatButton(
               label: 'Continue',
               color: kLightGreen,
-              onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                HeightScreen(previousData: {'gender': selectedGender.toString()
-              })));},
+              onPressed: () {
+                if (selectedGender != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HeightScreen(
+                        previousData: {
+                          'name': widget.previousData['name'],
+                          'age': widget.previousData['age'],
+                          'gender': selectedGender.toString(),
+                        },
+                      ),
+                    ),
+                  );
+                }
+              },
               icon: Icons.navigate_next,
             ),
           ],

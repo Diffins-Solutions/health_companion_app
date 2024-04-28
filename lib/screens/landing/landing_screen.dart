@@ -9,16 +9,14 @@ import 'package:health_companion_app/screens/landing/add_water_popup.dart';
 import 'package:health_companion_app/screens/landing/heart_rate_widget.dart';
 import 'package:health_companion_app/screens/landing/step_counter_widget.dart';
 import 'package:health_companion_app/utils/enums.dart';
-import 'package:health_companion_app/widgets/welcome_text.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/db_models/food_calorie.dart';
 import '../../models/db_models/user.dart';
 
 class LandingScreen extends StatefulWidget {
   static String id = 'landing_screen';
-  String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
+  final String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
 
   @override
   State<LandingScreen> createState() => _LandingScreenState();
@@ -27,7 +25,7 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> {
   String name = 'Default user';
   Gender gender = Gender.female;
-  int targetSteps = 0;
+  int targetSteps = 1000;
   int heart = 0;
   List<String> food = [];
   List<FoodCalorie> foodCalories = [];
@@ -79,66 +77,66 @@ class _LandingScreenState extends State<LandingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          WelcomeText(name: name, today: widget.formattedDate),
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  IconContent(
-                    iconData: FontAwesomeIcons.heartPulse,
-                    value: heart == 0 ? 'Not configured' : '${heart.toString()} bpm',
-                    label: 'Heart',
-                    color: Colors.red,
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => HeartRateWidget(userId: userId,)));
-                    },
-                  ),
-                  IconContent(
-                      iconData: FontAwesomeIcons.solidMoon,
-                      value: '8 hrs',
-                      label: 'Sleep',
-                      color: Colors.yellow),
-                  IconContent(
-                    iconData: Icons.fastfood_rounded,
-                    value: '${dailyTargets?.calorie == null ? 0: dailyTargets!.calorie} kcal',
-                    label: 'Calories',
-                    color: Colors.orangeAccent,
-                    onTap: () => {
-                      addCaloriesPopup(context, food, foodCalories, dailyTargets)
-                          .then((e) => {getDailyTargets()})
-                    },
-                  ),
-                  IconContent(
-                      iconData: Icons.water_drop_rounded,
-                      value: '${dailyTargets?.water == null ? 0: dailyTargets!.water} liters',
-                      label: 'Water',
-                      color: Colors.blue,
-                    onTap: () => {
-                        addWaterPopup(context, dailyTargets).then((e) => {getDailyTargets()})
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: 50,
-              ),
-              Expanded(
-                child: Image.asset(
-                    'images/running${gender == Gender.male ? 'm' : 'w'}.png'),
-              ),
-              SizedBox(
-                width: 15,
-              ),
-            ],
-          ),
-          StepCounterWidget(targetSteps: targetSteps),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconContent(
+                  iconData: FontAwesomeIcons.heartPulse,
+                  value: heart == 0 ? 'Not configured' : '${heart.toString()} bpm',
+                  label: 'Heart',
+                  color: Colors.red,
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => HeartRateWidget(userId: userId,)));
+                  },
+                ),
+                IconContent(
+                    iconData: FontAwesomeIcons.personWalking,
+                    value: targetSteps.toString(),
+                    label: 'Steps',
+                    color: Colors.yellow),
+                IconContent(
+                  iconData: Icons.fastfood_rounded,
+                  value: '${dailyTargets?.calorie == null ? 0: dailyTargets!.calorie} kcal',
+                  label: 'Calories',
+                  color: Colors.orangeAccent,
+                  onTap: () => {
+                    addCaloriesPopup(context, food, foodCalories, dailyTargets)
+                        .then((e) => {getDailyTargets()})
+                  },
+                ),
+                IconContent(
+                    iconData: Icons.water_drop_rounded,
+                    value: '${dailyTargets?.water == null ? 0: dailyTargets!.water} liters',
+                    label: 'Water',
+                    color: Colors.blue,
+                  onTap: () => {
+                      addWaterPopup(context, dailyTargets).then((e) => {getDailyTargets()})
+                  },
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 50,
+            ),
+            Expanded(
+              child: Image.asset(
+                  'images/running${gender == Gender.male ? 'm' : 'w'}.png'),
+            ),
+            SizedBox(
+              width: 15,
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 50,
+        ),
+        StepCounterWidget(targetSteps: targetSteps),
+      ],
     );
   }
 }

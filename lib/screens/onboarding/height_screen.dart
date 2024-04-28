@@ -47,7 +47,8 @@ class _HeightScreenState extends State<HeightScreen> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 50.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 50.0),
               child: Text(
                 'These data can later be used to calculate your BMI and recommend more personalized health tips',
                 style: TextStyle(
@@ -110,7 +111,19 @@ class _HeightScreenState extends State<HeightScreen> {
               label: 'Continue',
               color: kLightGreen,
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> WeightScreen(previousData: {'gender': widget.previousData['gender'], 'height': height})));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WeightScreen(
+                      previousData: {
+                        'name': widget.previousData['name'],
+                        'gender': widget.previousData['gender'],
+                        'age': widget.previousData['age'],
+                        'height': height
+                      },
+                    ),
+                  ),
+                );
               },
               icon: Icons.navigate_next,
             ),

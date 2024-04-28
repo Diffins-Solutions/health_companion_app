@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_round_button.dart';
-import 'package:health_companion_app/screens/onboarding/gender_screen.dart';
+import 'package:health_companion_app/screens/onboarding/name_screen.dart';
 
 import '../app_shell.dart';
 
@@ -45,34 +45,12 @@ class _SetupStartScreenState extends State<SetupStartScreen> {
             label: "Setup Account",
             color: kDarkGreen,
             onPressed: () {
-              Navigator.pushNamed(context, GenderScreen.id);
+              Navigator.pushNamed(context, NameScreen.id);
             },
             isSmall: false,
           ),
           SizedBox(
             height: 45,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 25.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Expanded(
-                    child:
-                        Container()), // Empty container to push text to the right
-                GestureDetector(
-                  onTap: () => {
-                  Navigator.pushNamed(context, AppShell.id)
-                  },
-                  child: Text(
-                    'Skip  >>',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ),
         ],
       )),

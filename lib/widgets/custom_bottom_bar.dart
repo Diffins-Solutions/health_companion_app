@@ -22,7 +22,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
   Widget build(BuildContext context) {
     return Container(
       color: kDarkGreen,
-      padding: EdgeInsets.all(12.0),
+      padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 12.0),
       child: SalomonBottomBar(
         currentIndex: widget.currentIndex,
         selectedItemColor: widget.color,
@@ -46,7 +46,13 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
             title: Text("Health Tips"),
           ),
 
-          /// Profile
+          //Sleep
+          SalomonBottomBarItem(
+            icon: Image.asset('images/sleep_icon.png'),
+            title: Text("Sleep"),
+          ),
+
+          /// Medication
           SalomonBottomBarItem(
             icon: Icon(Icons.medical_information),
             title: Text("Medication"),
