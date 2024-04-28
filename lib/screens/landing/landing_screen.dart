@@ -38,6 +38,13 @@ class _LandingScreenState extends State<LandingScreen> {
   DailyTarget? dailyTargets;
   int userId = 0 ;
 
+  // void testWeeklyReminder() async {
+  //   DateTime time = DateTime.now().add(Duration(minutes: 1));
+  //   Random random = Random();
+  //   int randomNumber = random.nextInt(1000) + 1;
+  //   await LocalNotifications.showWeeklyAlarm(id: randomNumber, dateTime: time);
+  // }
+
   void getUserDetails() async {
     User user = await UserController.getUser();
     DailySleep? dailySleepData = await DailySleepController.getDailySleepData();
