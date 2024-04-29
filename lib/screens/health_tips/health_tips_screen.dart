@@ -35,7 +35,8 @@ class _HealthTipsScreenState extends State<HealthTipsScreen> with TickerProvider
   int healthTipsArraysCount = 0 ;
   bool isOnline = false;
 
-    HealthTipsModel healthTipsModel = HealthTipsModel();
+  HealthTipsModel healthTipsModel = HealthTipsModel();
+
   Future getHealthTips () async {
       List<dynamic> result = await fireStoreHandler.fetchDataWithFilter('health_tips', 'key_word', widget.healthTipsKeyWords!);
       List<dynamic> healthTips = await healthTipsModel.getHealthTips(result);

@@ -31,7 +31,12 @@ class AppShell extends StatefulWidget {
   final List<String>? dassScores;
   final List<String>? healthTipsKeyWords;
 
-  const AppShell({Key? key, required this.currentIndex, this.audioPlayer, this.dassScores, this.healthTipsKeyWords})
+  const AppShell(
+      {Key? key,
+      required this.currentIndex,
+      this.audioPlayer,
+      this.dassScores,
+      this.healthTipsKeyWords})
       : super(key: key);
 
   @override
@@ -43,48 +48,38 @@ class _AppShellState extends State<AppShell> {
   String formattedDate = DateFormat.yMMMMd().format(DateTime.now());
   String name = 'Default user';
   int sleep = 0;
-  late List<String>? _healthTipsKeyWords = ["general"];
+  late List<String> _healthTipsKeyWords = ["general"];
 
-  void getUserDetails() async {
+  Future<User?> getUserDetails() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? uid = prefs.getString('uid');
-    if(uid == null){
+    if (uid == null) {
       await SignOutUtil.signOut();
-      Navigator.pushNamedAndRemoveUntil(context, WelcomeScreen.id, (Route<dynamic> route) => false);
-      return;
+      Navigator.pushNamedAndRemoveUntil(
+          context, WelcomeScreen.id, (Route<dynamic> route) => false);
+      return null;
     }
     User user;
-    try{
-       user = await UserController.getCurrentUser(uid);
-    }catch(e){
+    try {
+      user = await UserController.getCurrentUser(uid);
+    } catch (e) {
       await SignOutUtil.signOut();
-      Navigator.pushNamedAndRemoveUntil(context, WelcomeScreen.id, (Route<dynamic> route) => false);
-      return;
+      Navigator.pushNamedAndRemoveUntil(
+          context, WelcomeScreen.id, (Route<dynamic> route) => false);
+      return null;
     }
     await prefs.setString('user_id', user.id.toString());
     DailySleep? dailySleepData = await DailySleepController.getDailySleepData();
-    SleepTarget? sleepTargetData = await SleepTargetController.getDailySleepData();
+    SleepTarget? sleepTargetData =
+        await SleepTargetController.getDailySleepData();
     if (dailySleepData == null) {
-      sleep = getTimeInBedMins(convertTime(sleepTargetData!.sleep), convertTime(sleepTargetData!.wakeup));
+      sleep = getTimeInBedMins(convertTime(sleepTargetData!.sleep),
+          convertTime(sleepTargetData.wakeup));
     } else {
       sleep = dailySleepData.mins;
     }
-    if (user != null) {
-      setState(() {
-        name = user.name;
-      });
-      if (_selectedIndex == 2) {
-        List<String> recommendations = HealthTipsModel.getRecomendedHealthTips(user, (sleep/60).floor());
-        if (widget.healthTipsKeyWords == null && recommendations.isNotEmpty) {
-          _healthTipsKeyWords = _healthTipsKeyWords! + recommendations;
-        } else {
-          _healthTipsKeyWords = _healthTipsKeyWords! + widget.healthTipsKeyWords!;
-          _healthTipsKeyWords = _healthTipsKeyWords! + recommendations;
-        }
-      }
-    }
+    return user;
   }
-  
 
   @override
   void initState() {
@@ -105,7 +100,9 @@ class _AppShellState extends State<AppShell> {
       case 1:
         return MoodScreen(dassScores: widget.dassScores);
       case 2:
-        return HealthTipsScreen(healthTipsKeyWords: _healthTipsKeyWords,);
+        return HealthTipsScreen(
+          healthTipsKeyWords: _healthTipsKeyWords,
+        );
       case 3:
         return SleepScreen(
           audioPlayer: widget.audioPlayer,
@@ -119,27 +116,52 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackgroundColor,
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Column(
-          children: [
-            WelcomeText(
-              name: name,
-              today: formattedDate,
-              isLandingPage: _selectedIndex == 0,
-              isMoodPage: _selectedIndex == 1,
-            ),
-            _buildScreen(_selectedIndex),
-          ],
-        ),
-      ),
-      bottomNavigationBar: CustomBottomBar(
-        currentIndex: _selectedIndex,
-        onTap: navigateToScreen,
-        // ... other bottom bar properties
-      ),
-    );
+    return FutureBuilder(
+        future: getUserDetails(),
+        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else {
+            User user = snapshot.data!;
+            name = user.name;
+            print(name);
+            if (_selectedIndex == 2) {
+              List<String> recommendations =
+                  HealthTipsModel.getRecomendedHealthTips(
+                      user, (sleep / 60).floor());
+              if (widget.healthTipsKeyWords == null &&
+                  recommendations.isNotEmpty) {
+                _healthTipsKeyWords = _healthTipsKeyWords + recommendations;
+              } else {
+                _healthTipsKeyWords = _healthTipsKeyWords +
+                    widget.healthTipsKeyWords! +
+                    recommendations;
+              }
+            }
+
+            return Scaffold(
+              backgroundColor: kBackgroundColor,
+              resizeToAvoidBottomInset: false,
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    WelcomeText(
+                      name: name,
+                      today: formattedDate,
+                      isLandingPage: _selectedIndex == 0,
+                      isMoodPage: _selectedIndex == 1,
+                    ),
+                    _buildScreen(_selectedIndex),
+                  ],
+                ),
+              ),
+              bottomNavigationBar: CustomBottomBar(
+                currentIndex: _selectedIndex,
+                onTap: navigateToScreen,
+                // ... other bottom bar properties
+              ),
+            );
+          }
+        });
   }
 }

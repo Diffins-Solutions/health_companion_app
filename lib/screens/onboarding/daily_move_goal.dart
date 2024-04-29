@@ -31,7 +31,6 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
         steps = widget.steps!;
       });
     }
-    print(steps);
   }
 
   @override
