@@ -8,6 +8,16 @@ int getTimeInBedMins(TimeOfDay sleepTime, TimeOfDay wakeupTime) {
   Duration start = Duration(hours: sleepTime.hour, minutes: sleepTime.minute);
   Duration end = Duration(hours: wakeupTime.hour, minutes: wakeupTime.minute);
 
+  if (sleepTime.hour == 0) {
+    start = Duration(hours: 24, minutes: sleepTime.minute);
+  }
+  if (wakeupTime.hour == 0) {
+    end = Duration(hours: 24, minutes: wakeupTime.minute);
+  }
+  if (sleepTime.hour > 12 && wakeupTime.hour < 12) {
+    Duration midnight = Duration(hours: 24, minutes: 0);
+    return (midnight - start + end).inMinutes.abs();
+  }
   return (end - start).inMinutes.abs();
 }
 
