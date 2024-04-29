@@ -85,7 +85,6 @@ class _LandingScreenState extends State<LandingScreen> {
   void getFoodCalories() async {
     List<FoodCalorie> result = await FoodCalorieController.getFoodCalories();
     if (result.isNotEmpty) {
-      print(result.length);
       setState(() {
         foodCalories = result;
         food = List.generate(result.length, (i) => result[i].food);

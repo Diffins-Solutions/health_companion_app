@@ -21,7 +21,6 @@ class HealthTipsModel {
         ['Resources']['Resource'][0]['Sections']['section']);
         healthTips[i]['content'].addAll(cleanedList);
       }
-      print(healthTips[i]['content'].length);
       i++;
     }
     return healthTips;
