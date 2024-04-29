@@ -92,7 +92,7 @@ class EmotionsController {
     final List<MoodRecord> thisYearData = await _dbHandler.getRecordsThisWeek(userId);
 
     final List<ChartData> weeklyData = convertToChartData(thisWeekData, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
-    final List<ChartData> monthlyData = convertToChartData(thisMonthData, ['Week 1', 'Week 2', 'Week 3', 'Week 4']);
+    final List<ChartData> monthlyData = convertToChartData(thisMonthData, ['Week 1', 'Week 2', 'Week 3', 'Week 4','Week 5']);
     final List<ChartData> yearlyData = convertToChartData(thisYearData, ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
 
     Map<String, List<ChartData>> emotions = Map<String, List<ChartData>>();
