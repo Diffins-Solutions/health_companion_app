@@ -5,9 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:health_companion_app/screens/onboarding/sleep_schedule_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
-import 'package:health_companion_app/screens/app_shell.dart';
-import 'package:health_companion_app/contollers/user_controller.dart';
-import 'package:health_companion_app/models/db_models/user.dart';
 import '../../widgets/custom_input_field.dart';
 
 class DailyMoveGoal extends StatefulWidget {
@@ -198,13 +195,15 @@ class AlertBox extends StatefulWidget {
 }
 
 class _AlertBoxState extends State<AlertBox> {
-  int? _steps;
+  int? _prevSteps;
+  int? _newSteps;
 
   @override
   void initState(){
     super.initState();
     setState(() {
-      _steps = widget.steps;
+      _prevSteps = widget.steps;
+      _newSteps = widget.steps;
     });
   }
 
@@ -227,7 +226,7 @@ class _AlertBoxState extends State<AlertBox> {
               CustomInputField(
                   textInputType: TextInputType.number,
                   hint: 'Enter Your Daily Steps Goal..',
-                  onChange: (value) => {_steps = int.parse(value)}),
+                  onChange: (value) => {_newSteps = int.parse(value)}),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -238,7 +237,7 @@ class _AlertBoxState extends State<AlertBox> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => DailyMoveGoal(
-                                previousData: widget.previousData, steps: _steps)),
+                                previousData: widget.previousData, steps: _prevSteps)),
                       );
                     },
                     child: Text(
@@ -258,7 +257,7 @@ class _AlertBoxState extends State<AlertBox> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => DailyMoveGoal(
-                                previousData: widget.previousData, steps: _steps)),
+                                previousData: widget.previousData, steps: _newSteps)),
                       );
                     },
                     child: Text(

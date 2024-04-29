@@ -9,12 +9,10 @@ import 'package:health_companion_app/models/db_models/sleep_target.dart';
 import 'package:health_companion_app/models/db_models/user.dart';
 import 'package:health_companion_app/models/weekly_sleep_plan.dart';
 import 'package:health_companion_app/screens/app_shell.dart';
-import 'package:health_companion_app/screens/onboarding/daily_move_goal.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:health_companion_app/utils/time_utils.dart';
 import 'package:health_companion_app/widgets/custom_flat_button.dart';
 import 'package:health_companion_app/utils/os_utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SleepScheduleScreen extends StatefulWidget {
   static String id = 'sleep_schedule_screen';
@@ -90,9 +88,10 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
     List<SleepTarget> sleep_targets = [];
     List<DateTime> nextWeek = getNextSevenDays();
     Random random = Random();
-    int randomNumber = random.nextInt(1000) + 1;
     List<DailySleepPlan> plan = weeklySleepPlan.weeklySleepPlan;
     for (var i = 0; i < plan.length; i++) {
+      int randomNumber = random.nextInt(1000) + 1;
+
       TimeOfDay? sleepTime = plan[i].getSleepTime();
       TimeOfDay? wakeupTime = plan[i].getWakeupTime();
 
@@ -104,7 +103,7 @@ class _SleepScheduleScreenState extends State<SleepScheduleScreen> {
       await LocalNotifications.showWeeklyNotification(
           id: randomNumber, dateTime: sleep);
       await LocalNotifications.showWeeklyAlarm(
-          id: randomNumber, dateTime: wakeup);
+          id: randomNumber+1, dateTime: wakeup);
       sleep_targets.add(SleepTarget(
           userId: userId,
           day: plan[i].day,

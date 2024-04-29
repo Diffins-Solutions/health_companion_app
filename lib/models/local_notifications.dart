@@ -99,7 +99,7 @@ class LocalNotifications {
         'Good Night Buddy !! Have a sweet Dream !!',
         _nextInstanceOfDay(dateTime),
         const NotificationDetails(
-          android: AndroidNotificationDetails('weekly sleep notification channel id',
+          android: AndroidNotificationDetails('weekly sleep notification',
               'weekly sleep notification channel',
               channelDescription: 'Reminder for weekly sleep'),
         ),
@@ -117,7 +117,7 @@ class LocalNotifications {
         'Good Morning Buddy !! Have a great day !!',
         _nextInstanceOfDay(dateTime),
         const NotificationDetails(
-          android: AndroidNotificationDetails('Weekly wakeup alarm channel ID',
+          android: AndroidNotificationDetails('Weekly wakeup alarm',
               'weekly wakeup notification channel',
               channelDescription: 'Reminder for weekly wakeup', playSound: true,sound: RawResourceAndroidNotificationSound('alarm')),
         ),
