@@ -34,6 +34,7 @@ void main() async {
       androidNotificationOngoing: true);
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.getInt('counter') == null) {
+    print('Counter null from main');
     await prefs.setInt('counter', 0);
     await prefs.setInt('counterP', 0);
     DateTime today = DateTime.now();

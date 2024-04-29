@@ -4,7 +4,11 @@ import 'package:health_companion_app/screens/app_shell.dart';
 import 'package:health_companion_app/screens/onboarding/setup_start_screen.dart';
 import 'package:health_companion_app/utils/constants.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../contollers/daily_target_controller.dart';
+import '../../models/db_models/daily_target.dart';
+import '../../models/steps_notifer.dart';
 import '../../widgets/custom_input_field.dart';
 import '../../widgets/custom_round_button.dart';
 
@@ -27,6 +31,27 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<bool> handleStepCount (BuildContext context) async {
+    DailyTarget? result = await DailyTargetController.getDailyTarget();
+    if(result != null){
+      int? steps = result!.steps;
+      if(steps != null){
+        print('Steps: $steps');
+        final  provider = Provider.of<StepNotifier>(context, listen: true);
+        DateTime today = DateTime.now();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('counter', steps!);
+        await prefs.setInt('counterP', steps! > 0 ? (steps! - 1) : 0);
+        await prefs.setString('today', today.toString());
+        await prefs.setString('yesterday', today.subtract(Duration(days: 1)).toString());
+        print('Get counter from prefs ${prefs.getInt('counter')}');
+        provider.addSteps(steps);
+        return true;
+      }
+    }
+    return true;
   }
 
   @override
@@ -89,10 +114,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               final user = await _auth.signInWithEmailAndPassword(
                                   email: email, password: password);
                               if (user != null) {
+                                print('User not null');
                                 final String uid = await _auth.currentUser!.uid;
+                                print('uid not null $uid');
                                 final SharedPreferences prefs = await SharedPreferences.getInstance();
                                 await prefs.setString('uid', uid);
+                                handleStepCount(context);
                                 Navigator.pushNamed(context, AppShell.id);
+
                               }
 
                               setState(() {

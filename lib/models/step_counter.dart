@@ -26,7 +26,7 @@ class StepCounter {
     }
   }
 
-  void stopListening() {
+  void _stopListening() {
     _streamSubscription?.cancel();
     _streamSubscription = null;
   }
@@ -50,26 +50,29 @@ class StepCounter {
 
   void _onAccelerometerData(AccelerometerEvent event) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await checkDateAndUpdate(prefs.getString('today')!);
-    double currentZ = event.z;
-    double currentX = event.x.abs();
-    double currentY = event.y.abs();
-    int stepCount = prefs.getInt('counter')!;
-    await prefs.setInt('counterP', stepCount);
-    if (_isPeak(currentX, currentY, currentZ)) {
+    if(prefs.getString('user_id') == null){
+      _stopListening();
+    }else{
+      await checkDateAndUpdate(prefs.getString('today')!);
+      double currentZ = event.z;
+      double currentX = event.x.abs();
+      double currentY = event.y.abs();
+      int stepCount = prefs.getInt('counter')!;
+      await prefs.setInt('counterP', stepCount);
+      if (_isPeak(currentX, currentY, currentZ)) {
         stepCount++;
         await prefs.setInt('counter', stepCount);
-    }
-    if(provider.steps == 0 && stepCount !=0){
-      provider.addSteps(stepCount);
-      print('provider steps updated : ${provider.steps}');
-    }
-    _isMoving().then((moving){
-      if(moving){
-        provider.addSteps(stepCount);
       }
-    });
-
+      if(provider.steps == 0 && stepCount !=0){
+        provider.addSteps(stepCount);
+        print('provider steps updated : ${provider.steps}');
+      }
+      _isMoving().then((moving){
+        if(moving){
+          provider.addSteps(stepCount);
+        }
+      });
+    }
   }
 
   Future checkDateAndUpdate(String date) async {
