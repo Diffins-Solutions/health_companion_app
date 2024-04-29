@@ -40,6 +40,7 @@ class _DailyMoveGoalsState extends State<DailyMoveGoal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: kBackgroundColor,
       body: SafeArea(
         child: Stack(
