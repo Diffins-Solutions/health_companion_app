@@ -41,7 +41,7 @@ class StepCounter {
     //print('Abs: $absXYZ');
     double value = prevAbsXYZ - absXYZ;
     bool isPeak = value.abs() > _xyzThreshold && Z > 9.36;
-    isPeak? print('is Step : $isPeak'): print('');
+    //isPeak? print('is Step : $isPeak'): print('');
     _previousX = X;
     _previousY = Y;
     _previousZ = Z; // Update for next peak detection

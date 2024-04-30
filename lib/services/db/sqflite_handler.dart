@@ -255,6 +255,32 @@ class DbHandler {
     });
     return 0;
   }
+
+  Future<int> updateColumnForCurrentUser(String table, int userId, String primaryKey,
+      String columnToUpdate, dynamic data) async {
+    Database db = await _db;
+    await db.transaction((txn) async {
+      // Check if row exists
+      final count = await txn
+          .rawQuery('SELECT 1 FROM $table WHERE $primaryKey = ? AND user_id = $userId', [data[0]]);
+      final rowExists = count.isNotEmpty;
+      if (rowExists) {
+        // Update existing row
+        int result = await txn.rawUpdate(
+            'UPDATE $table SET $columnToUpdate = ? WHERE $primaryKey = ? AND user_id = $userId',
+            [data[1], data[0]]);
+        print('Row updated successfully!');
+        return result;
+      } else {
+        // Insert new row
+        int result = await txn
+            .insert(table, {primaryKey: data[0], columnToUpdate: data[1], 'user_id': userId});
+        print('Row inserted successfully!');
+        return result;
+      }
+    });
+    return 0;
+  }
   // Future<int> delete(int id) async {
   //   Database db = await this.db;
   //   var result = await db.rawDelete("delete from products where id= $id");
