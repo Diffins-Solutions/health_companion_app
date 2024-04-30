@@ -120,8 +120,11 @@ class _AppShellState extends State<AppShell> {
         future: getUserDetails(),
         builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Scaffold(
+                backgroundColor: kBackgroundColor,
+                body: Center(child: CircularProgressIndicator()));
           } else {
+            print(_healthTipsKeyWords);
             User user = snapshot.data!;
             name = user.name;
             print(name);
@@ -138,7 +141,7 @@ class _AppShellState extends State<AppShell> {
                     recommendations;
               }
             }
-
+            print(_healthTipsKeyWords);
             return Scaffold(
               backgroundColor: kBackgroundColor,
               resizeToAvoidBottomInset: false,
