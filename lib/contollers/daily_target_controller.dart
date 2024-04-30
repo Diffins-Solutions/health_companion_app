@@ -1,5 +1,6 @@
 import 'package:health_companion_app/models/db_models/daily_target.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/db/sqflite_handler.dart';
 
 class DailyTargetController {
@@ -8,8 +9,12 @@ class DailyTargetController {
 
   static Future<DailyTarget?> getDailyTarget() async {
     try {
+      print('Get daily target');
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userIdString = prefs.getString('user_id')!;
+      int user_id = int.parse(userIdString);
       dynamic result =
-          await _dbHandler.fetchFilteredData('daily_target', 'date', [_today]);
+      await _dbHandler.fetchFilteredDataFromCurrentUser('daily_target', 'date', user_id,[_today]);
       print('Target $result');
       if (result != null) {
         return DailyTarget.fromObject(result.first);
@@ -37,7 +42,11 @@ class DailyTargetController {
   static Future addOrUpdateSteps(String date, int steps) async {
     print('Adding steps $date : $steps');
     try {
-      int result = await _dbHandler.updateColumn('daily_target', 'date', 'steps', [date, steps]);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userIdString = prefs.getString('user_id')!;
+      int user_id = int.parse(userIdString);
+
+      int result = await _dbHandler.updateColumnForCurrentUser('daily_target', user_id, 'date', 'steps', [date, steps]);
       if (result > 0) {
         return Future(() => true);
       } else {

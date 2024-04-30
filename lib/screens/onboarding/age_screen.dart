@@ -28,99 +28,103 @@ class _AgeScreenState extends State<AgeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              children: [
-                Row(
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
                   children: [
-                    GestureDetector(
-                      child: Icon(
-                        Icons.navigate_before,
-                        size: 40,
-                      ),
-                      onTap: () => Navigator.pop(context),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          child: Icon(
+                            Icons.navigate_before,
+                            size: 40,
+                          ),
+                          onTap: () => Navigator.pop(context),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          'How old are you ?',
+                          style:
+                              TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
+                        ),
+                      ],
                     ),
                     SizedBox(
-                      width: 20,
+                      height: 30,
                     ),
-                    Text(
-                      'How old are you ?',
-                      style:
-                          TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
+                    Image.asset('images/age_screen.jpg'),
+                    SizedBox(
+                      height: 75,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        MaterialButton(
+                          onPressed: () {
+                            setState(() {
+                              age--;
+                            });
+                          },
+                          shape: CircleBorder(),
+                          color: kLightGreen,
+                          child: Text(
+                            '-',
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Text(
+                          age.toString(),
+                          style: TextStyle(
+                            fontSize: 70,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        MaterialButton(
+                          onPressed: () {
+                            setState(() {
+                              age++;
+                            });
+                          },
+                          shape: CircleBorder(),
+                          color: kLightGreen,
+                          child: Text(
+                            '+',
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 80,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        "Age is your unique timeline, a personal journey. Sharing it helps us tailor health"
+                        " advice, turning years into milestones "
+                        "of wellness. Let’s navigate this health odyssey together, one year at a time.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey),
+                      ),
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 30,
-                ),
-                Image.asset('images/age_screen.jpg'),
-                SizedBox(
-                  height: 75,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    MaterialButton(
-                      onPressed: () {
-                        setState(() {
-                          age--;
-                        });
-                      },
-                      shape: CircleBorder(),
-                      color: kLightGreen,
-                      child: Text(
-                        '-',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Text(
-                      age.toString(),
-                      style: TextStyle(
-                        fontSize: 70,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    MaterialButton(
-                      onPressed: () {
-                        setState(() {
-                          age++;
-                        });
-                      },
-                      shape: CircleBorder(),
-                      color: kLightGreen,
-                      child: Text(
-                        '+',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 80,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    "Age is your unique timeline, a personal journey. Sharing it helps us tailor health"
-                    " advice, turning years into milestones "
-                    "of wellness. Let’s navigate this health odyssey together, one year at a time.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-              ],
+              ),
             ),
             CustomFlatButton(
               label: 'Continue',

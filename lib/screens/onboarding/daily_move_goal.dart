@@ -232,7 +232,7 @@ class _AlertBoxState extends State<AlertBox> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => DailyMoveGoal(
@@ -252,7 +252,7 @@ class _AlertBoxState extends State<AlertBox> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => DailyMoveGoal(

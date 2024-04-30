@@ -104,7 +104,7 @@ class Quessionaire {
         [0, 9],
         [10, 13],
         [14, 20],
-        [21 - 27],
+        [21 , 27],
         [28]
       ],
       "Anxiety": [
@@ -129,11 +129,13 @@ class Quessionaire {
   static String getScoringResult(String condition, int score) {
     List<List<int>>? sceheme = _getSingleScoringScheme(condition);
 
-    if (score > sceheme![sceheme.length - 1][0]) {
+    if (score >= sceheme![sceheme.length - 1][0]) {
       return _getSeverityNames()[sceheme.length - 1];
     }
-
-    for (var i = 0; i < sceheme.length; i++) {
+    print(sceheme);
+    for (var i = 0; i < sceheme.length - 1; i++) {
+      print(i);
+      print(sceheme[i]);
       if (score >= sceheme[i][0] && score <= sceheme[i][1]) {
         return _getSeverityNames()[i];
       }

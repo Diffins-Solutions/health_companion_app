@@ -60,10 +60,11 @@ class _QuessionaireScreenState extends State<QuessionaireScreen> {
                       scores["Stress"] = scores["Stress"]! * 2;
 
                       List<String> finalResult = [];
+                      print(scores);
                       for (String condition in scores.keys.toList()) {
                         finalResult.add(Quessionaire.getScoringResult(condition, scores[condition]!));
                       }
-
+                      print(finalResult);
                       Navigator.push(
                         context,
                         MaterialPageRoute(

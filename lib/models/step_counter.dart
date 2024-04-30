@@ -7,7 +7,6 @@ import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StepCounter {
-
   final double _zThreshold;
   final double _xyzThreshold;
   int i = 0;
@@ -17,15 +16,18 @@ class StepCounter {
   double _previousZ = 0.0; // Added for peak detection
   final StepNotifier provider;
 
-
-
-  StepCounter({required this.provider, double zThreshold = 1.0, double xyzThreshold = 0.8})
+  StepCounter(
+      {required this.provider,
+      double zThreshold = 1.0,
+      double xyzThreshold = 0.8})
       : _zThreshold = zThreshold,
         _xyzThreshold = xyzThreshold;
 
   Future<void> startListening() async {
     if (_streamSubscription == null) {
-      _streamSubscription = Stream.periodic(Duration(milliseconds: 600)).asyncMap((_) => accelerometerEvents.first).listen(_onAccelerometerData);
+      _streamSubscription = Stream.periodic(Duration(milliseconds: 600))
+          .asyncMap((_) => accelerometerEvents.first)
+          .listen(_onAccelerometerData);
     }
   }
 
@@ -60,8 +62,10 @@ class StepCounter {
     // Y = alpha * _previousY + (1 - alpha) * Y;
     // Z = alpha * _previousZ + (1 - alpha) * Z;
 
-    double prevAbsXYZ = sqrt(_previousX*_previousX + _previousY*_previousY + _previousZ*_previousZ);
-    double absXYZ = sqrt(X*X + Y*Y + Z*Z);
+    double prevAbsXYZ = sqrt(_previousX * _previousX +
+        _previousY * _previousY +
+        _previousZ * _previousZ);
+    double absXYZ = sqrt(X * X + Y * Y + Z * Z);
 
     // if(X - Z > 1.5 && Y - Z > 1.5 && absXYZ > 7 && Z > 1){
     //   print('waliking');
@@ -69,7 +73,7 @@ class StepCounter {
     // }
     // print('$X $Y $Z $_previousX, $_previousY $_previousZ $absXYZ $prevAbsXYZ');
     bool isPeak = (X - Z > 2 && Y - Z > 2 && absXYZ > 10);
-    if (isPeak){
+    if (isPeak) {
       print('walking');
     }
 
@@ -78,13 +82,12 @@ class StepCounter {
     _previousY = Y;
     _previousZ = Z;
 
-    if(isPeak){
+    if (isPeak) {
       print('step');
     }
 
     return isPeak;
   }
-
 
   void _onAccelerometerData(AccelerometerEvent event) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -98,15 +101,14 @@ class StepCounter {
       stepCount++;
       await prefs.setInt('counter', stepCount);
     }
-    if(provider.steps == 0 && stepCount !=0){
+    if (provider.steps == 0 && stepCount != 0) {
       provider.addSteps(stepCount);
     }
-    _isMoving().then((moving){
-      if(moving){
+    _isMoving().then((moving) {
+      if (moving) {
         provider.addSteps(stepCount);
       }
     });
-
   }
 
   Future checkDateAndUpdate(String date) async {
@@ -130,7 +132,6 @@ class StepCounter {
       rethrow;
     }
   }
-
 
   Future _isMoving() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
