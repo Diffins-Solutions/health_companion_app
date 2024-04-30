@@ -25,7 +25,7 @@ class StepCounter {
 
   Future<void> startListening() async {
     if (_streamSubscription == null) {
-      _streamSubscription = Stream.periodic(Duration(milliseconds: 600))
+      _streamSubscription = Stream.periodic(Duration(milliseconds: 800))
           .asyncMap((_) => accelerometerEvents.first)
           .listen(_onAccelerometerData);
     }
@@ -67,11 +67,6 @@ class StepCounter {
         _previousZ * _previousZ);
     double absXYZ = sqrt(X * X + Y * Y + Z * Z);
 
-    // if(X - Z > 1.5 && Y - Z > 1.5 && absXYZ > 7 && Z > 1){
-    //   print('waliking');
-    //   print('$X $Y $Z $_previousX, $_previousY $_previousZ $absXYZ $prevAbsXYZ');
-    // }
-    // print('$X $Y $Z $_previousX, $_previousY $_previousZ $absXYZ $prevAbsXYZ');
     bool isPeak = (X - Z > 2 && Y - Z > 2 && absXYZ > 10);
     if (isPeak) {
       print('walking');
